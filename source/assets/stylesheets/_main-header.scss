@@ -1,0 +1,21 @@
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px;
+
+  &__item {
+    align-items: center;
+    color: $light-gray;
+    display: flex;
+    text-decoration: none;
+
+    &:hover {
+      color: $white;
+      text-decoration: underline;
+    }
+
+    > img {
+      margin: 0 10px;
+    }
+  }
+}
