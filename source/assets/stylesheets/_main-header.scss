@@ -1,21 +1,30 @@
 .main-header {
   display: flex;
   justify-content: space-between;
-  margin: 15px;
+  margin: 15px 5px;
+
+  @include medium-up {
+    margin: 15px;
+  }
 
   &__item {
     align-items: center;
     color: $light-gray;
     display: flex;
+    line-height: 18px;
     text-decoration: none;
 
     &:hover {
       color: $white;
-      text-decoration: underline;
     }
 
     > img {
+      @include size(36px);
       margin: 0 10px;
     }
+  }
+
+  &__item--right {
+    text-align: right;
   }
 }

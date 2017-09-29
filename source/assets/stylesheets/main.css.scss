@@ -4,33 +4,18 @@
 @import "reset/normalize";
 
 @import "base/base";
+@import "mixins/media-queries";
 @import "variables/colors";
 @import "variables/sizing";
 @import "sign-up";
 @import "btn";
 @import "main-header";
+@import "hero-container";
+@import "helpers";
 
 body {
   background-color: $dark-navy;
   color: $light-gray;
   font-family: 'Lato', sans-serif;
   border-top: 3px solid $bright-green;
-}
-
-.container {
-  margin: 0 auto;
-  max-width: 750px;
-  margin-top: 150px;
-  text-align: center;
-}
-
-.lucky-logo {
-  width: 100%
-}
-
-.hero-tagline {
-  font-weight: 400;
-  text-transform: uppercase;
-  font-size: 20px;
-  letter-spacing: 3px;
 }

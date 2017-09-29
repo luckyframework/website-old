@@ -1,0 +1,15 @@
+.h-medium-up {
+  display: none;
+
+  @include medium-up {
+    display: inherit;
+  }
+}
+
+.h-mobile-only {
+  display: none;
+
+  @include mobile-only {
+    display: inherit;
+  }
+}

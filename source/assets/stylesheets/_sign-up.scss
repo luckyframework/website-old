@@ -1,7 +1,14 @@
 .list-sign-up-form {
   max-width: 550px;
   margin: 80px auto;
+  padding: 0 15px;
   text-transform: uppercase;
+}
+
+.submit-button {
+  @include medium-up {
+    margin-left: 15px;
+  }
 }
 
 .sign-up-email {
@@ -11,4 +18,9 @@
 
 .sign-up-form-row {
   display: flex;
+  flex-direction: column;
+
+  @include medium-up {
+    flex-direction: row;
+  }
 }

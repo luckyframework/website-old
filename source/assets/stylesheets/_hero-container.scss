@@ -1,0 +1,17 @@
+.hero-container {
+  margin: 0 auto;
+  max-width: 650px;
+  margin-top: 130px;
+  text-align: center;
+
+  &__tagline {
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: 20px;
+    letter-spacing: 3px;
+  }
+
+  &__logo {
+    width: 100%
+  }
+}
