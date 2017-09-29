@@ -4,3 +4,29 @@
 @import "reset/normalize";
 
 @import "base/base";
+
+body {
+  background-color: #002748;
+  color: #fff;
+  font-family: 'Lato', sans-serif;
+  border-top: 3px solid #9EFF66;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 750px;
+  margin-top: 150px;
+  text-align: center;
+}
+
+.lucky-logo {
+  width: 100%
+}
+
+.hero-tagline {
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: 20px;
+  color: #AAB5BF;
+  letter-spacing: 3px;
+}
