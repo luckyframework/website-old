@@ -1,0 +1,13 @@
+.btn-primary {
+  border-radius: 5px;
+  background: $medium-green;
+  text-transform: uppercase;
+  font-weight: bold;
+  height: $btn-height;
+  font-size: 14px;
+  margin-left: 15px;
+
+  &:hover {
+    background: darken($medium-green, 10%);
+  }
+}

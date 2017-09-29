@@ -4,12 +4,16 @@
 @import "reset/normalize";
 
 @import "base/base";
+@import "variables/colors";
+@import "variables/sizing";
+@import "sign-up";
+@import "btn";
 
 body {
-  background-color: #002748;
-  color: #AAB5BF;
+  background-color: $dark-navy;
+  color: $light-gray;
   font-family: 'Lato', sans-serif;
-  border-top: 3px solid #9EFF66;
+  border-top: 3px solid $bright-green;
 }
 
 .container {
@@ -28,33 +32,4 @@ body {
   text-transform: uppercase;
   font-size: 20px;
   letter-spacing: 3px;
-}
-
-.list-sign-up-form {
-  max-width: 550px;
-  margin: 80px auto;
-  text-transform: uppercase;
-}
-
-.sign-up-email {
-  padding: 10px;
-  height: 45px;
-}
-
-.sign-up-form-row {
-  display: flex;
-}
-
-.btn-primary {
-  border-radius: 5px;
-  background: darken(#36DE97, 10%);
-  text-transform: uppercase;
-  font-weight: bold;
-  height: 45px;
-  font-size: 14px;
-  margin-left: 15px;
-
-  &:hover {
-    background: darken(#36DE97, 20%);
-  }
 }
