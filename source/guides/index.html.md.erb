@@ -5,5 +5,5 @@ layout: no-intro
 # Welcome to the Lucky Guides
 
 <% guides_pages.each do |guide_page| %>
-  * [<%= guide_page.data.title %>](guide_page.path)
+  * [<%= guide_page.data.title %>](/<%= guide_page.path %>)
 <% end %>
