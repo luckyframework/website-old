@@ -104,27 +104,27 @@ end
 
 For the `action` macro:
 
-*  `Users::Index`  -> `get “/users`
-*  `Users::Show`  -> `get “/users/:id`
-*  `Users::New`  -> `get “/users/new`
-*  `Users::Create`  -> `post “/users`
-*  `Users::Edit`  -> `get “/users/:id/edit`
-*  `Users::Update`  -> `put “/users/:id`
-*  `Users::Delete`  -> `delete “/users/:id`
-* Multiple namespaces: `Api::V1::Users::Show`  -> `get “/api/v1/users/:id`
-* Multi-word namespace: `MyAdminSection::Users::Show`  -> `get “/my_admin_section/users/:id`
+*  `Users::Index`  -> `get “/users"`
+*  `Users::Show`  -> `get “/users/:id"`
+*  `Users::New`  -> `get “/users/new"`
+*  `Users::Create`  -> `post “/users"`
+*  `Users::Edit`  -> `get “/users/:id/edit"`
+*  `Users::Update`  -> `put “/users/:id"`
+*  `Users::Delete`  -> `delete “/users/:id"`
+* Multiple namespaces: `Api::V1::Users::Show`  -> `get “/api/v1/users/:id"`
+* Multi-word namespace: `MyAdminSection::Users::Show`  -> `get “/my_admin_section/users/:id"`
 
 For the `nested_action` macro:
 
-*  `Projects::Users::Index`  -> `get “/projects/:project_id/users`
-*  `Projects::Users::Show`  -> `get “/projects/:project_id/users/:id`
-*  `Projects::Users::New`  -> `get “/projects/:project_id/users/new`
-*  `Projects::Users::Create`  -> `post “/projects/:project_id/users`
-*  `Projects::Users::Edit`  -> `get “/projects/:project_id/users/:id/edit`
-*  `Projects::Users::Update`  -> `put “/projects/:project_id/users/:id`
-*  `Projects::Users::Delete`  -> `delete “/projects/:project_id/users/:id`
-* Multiple namespaces: `Api::V1::Projects::Users::Show`  -> `get “/api/v1/projects/:project_id/users/:id`
-* Multi-word namespace: `MyAdminSection::Projects::Users::Show`  -> `get “/my_admin_section/projects/:project_id/users/:id`
+*  `Projects::Users::Index`  -> `get “/projects/:project_id/users"`
+*  `Projects::Users::Show`  -> `get “/projects/:project_id/users/:id"`
+*  `Projects::Users::New`  -> `get “/projects/:project_id/users/new"`
+*  `Projects::Users::Create`  -> `post “/projects/:project_id/users"`
+*  `Projects::Users::Edit`  -> `get “/projects/:project_id/users/:id/edit"`
+*  `Projects::Users::Update`  -> `put “/projects/:project_id/users/:id"`
+*  `Projects::Users::Delete`  -> `delete “/projects/:project_id/users/:id"`
+* Multiple namespaces: `Api::V1::Projects::Users::Show`  -> `get “/api/v1/projects/:project_id/users/:id"`
+* Multi-word namespace: `MyAdminSection::Projects::Users::Show`  -> `get “/my_admin_section/projects/:project_id/users/:id"`
 
 ## Path and route helpers
 
