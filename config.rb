@@ -37,3 +37,14 @@ configure :production do
   activate :minify_html
   activate :minify_javascript
 end
+
+helpers do
+  def guides_pages
+    sitemap.resources.find_all do |resource|
+      path = resource.path
+      path.start_with?("guides/") && !path.start_with?("guides/index")
+    end.sort do |page|
+      page.data.order
+    end
+  end
+end
