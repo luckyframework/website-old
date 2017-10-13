@@ -1,0 +1,44 @@
+---
+title: Configuring Your Application
+order: 1
+intro: >
+  You can configuare Lucky by changing and adding files in the config folder of
+  your application. You can configuare the server, the database and your own
+  code using Lucky and Habitat.
+---
+
+## Configuring the Application
+
+A lot of configuration changes based on the environment Lucky is running in. Development, test or production.
+
+The default environments in a Lucky app are
+
+* `development`
+* `test`
+* `production`
+
+## Get the current environment
+
+`LuckyEnv.name` will return the currently running environment
+
+Or, conditionally check the environment with `LuckyEnv.test?` , `LuckyEnv.development?` or `LuckyEnv.production?`
+
+## Set the current environment
+
+`LUCKY_ENV=environment_name` to set the environment. By default it is `development`
+
+## Adding more environments
+
+Fill in later.
+
+## Where to put configuration
+
+All application configuration is found in the `config` folder
+
+For example, to change the database config, look in `config/database.cr`
+
+## Configuring your own code
+
+Lucky ships with `Habitat`. A module you can use to configure your application in a type safe way.
+
+Check out the Habitat documentation to see how to use it in your app
