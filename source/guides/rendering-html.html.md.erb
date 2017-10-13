@@ -1,0 +1,209 @@
+---
+title: Rendering HTML Pages
+order: 3
+intro: >
+  Lucky handles rendering of HTML with Crystal code. This allows a huge amount of
+  flexibility when sharing common HTML, and makes it easy to do without having to
+  learn any framework specific code. You can use regular Crystal classes and
+  modules.
+---
+
+
+## Rendering an HTML page from within an action
+
+Let’s say we have an action and we want to render all of our user’s names
+
+```crystal
+# in src/actions/users/index.cr
+class Users::Index < BaseAction
+  action do
+    # Renders the Users::IndexPage by default
+    render user_names: ["Paul", "Sally", "Jane"]
+  end
+end
+```
+
+By default `render` will render a page with the name of the class and `Page` appended. So if you used `render` in `MyCoolAction`, Lucky would try to render `MyCoolActionPage`.
+
+You could also tell render exactly which page to render like this:
+
+```
+render Users::IndexPage, user_name: ["Paul", "Sally", "Jane"]
+```
+
+This is helpful when you want to render a page used by multiple actions. For example, you might have an action for handling user searches that users the `Users::IndexPage`
+
+```crystal
+class UserSearches::Show < BaseAction
+  get "/user_searches" do
+    render Users::IndexPage, user_name: ["Jane"]
+  end
+end
+```
+
+## Adding a page for our `Users::Index` action
+
+Let’s create the page for our `Users::Index` action.
+
+```crystal
+# in src/pages/users/index_page.cr
+class Users::IndexPage < BasePage
+  needs user_names : Array(String)
+
+  render do
+    ul class: "my-user-list" do
+      @user_names.each do |name|
+        li name, class: "user-name"
+      end
+    end
+  end
+end
+```
+
+Woo hoo! We created our first page. Let’s walk through what’s going on.
+
+## Declaring what a page needs using `needs`
+
+You’ll notice we used `needs` near the top of the class. This declares that for this page to render we need an Array of Strings and that they will be assigned to the `@user_names` variable. We set the user names by passing it in the `render` macro in our action: `render user_names: [“Paul”, “Sally”, “Jane”]`
+
+> This is nice because you won’t accidentally forgot to pass something to a page ever again. If you forget, the compiler will tell you that you’re missing something
+
+## Rendering HTML in our page
+
+We then created a `render` macro in our class to render our actual HTML. Tags are generated with regular Crystal methods. Most all HTML5 tags are available by default
+
+> Note that paragraph tags are `para` instead of `p` since `p` is already used by Crystal
+
+Here is a more in depth example of using different tag formats
+
+```crystal
+# Generate a ul tag with no other options (class, data attributes, etc), and render tags within it
+ul do
+  li "Hey!"
+end
+
+# Generate a ul tag with options and more tags within it
+ul class: "my-list", data_foo: "bar" do
+  li "Excellent list item"
+end
+
+# Generate a tag with the text as it's content
+h1 "My cool test"
+
+# Generate a tag with the text as content and with options
+h1 "My cool test", class: "app-header"
+```
+
+Order and nesting works about the same as how you would write normal HTML
+
+```crystal
+render do
+  # You can have a list
+  ul do
+    li "List item"
+  end
+
+  # And underneath it render something else
+  footer "Copyright Notice"
+end
+```
+
+
+## Special tags (link, form helpers, etc.)
+
+There are a few specials helpers that make it easier
+
+## Rendering plain text
+
+Sometimes you want to render plain text. To do that use the `text` method
+
+```crystal
+div "email" do
+  text "This is the email text"
+  br
+  span "inbox", class: "email-tag"
+end
+```
+
+## Extract partials and common code
+
+Extracting code for reuse or clarity is easy since pages are made of classes and methods
+
+```crystal
+class Users::ShowPage < BasePage
+  render do
+    render_user_header
+  end
+
+  # We can extract a private method to make our code easier to understand
+  private def render_user_header
+    div class: "user-header" do
+      h1 "Users"
+      a "Back to users index", href: Users::Index.path
+    end
+  end
+end
+```
+
+And if we wanted to share it between pages, we could extract a module
+
+```crystal
+# in src/pages/mixin/user/page_helpers.cr
+module Users::PageHelpers
+  private def render_user_header
+    div class: "user-header" do
+      h1 "Users"
+      a "Back to users index", href: Users::Index.path
+    end
+  end
+end
+
+# and use it in the view
+class Users::ShowPage < BasePage
+  include Users::PageHelpers
+
+  render do
+    render_user_header
+  end
+end
+```
+
+## Layouts
+
+## Sharing data that is used by all pages (like the currently signed in user)
+
+It would be a pain to have to type `needs current_user : User` in every page and page `current_user: find_the_user` in every action.
+
+Lucky’s got you covered.
+
+You can add `needs` to the `BasePage` if every page needs something.
+
+For actions we have an `expose` macro that makes it easy to automatically pass data to rendered pages
+
+Here’s an example of using both of them
+
+```crystal
+# in src/pages/base_page.cr
+class BasePage
+  include LuckyWeb::Page
+
+  # Now every page will require and have access to @current_user_name
+  needs current_user_name : String
+end
+
+# in src/actions/base_action.cr
+class BaseAction
+  # This will now pass the result of calling current_user_name to every page
+  expose current_user_name
+
+  private def current_user_name
+    "The signed in user"
+  end
+end
+
+class Users::Index < BaseAction
+  action do
+    render # Will pass the current_user_name automatically
+  end
+end
+```

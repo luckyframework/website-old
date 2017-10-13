@@ -16,16 +16,16 @@ Nothing at the moment.
 
 ## [0.3.0] - 2017-09-15
 
-### Added
+## Added
 
 - Added a `sitemap.xml` template. ([#23])
 
-### Changed
+## Changed
 
 - Swapped the sassc gem for sass. ([#22])
 - Improved CircleCI configuration. ([#24])
 
-### Removed
+## Removed
 
 - AccessLint::Ci has been deprecated and therefore removed from this
   project. ([#21])
@@ -38,7 +38,7 @@ Nothing at the moment.
 
 ## [0.2.0] - 2017-06-30
 
-### Changed
+## Changed
 
 - Update Ruby from 2.3.1 to 2.4.0. ([#15])
 - Update bourbon from 5.0.0.beta.7 to 5.0.0.beta.8. ([#16])

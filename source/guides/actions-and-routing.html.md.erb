@@ -39,7 +39,7 @@ In this example if you visited `/users/123` then it would return a text response
 
 When you use `:name_of_param` then anything you pass in that part of the URL will be available in the `name_of_param` method. You can also access the param with `params.get(:name_of_param)` but it’s better to use the generated method so that you know it exists at compile time.
 
-### You can use as many parameters as you want
+## You can use as many parameters as you want
 
 Every named parameter will have a method generated for it that so that you can access the value. You can have as many as you want
 
@@ -101,7 +101,7 @@ end
 ```
 
 
-### More example of automatically generated routes
+## More example of automatically generated routes
 
 For the `action` macro:
 
