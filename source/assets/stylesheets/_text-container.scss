@@ -2,8 +2,11 @@
   @include centered-container;
   margin: 30px auto;
   color: $dark-navy;
-  padding-right: $intro-card-width + 30px;
   font-size: 18px;
+
+  &--with-table-of-contents {
+    padding-right: $intro-card-width + 30px;
+  }
 
   h1, h2, h3, h4, h5, h6 {
     margin: 46px 0 24px 0;
@@ -13,7 +16,7 @@
     margin: 0 0 28px 0;
   }
 
-  h2 {
+  h1, h2 {
     color: #14A98F;
     letter-spacing: 2.1px;
     text-transform: uppercase;

@@ -25,7 +25,7 @@
               <a href="#">Why Lucky?</a>
             </li>
             <li>
-              <a href="/guides/installing.html">Guides</a>
+              <a href="/guides/index.html">Guides</a>
             </li>
             <li>
               <a href="#">GitHub</a>
@@ -34,33 +34,7 @@
         </div>
       </header>
 
-      <section class="page-intro">
-        <div class="page-intro__container">
-          <div class="page-intro__left">
-            <h1 class="page-intro__heading">
-              <a href="/guides/index.html">Guides</a>
-              <%= image_tag "intro-arrow.svg", class: "page-intro__arrow" %>
-              <%= current_page.data.title %>
-            </h1>
-
-            <p class="page-intro__text">
-              <%= current_page.data.intro %>
-            </p>
-          </div>
-
-          <div class="intro-card">
-            <%= table_of_contents(current_page) %>
-
-            <ul>
-              <li>
-                <a href="#" class="intro-card__link intro-card__link--prominent">Next: Rendering HTML Pages</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="text-container text-container--with-table-of-contents">
+      <section class="text-container">
         <%= yield %>
       </section>
     </main>
