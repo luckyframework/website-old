@@ -2,10 +2,18 @@
   max-width: 1200px;
   margin: 30px auto;
   color: $dark-navy;
+  padding-right: $intro-card-width + 30px;
 
   h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
     color: #14A98F;
     letter-spacing: 2.1px;
+    margin-bottom: 12px;
+  }
+
+  ul {
+    list-style-type: disc;
+    margin-top: 12px;
+    margin-bottom: 12px;
   }
 }
