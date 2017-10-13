@@ -8,9 +8,60 @@
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
     <%= stylesheet_link_tag "main" %>
   </head>
-  <body>
+  <body class="light-body">
     <main role="main">
-      <%= yield %>
+      <header class="header">
+        <div class="header__container">
+          <a href="/">
+            <%= image_tag "logo.svg", class: "header__logo" %>
+          </a>
+
+          <ul class="header-nav">
+            <li>
+              <a href="#">Why Lucky?</a>
+            </li>
+            <li>
+              <a href="/guides/installing.html">Guides</a>
+            </li>
+            <li>
+              <a href="#">GitHub</a>
+            </li>
+          </ul>
+        </div>
+      </header>
+
+      <section class="page-intro">
+        <div class="page-intro__container">
+          <div class="page-intro__left">
+            <h1 class="page-intro__heading">
+              <a href="/guides/installing.html">Guides</a>
+              <%= image_tag "intro-arrow.svg", class: "page-intro__arrow" %>
+              Actions and Routing
+            </h1>
+
+            <p class="page-intro__text">
+              <%= lorem.sentences 4 %>
+            </p>
+          </div>
+
+          <div class="intro-card">
+            <ul>
+              <% 5.times do %>
+                <li>
+                  <a href="#" class="intro-card__link"><%= lorem.words 3 %></a>
+                </li>
+              <% end %>
+              <li>
+                <a href="#" class="intro-card__link intro-card__link--prominent">Next: Rendering HTML Pages</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="text-container">
+        <%= yield %>
+      </section>
     </main>
     <%= partial "partials/analytics" %>
   </body>

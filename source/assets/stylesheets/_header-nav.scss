@@ -1,0 +1,18 @@
+.header-nav {
+  display: flex;
+  flex-direction: row;
+
+  a {
+    text-decoration: none;
+    color: #fff;
+    text-transform: uppercase;
+    display: inline-block;
+    font-size: 14px;
+    letter-spacing: 1.7px;
+    margin-left: 44px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

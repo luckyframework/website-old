@@ -1,0 +1,11 @@
+.text-container {
+  max-width: 1200px;
+  margin: 30px auto;
+  color: $dark-navy;
+
+  h1, h2, h3, h4, h5, h6 {
+    text-transform: uppercase;
+    color: #14A98F;
+    letter-spacing: 2.1px;
+  }
+}

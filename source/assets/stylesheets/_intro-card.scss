@@ -1,0 +1,29 @@
+.intro-card {
+  background: #FFFFFF;
+  box-shadow: 0 2px 11px 0 rgba(0,0,0,0.10);
+  border-radius: 8px;
+  padding: 20px 38px;
+  box-sizing: border-box;
+  width: $intro-card-width;
+
+  &__link {
+    display: block;
+    padding: 13px 0;
+    color: $dark-navy;
+    text-decoration: none;
+    display: block;
+
+    a:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__link--prominent {
+    color: #15A38B;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: underline;
+  }
+
+}

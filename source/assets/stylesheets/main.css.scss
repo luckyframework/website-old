@@ -10,7 +10,12 @@
 @import "sign-up";
 @import "btn";
 @import "main-header";
+@import "header";
+@import "header-nav";
+@import "page-intro";
+@import "intro-card";
 @import "hero-container";
+@import "text-container";
 @import "helpers";
 
 body {
@@ -21,4 +26,8 @@ body {
   background-color: $dark-navy;
   color: $light-gray;
   border-top: 3px solid $bright-green;
+}
+
+.light-body {
+  background: #F4F7F6;
 }
