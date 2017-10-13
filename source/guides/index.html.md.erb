@@ -4,4 +4,6 @@ layout: no-intro
 
 # Welcome to the Lucky Guides
 
-* [Installing Lucky](/guides/installing.html)
+<% guides_pages.each do |guide_page| %>
+  * [<%= guide_page.data.title %>](guide_page.path)
+<% end %>
