@@ -40,21 +40,18 @@
             <h1 class="page-intro__heading">
               <a href="/guides/installing.html">Guides</a>
               <%= image_tag "intro-arrow.svg", class: "page-intro__arrow" %>
-              Actions and Routing
+              <%= current_page.data.title %>
             </h1>
 
             <p class="page-intro__text">
-              <%= lorem.sentences 4 %>
+              <%= current_page.data.intro %>
             </p>
           </div>
 
           <div class="intro-card">
+            <%= table_of_contents(current_page) %>
+
             <ul>
-              <% 5.times do %>
-                <li>
-                  <a href="#" class="intro-card__link"><%= lorem.words 3 %></a>
-                </li>
-              <% end %>
               <li>
                 <a href="#" class="intro-card__link intro-card__link--prominent">Next: Rendering HTML Pages</a>
               </li>

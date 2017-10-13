@@ -1,3 +1,7 @@
+require "lib/table_of_contents_helper"
+
+helpers TableOfContentsHelper
+
 activate :aria_current
 activate :autoprefixer
 
