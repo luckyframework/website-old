@@ -4,12 +4,10 @@
   height: 70px;
 
   &__container {
+    @include centered-container;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
     height: 100%;
   }
 

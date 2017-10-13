@@ -1,5 +1,5 @@
 .text-container {
-  max-width: 1200px;
+  @include centered-container;
   margin: 30px auto;
   color: $dark-navy;
   padding-right: $intro-card-width + 30px;
