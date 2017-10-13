@@ -14,8 +14,11 @@
 @import "helpers";
 
 body {
+  font-family: 'Lato', sans-serif;
+}
+
+.dark-body {
   background-color: $dark-navy;
   color: $light-gray;
-  font-family: 'Lato', sans-serif;
   border-top: 3px solid $bright-green;
 }

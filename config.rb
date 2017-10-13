@@ -19,6 +19,7 @@ set :markdown_engine, :redcarpet
 page "/*.json", layout: false
 page "/*.txt", layout: false
 page "/*.xml", layout: false
+page "/guides/*", layout: "guide"
 
 configure :development do
   activate :livereload do |reload|
