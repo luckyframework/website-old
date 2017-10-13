@@ -10,7 +10,11 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    margin: 46px 0 24px 0;
+    margin: 60px 0 24px 0;
+
+    &:first-child {
+      margin-top: 44px;
+    }
   }
 
   p {
