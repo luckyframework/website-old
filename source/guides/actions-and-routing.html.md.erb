@@ -4,15 +4,17 @@ order: 2
 intro: >
   Actions are classes that handle routing and handling an HTTP request. Actions
   are typically used to save and read data from the database, and return
-  HTML/JSON, or handle redirects. Actions can also have callbacks that help with
+  HTML/JSON, or handle redirects. Actions can also have pipes that help with
   authentication, authorization, and more.
 ---
 
 ## Routing
 
-Unlike many frameworks, there is no separate routes file. Actions declare which route it handles in the class itself.
+Unlike many frameworks, there is no separate routes file. An action declares
+which route it handles in the class itself.
 
-You can route to an action by using `get`, `put`, `post` and `delete` macros
+You can route to an action by using `get`, `put`, `post` and `delete` macros, or
+[Lucky can figure it out for you](#automatically-generate-restful-routes).
 
 ```crystal
 class Users::Index < BaseAction
@@ -35,15 +37,20 @@ class Users::Show < BaseAction
 end
 ```
 
-In this example if you visited `/users/123` then it would return a text response of `User with an id of 123`.
+When you use you start a section of the path with `:` it will generate a param method for your.
 
-When you use `:name_of_param` then anything you pass in that part of the URL will be available in the `name_of_param` method. You can also access the param with `params.get(:name_of_param)` but it’s better to use the generated method so that you know it exists at compile time.
+In this case anything you pass in the part of the URL for `:my_user_id` will be
+available in the `my_user_id` method. So in this example if you visited
+`/users/123` then it would return a text response of `User with an id of 123`.
 
-## You can use as many parameters as you want
+### You can use as many parameters as you want
 
-Every named parameter will have a method generated for it that so that you can access the value. You can have as many as you want
+Every named parameter will have a method generated for it that so that you can
+access the value. You can have as many as you want
 
-For example, `delete “/projects/:project_id/tasks/:id"` would have a `project_id` and `id` method generated on the class for accessing the named parameter
+For example, `delete “/projects/:project_id/tasks/:id"` would have a
+`project_id` and `id` method generated on the class for accessing the named
+parameters.
 
 ## Where to Put Actions
 
@@ -53,7 +60,7 @@ For example `Users::Show` would go in `src/actions/users/show.cr` and `Api::V1::
 
 ## Automatically generate RESTful routes
 
-REST is a way to make access to resources more uniform. It consists of the following types
+REST is a way to make access to resources more uniform. It consists of the following actions:
 
 * Index - show a list of resources
 * Show - show one instance of a resource
@@ -63,7 +70,7 @@ REST is a way to make access to resources more uniform. It consists of the follo
 * Update - update an existing resource
 * Delete - delete the resource
 
-Use the `action` and `nested_action` macros to generate routes automatically
+Use the `action` and `nested_action` macros to generate RESTful routes automatically:
 
 ```crystal
 class Users::Show < BaseAction
@@ -101,7 +108,7 @@ end
 ```
 
 
-## More example of automatically generated routes
+### More examples of automatically generated routes
 
 For the `action` macro:
 
@@ -133,12 +140,14 @@ Lucky automatically generates some helpers for generating links.
 
 You can access them as class methods on the action itself. They are:
 
-* `route` - will return a `LuckyWeb::RouteHelper` object that contains both the path, and the method HTTP method
+* `route` - will return a `LuckyWeb::RouteHelper` object that contains both the
+  path, and the method HTTP method
 * `path` - will return a string
 
 ```crystal
 class Projects::Users::Index < BaseAction
-  # Normally you would use `nested_action` but we're using `get` to make the example more clear
+  # Normally you would use `nested_action`
+  # We'll use `get` here to make the example more clear
   get "projects/:project_id/users" do
     render_text "Users"
   end
@@ -147,10 +156,14 @@ end
 
 You can then call these methods
 
-* `Projects::Users::Index.path(“my_project_id”)` and it will return -> `”/projects/my_project_id/users”`
-* `Projects::Users::Index.route(“my_project_id”)` and it will return a `LuckyWeb::Response` whose `#path` method returns `”/projects/my_project_id/users”` and `#method` method return `”GET”`
+* `Projects::Users::Index.path(“my_project_id”)` and it will return ->
+  `”/projects/my_project_id/users”`
+* `Projects::Users::Index.route(“my_project_id”)` and it will return a
+  `LuckyWeb::Response` whose `#path` method returns
+  `”/projects/my_project_id/users”` and `#method` method return `”GET”`
 
-We’ll talk about this more in the Pages guide. You can use the route helper with links and form to automatically set the path *and* HTTP method at the same time
+We’ll talk about this more in the Pages guide. You can use the route helper with
+links and form to automatically set the path *and* HTTP method at the same time.
 
 ## Redirecting
 
@@ -161,6 +174,46 @@ class Users::Create < BaseAction
   action do
     redirect to: "/somewhere_else" # Default status is 302
     redirect to: "/somewhere_else, status: 301 # Override status
+  end
+end
+```
+
+## Using pipes
+
+Sometimes you want to do things before or after running one or more actions. To
+do this, you can use pipes. There is a `before` and `after` macro for running pipes.
+
+```
+# src/actions/admin/users/index.cr
+class Admin::Users::Index < BaseAction
+  before require_admin
+
+  get "/foo" do
+  end
+
+  private def require_admin
+    if current_user.admin?
+      continue
+    else
+      redirect to: SignIns::New
+    end
+  end
+end
+```
+
+## Cookies and sessions
+
+You can set and access cookies in Lucky like this:
+
+```
+class FooAction < BaseAction
+  get "/foo" do
+    cookies["name"] = "Sally"
+    cookies["name"] # Will return "Sally"
+
+    session["name"] = "Sally"
+    session["name"] # Will return "Sally"
+    render_text "Cookies!"
   end
 end
 ```
