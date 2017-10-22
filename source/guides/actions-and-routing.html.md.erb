@@ -62,17 +62,25 @@ For example `Users::Show` would go in `src/actions/users/show.cr` and `Api::V1::
 
 REST is a way to make access to resources more uniform. It consists of the following actions:
 
-* Index - show a list of resources
-* Show - show one instance of a resource
-* New - typically used to render a form to create a resource
-* Create - create a resource. Usually means saving data to the database
-* Edit - typically used to render a form to edit an existing resource
-* Update - update an existing resource
-* Delete - delete the resource
+* `Index` - show a list of resources
+* `Show` - show one instance of a resource
+* `New` - typically used to render a form to create a resource
+* `Create` - create a resource. Usually means saving data to the database
+* `Edit` - typically used to render a form to edit an existing resource
+* `Update` - update an existing resource
+* `Delete` - delete the resource
 
-Use the `action` and `nested_action` macros to generate RESTful routes automatically:
+Use the `action` and `nested_action` macros to generate RESTful routes
+automatically based on the class name.
+
+### `action`
+
+For `action`, it will use the first part of the class name as the resource name,
+and the second part as one of the resourceful actions listed above.
 
 ```crystal
+# Users is the resource
+# Show is the RESTful action
 class Users::Show < BaseAction
   # Same as:
   #   get "/users/:id"
@@ -82,9 +90,16 @@ class Users::Show < BaseAction
 end
 ```
 
-Or if you have a nested resource
+### `nested_action`
+
+For a nested resource it will use the third to last part as the
+nested resource name, the second to last part of the class name as the resource
+name,  and the last part as one of the resourceful actions listed above.
 
 ```crystal
+# Projects is the parent resource
+# Users is the nested resource
+# Index is the RESTful action
 class Projects::Users::Index < BaseAction
   # Same as:
   #   get "/projects/:project_id/users"
@@ -94,21 +109,20 @@ class Projects::Users::Index < BaseAction
 end
 ```
 
-Namespaces are handled automatically
+### Namespaces are handled automatically
 
 ```crystal
-# Anything before `Projects` will be treated as a namespace
-class Admin::Projects::Users::Index < BaseAction
+# Anything before the resource (in this case, `Projects`) will be treated as a namespace
+class Admin::Projects::Index < BaseAction
   # Same as:
-  #   get "/admin/projects/:project_id/users"
+  #   get "/admin/projects"
   action do
-    render_text "Render list of users in project #{project_id}"
+    render_text "Render list of projects"
   end
 end
 ```
 
-
-### More examples of automatically generated routes
+### Examples of automatically generated routes
 
 For the `action` macro:
 
