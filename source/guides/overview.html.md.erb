@@ -2,7 +2,51 @@
 title: Overview of Lucky
 order: 1
 intro: >
-  This guide goes over the file structure of a Lucky app, and how all the pieces
-  fit together. Lucky uses some familiar concepts like MVC, and a few newer
-  ones, like pipes.
+  This guide will give a brief intro to the philosophy behind Lucky. It also
+  goes over the file structure of a Lucky app, and how all the pieces fit
+  together.
 ---
+
+## File structure overview
+
+A new Lucky app is a slightly modified version of a Crystal app.
+
+### `src` folder
+
+The src folder holds most of your application code. This includes actions for handling requests,
+queries for database access, pages for rendering HTML, and a few other things.
+
+### `config` folder
+
+Here are all the files for configuring your application. A new app comes with a
+few configuration files, but you can add more as you see fit.
+
+### `static` folder
+
+This is where all your static assets go. JavaScript, CSS, images, fonts, and
+anything other assets your project needs.
+
+### `db` folder
+
+This folder houses all the database migrations for your app.
+
+### `tasks` folder
+
+You can put custom tasks here that can be run by the `lucky` command line tool.
+
+### `public` folder
+
+This file is never written to by a developer. Instead the asset compiler will
+put files here automatically.
+
+### `Procfile` and `Procfile.dev`
+
+`Procfile.dev` is used when you run `lucky dev`. By default there is a web and an assets process
+that are started. You can add more if you need them.
+
+`Procfile` is often used in production. Companies like Heroku, use it to determine
+how it should run the app.
+
+## The `src` folder
+
+## The Lucky philosophy
