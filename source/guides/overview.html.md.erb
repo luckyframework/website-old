@@ -7,6 +7,29 @@ intro: >
   together.
 ---
 
+## The Lucky philosophy
+
+Lucky was designed to solve a few core problems that teams often see. Lucky strives to:
+
+* Catch bugs at compile time, rather than finding them in production.
+* Minimize guess work with conventions for the most common types of objects.
+* Help developers break things into discrete pieces so things are easy to share
+  and maintain in the future.
+* Minimize boiler plate code so it's easy to focus on what your app does better
+  than everyone else.
+
+We do that by using Crystal's type system to the fullest. You won't see strings
+or symbols passed around. Instead you'll see method calls with types that make
+sure bugs are caught early.
+
+We have conventions that help you break your app into smaller pieces that are
+easier to understand. Things like single class per action, and form objects.
+
+We have helpful code generation so that you don't need to repeat boilerplate.
+
+Lucky was designed for developers that love making reliable products. We think
+you'll love it.
+
 ## File structure overview
 
 A new Lucky app is a slightly modified version of a Crystal app.
@@ -49,4 +72,49 @@ how it should run the app.
 
 ## The `src` folder
 
-## The Lucky philosophy
+### `actions` folder
+
+This is where classes go that handle incoming web requests.
+
+### `models` folder
+
+Put anything that models your business. Database objects go here, but you could
+also put things like service objects.
+
+### `handlers` folder
+
+Custom HTTP handlers. These can be used to do something for all HTTP requests.
+Great for things like loggers, setting up headers that apply to all requests,
+etc.
+
+It's more likely that you will use `pipes` for most business logic because they
+can be used selectively on a per action basis.
+
+### `pipes` folder
+
+Pipes are used to do things before or after an action is run. Great for
+authentication, authorization, or ensuring certain headers are set.
+
+### `queries` folder
+
+This is where your database queries go.
+
+### `forms` folder
+
+Forms for saving database records or interacting with HTTP forms.
+
+### `pages` folder
+
+Pages used for rendering HTML in response to web requests.
+
+### `app.cr`
+
+This requires all the files and folders that your app needs to run.
+
+### `dependencies.cr`
+
+Require your third party dependencies (shards) here.
+
+### `server.cr`
+
+This file requires the app and starts an HTTP server.
