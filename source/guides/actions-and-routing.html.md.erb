@@ -189,6 +189,7 @@ class Admin::Users::Index < BaseAction
   before require_admin
 
   get "/foo" do
+    render_text "List of users"
   end
 
   private def require_admin
@@ -197,6 +198,84 @@ class Admin::Users::Index < BaseAction
     else
       redirect to: SignIns::New
     end
+  end
+
+  private def current_user
+    # Get the currently signed in user somehow
+  end
+end
+```
+
+Pipe methods *must* explicitly return `continue` or return a
+`LuckyWeb::Response` by rendering, or redirecting. If a `LuckyWeb::Response` is
+returned by rendering or redirecting, then no other pipe will run and the action
+will not be called.
+
+### Sharing common pipes
+
+Sometimes you want to apply a pipe to many actions. To do that you can extract a
+new type of action. Let's do that for our admin example above.
+
+```crystal
+# src/actions/admin_action.cr
+abstract class AdminAction < BaseAction
+  before require_admin
+
+  private def require_admin
+    if current_user.admin?
+      continue
+    else
+      redirect to: SignIns::New
+    end
+  end
+
+  private def current_user
+    # Get the currently signed in user somehow
+  end
+end
+```
+
+Now other actions can inherit from `AdminAction` and will automatically get
+the `require_admin` pipe:
+
+```crystal
+# Note we're now inheriting from AdminAction
+class Admin::Users::Index < AdminAction
+  get "/foo" do
+    render_text "List of users"
+  end
+end
+```
+
+### Sharing pipes with modules
+
+Sometimes pipes need to be shared in a more flexible way. Let's say we want to
+log certain actions. They may be admin action or guest actions so it doesn't make
+sense to extract a base class like `LoggedAction` Instead we'll use a
+`LogRequestPipe` module:
+
+```crystal
+# src/pipes/log_request_pipe.cr
+module LogRequestPipe
+  macro included
+    after log_request_path
+  end
+
+  private def log_request_path
+    MyCustomLogger.log(context.request.path)
+  end
+end
+```
+
+We can then include it in the actions that need it:
+
+```crystal
+# src/actions/dashboard/show.cr
+class Dashboard::Show < BaseAction
+  include LogRequestPipe
+
+  get "/dashboard" do
+    render_text "The dashboard"
   end
 end
 ```
