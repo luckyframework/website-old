@@ -47,4 +47,10 @@ helpers do
       page.data.order
     end
   end
+
+  def next_guide_page
+    guides_pages.find do |page|
+      page.data.order > current_page.data.order
+    end
+  end
 end
