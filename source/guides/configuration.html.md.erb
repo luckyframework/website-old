@@ -7,11 +7,12 @@ intro: >
   code using Lucky and Habitat.
 ---
 
-## Configuring the Application
+## Default Lucky environments
 
-A lot of configuration changes based on the environment Lucky is running in. Development, test or production.
+Often times your configuration will change based on the environment Lucky is
+running in.
 
-The default environments in a Lucky app are
+The default environments in a Lucky app are:
 
 * `development`
 * `test`
@@ -19,26 +20,72 @@ The default environments in a Lucky app are
 
 ## Get the current environment
 
-`LuckyEnv.name` will return the currently running environment
+`Lucky::Env.name` will return the currently running environment
 
-Or, conditionally check the environment with `LuckyEnv.test?` , `LuckyEnv.development?` or `LuckyEnv.production?`
+You can also conditionally check the environment with `Lucky::Env.test?`,
+`Lucky::Env.development?`, or `Lucky::Env.production?`
 
 ## Set the current environment
 
 `LUCKY_ENV=environment_name` to set the environment. By default it is `development`
 
-## Adding more environments
+## Configuring Lucky
 
-Fill in later.
+By default there are some files in the `config/` folder that are used to configure Lucky.
+Look in `config/` to configure things like server port, database host and password, etc.
 
-## Where to put configuration
+For example, to change the database config, look in `config/database.cr`.
 
-All application configuration is found in the `config` folder
+## Where to put new settings
 
-For example, to change the database config, look in `config/database.cr`
+All application configuration is found in the `config/` folder.
+
+If you want to add additional config, put it in a new file in the `config/` folder.
 
 ## Configuring your own code
 
-Lucky ships with `Habitat`. A module you can use to configure your application in a type safe way.
+Lucky ships with `Habitat`. A module you can use to configure your application
+in a type safe way. For a thorough look at how to use Habitat, check out the
+[Habitat documentation](https://github.com/luckyframework/habitat#usage).
 
-Check out the Habitat documentation to see how to use it in your app
+As a quick example, if you had a class for handling payments through Stripe, you
+may want to include an API token. Here's how you would do that.
+
+```crystal
+# src/models/my_stripe_processor.cr
+class MyStripeProcessor
+  Habitat.create do
+    setting api_token : String
+  end
+end
+```
+
+Then you can configure it:
+
+```crystal
+# config/my_stripe_processor.cr
+MyStripeProcessor.configure do
+  settings.api_token = "super secret"
+end
+```
+
+In reality you would likely want to use an ENV variable for this. To do that,
+add a `.env` file to your project root and change your configuration to use the
+ENV variable:
+
+```
+# .env
+# this will be loaded in development when you call `lucky dev`
+STRIPE_API_TOKEN=123abc
+```
+
+And in your config file:
+
+```crystal
+# config/my_stripe_processor.cr
+MyStripeProcessor.configure do
+  settings.api_token = ENV.fetch("STRIPE_API_TOKEN")
+end
+```
+
+Remember to set the ENV variable in production and you'll be set!
