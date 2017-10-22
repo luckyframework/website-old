@@ -187,7 +187,7 @@ You can redirect using the `redirect` method
 class Users::Create < BaseAction
   action do
     redirect to: "/somewhere_else" # Default status is 302
-    redirect to: "/somewhere_else, status: 301 # Override status
+    redirect to: "/somewhere_else", status: 301 # Override status
   end
 end
 ```
