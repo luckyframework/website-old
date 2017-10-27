@@ -21,13 +21,21 @@ To get Lucky, you need to install these first
 
 Once the required dependencies are installed, set up Lucky for your system
 
-## On macOS:
+### On macOS
 
 Make sure you have home-brew, then run `brew install lucky`
 
-## On Linux machines:
+### On Linux machines
 
-* Do a bunch of other crap
+* `git clone` the CLI repo at https://github.com/luckyframework/cli
+* cd into the newly cloned directory
+* Run `crystal deps`
+* Run `crystal build src/lucky.cr --release --no-debug`
+* Move the generated `lucky` binary to your path. Most of the time you can move
+  it to `/usr/local/bin` and it should work.
+
+If you needed different steps, please help contribute to this section by
+[editing this page on GitHub](https://github.com/luckyframework/website/blob/master/source/guides/installing.html.md.erb).
 
 ## Start a New Project
 
