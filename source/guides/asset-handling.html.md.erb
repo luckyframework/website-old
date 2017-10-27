@@ -1,0 +1,123 @@
+---
+title: Asset Handling
+order: 5
+intro: >
+  Lucky handles JavaScript, CSS and image compilation for you out of the box.
+  It also reloads the browser automatically when files change, making building
+  websites more fluid.
+---
+
+## Asset handling with brunch
+
+By default Lucky comes set up with asset handling using brunch. Brunch is
+configured with Babel to make your JavaScript work with on most browsers, and
+PostCSS with a variety of plugins to make writing CSS easier.
+
+## Why brunch?
+
+Because it’s delicious.
+
+## Seriously, why brunch?
+
+Lucky uses brunch because it is very simple to configure, it’s fast, and it
+works well for a lot of apps.
+
+For a lot of people the default brunch setup will work out of the box, or with
+little configuration.
+
+If another asset handler is a better choice for you, feel free to use it! All
+Lucky needs is a json manifest of the files in `public/manifest.json`. Lucky
+uses that file to fingerprint assets in production.
+
+## Structuring your JavaScript
+
+Babel is set up so you can use new features of JavaScript. You can modify settings in the `.babelrc` file.
+
+The entry point for JavaScript is `static/js/app.js`. You'll see that by default
+it imports Turbolinks for fast page rendering and RailsUjs to handle AJAX, links
+with PUT and DELETE requests, and a few other things. Check the
+[Turbolinks](https://github.com/turbolinks/turbolinks) and
+[RailsUjs](https://github.com/rails/jquery-ujs/wiki) docs for more info.
+
+Note that RailsUjs is required if you are rendering HTML pages in Lucky. If you
+remove it, PUT and DELETE links will no longer work correctly.  You can safely
+remove Turoblinks without any problems if you don't want to use it.
+
+To add new JavaScript add files to `static/js/{filename}` and import them in `static/js/app.js`
+
+## Structuring your CSS
+
+The main css file is `static/css/app.css`.
+
+You can import other files by putting them in `static/css/*`, and importing them
+from `app.css`. For example, you might put a component in `static/css/components/btn.pcss`.
+Remember to end the file with `.pcss` so it's imported correctly.
+
+There are some common imports in `static/css/app.css` that you can uncomment when
+you add files to those folders.
+
+```scss
+/* This is the default file in static/css/app.css
+@import "normalize.css";
+
+/* Uncomment these when you add files to variables, mixins or components */
+
+/* @import "variables/**.pcss"; */
+/* @import "mixins/**.pcss"; */
+/* For example, add `static/css/components/btn.pcss` and uncomment the next line */
+/* @import "components/**.pcss"; */
+```
+
+Lucky comes with some helpful plugins to make CSS a pleasure to write:
+
+* [Lost grid system](http://lostgrid.org)
+* [Normalize.css](https://necolas.github.io/normalize.css/) for making styles consistent
+* [postcssnext](http://cssnext.io) for making CSS backwards compatible
+* [postcss-sass-color-functions](https://www.npmjs.com/package/postcss-sass-color-functions) for working with colors
+* [PreCSS](https://github.com/jonathantneal/precss) which gives you things like mixins, partial imports, etc.
+
+## Removing unwanted packages
+
+Lucky comes with a few JavaScript and CSS packages by default. If you want to
+remove the ones you don't want, run `yarn remove {package_name}`.
+
+If it is a CSS or JavaScript package you may also need to remove the imports from
+`static/css/app.css` or `static/js/app.js`.
+
+## Loading assets
+
+You can access assets by using the `asset` helper in pages.
+
+```crystal
+# in a page
+img src: asset("images/logo.png")
+```
+
+## Automatic reloading
+
+Lucky comes with [Browsersync](https://www.browsersync.io) hooked up. When you
+run `lucky dev` Browsersync will open a tab and automatically reload styles and
+JavaScript for you. When you change any application files the browser will
+reload once compilation has been successful.
+
+You can customize Browsersync in the `bs-config.js` file. You can see a list of
+[options for Browsersync](https://browsersync.io/docs/options).
+
+## Asset fingerprinting
+
+Fingerprinting means that every asset has a special string of characters
+appended to the filename so that the browser can cache the file safely. When an
+asset changes, the fingerprint changes and the browser will use the new version.
+
+Make sure to use the `asset` macro to get fingerprinted assets.
+
+Note that fingerprints are only calculated in production. In dev and test there
+is no fingerprint.
+
+## Deploying to production
+
+If you deploy to Heroku, then you won’t need to do anything. Lucky is already
+set up to build assets in production.
+
+If deploying outside Heroku, make sure to run `yarn run brunch -- build
+--production` *before* compiling your project.
