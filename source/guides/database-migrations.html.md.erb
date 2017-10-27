@@ -1,0 +1,55 @@
+---
+title: Setting Up &amp; Migrating the Database
+order: 6
+intro: >
+  Lucky can help drop the database, create the database, and manage creating and
+  altering tables using migrations.
+---
+
+## Create or drop the database
+
+First you’ll need to create a database using `lucky db.create`
+
+> The database name and settings can be changed in `config/database.cr`
+
+You can drop the database by calling `lucky db.drop`
+
+## Generating a new migration
+
+When you want to add or modify the database you can create a new migration using `lucky gen.migration {migration_name}`
+
+For example:
+
+`lucky gen.migration CreateUsers` or `lucky gen.migration AddAgeToUsers`
+
+## Creating and altering tables
+
+```crystal
+# created_at, updated_at, and id are added automatically
+create :users do
+  add name : String # will set the column to NULL FALSE
+  add age : Int32? # will allow NULL values because of the nilable type
+end
+```
+
+### Altering a table
+
+```crystal
+alter :users do
+  add phone : String
+  remove :age
+
+  # Sometimes you need things that LuckyMigrator doesn't support
+  execute "custom SQL"
+end
+```
+
+## Custom SQL
+
+Lucky only has methods for a small set of possible changes you can make to your tables.
+
+For things Lucky doesn’t support, you can use `execute` to run any sql you want.
+
+## Running and rolling back migrations
+
+`lucky db.migrate` and `lucky db.rollback`
