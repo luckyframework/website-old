@@ -1,0 +1,305 @@
+---
+title: Saving Data with Forms
+order: 7
+intro: >
+  Lucky saves records to the database using objects called forms. You can use
+  forms to validate, format, and save data in a type safe and flexible way.
+---
+
+> Expect forms in Lucky to change often while in alpha. We will be experimenting
+a lot with different APIs to try to keep the best balance between simplicity,
+maintainability, and catching bugs at compile time.
+
+# Setting up a form
+
+When you set up a model, a `{ModelName}::BaseForm` will be created so that you can inherit
+from it and customize validations, callbacks, and what fields are allowed to be
+set.
+
+We’ll be using the migration and model from the [Querying
+guide][/guides/querying-the-database.html]. Once you have that set up, let’s set
+up a form:
+
+```
+# src/queries/user_form.cr
+class UserForm < User::BaseForm
+end
+```
+
+> You can have more than one form object to save a record in different ways. For
+example, you might have a `RegistrationForm` that encrypts the user’s password
+and sends them a welcome email.
+
+## Allowing params to be saved
+
+By default you won’t be able to set any data from params. This is a security
+measure to make sure that parameters can only be set that you want to allow. For
+example, you might not want your users to be able to set an admin status through
+the `UserForm`.
+
+To allow a field, use the `allow` macro:
+
+```
+# src/forms/user_form.cr
+class UserForm < User::BaseForm
+  allow name
+end
+```
+
+Now you will be able to save the user’s name with form params.
+
+> Actions have a `params` method that returns a `LuckyWeb::Params` object. This is
+used by the form to get form params that are set by [submitting an HTML form](#submitting-an-html-form).
+
+```
+# inside of an action with some form params
+UserForm.save(params) do |form, user|
+ if user # the user was saved
+   puts "Hello #{user.name}"
+ else # the user was not saved
+   pp form.errors
+ end
+end
+```
+
+You pass a block that is run whether the save is successful or not.
+
+You will *always* receive the form object, but you will only get the saved user
+if there are no errors while saving. If there are errors, the user will be `nil`.
+
+### Updating records
+
+```
+# inside of an action with some form params
+user = UserQuery.new.first
+UserForm.update(user, params) do |form, updated_user|
+ # do something with the form and user
+end
+```
+
+## Using with HTML forms
+
+You can use forms in HTML like this:
+
+> Remember: you *must* `allow` a field in order to use it in a form. If it isn’t
+allowed you can't use it.
+
+```
+# src/pages/users/new_page.cr
+class Users::NewPage
+ needs user_form : UserForm
+
+ render do
+   render_user_form(@user_form)
+ end
+
+ private def render_user_form(f)
+   form_for Users::Create do
+     label_for f.name
+     text_input f.name
+     errors_for f.name
+
+     submit "Save User"
+   end
+ end
+end
+```
+
+> A private method `render_user_form` is extracted because it makes it easier to
+reference the form as `f`. It also makes it easier to see what a page looks like
+with a quick glance at the `render` method.
+
+```
+class Users::Create < BrowserAction
+  action do
+    # params will have the form params sent from the HTML form
+    UserForm.save(params) do |form, user|
+      if user # if the user was saved
+        redirect to: Home::Index
+      else
+        # re-render the NewPage so the user can correct their mistakes
+        render NewPage, user_form: form
+      end
+    end
+  end
+end
+```
+
+## Validating data
+
+Lucky comes with a few built in validations:
+
+* `validate_required` - ensures that a field is not `nil` or blank (e.g. `""`).
+* `validate_confirmation_of` - ensures that fields have the same values.
+
+> Note: non-nillable (required) fields automatically use
+`validate_required`. They will run after the `prepare` callback. This way data
+with missing fields will never be sent to the database.
+
+### Using validations
+
+You can use validations inside of the `prepare` callback:
+
+```
+class UserForm < User::BaseForm
+ allow name
+
+ def prepare
+   validate_required name
+ end
+end
+```
+
+The `prepare` method is called when you call `valid?` on the form or when you
+try to `save` or `update` it.
+
+## What are fields?
+
+First you’ll need to know that the fields defined in the form do not return the
+value of the field. They return a `LuckyRecord::Field` that contains the value
+of the field, the name of the field, the param value, and any errors the field
+has.
+
+This means that to access their value you must call `value` on the field.
+
+```
+class UserForm < User::BaseForm
+ def prepare
+   pp name.value
+ end
+end
+```
+
+## Custom validations
+
+You can easily create our own validations. For example, let’s say we want to
+make sure the user is old enough to use the site.
+
+```
+def prepare
+  validate_is_old_enough age
+end
+
+private def user_is_old_enough(field)
+  # The value might be `nil` so we need to use `try`.
+  field.value.try do |value|
+    if value < 13
+      field.add_error "must be at least 13 to use this site"
+    end
+  end
+end
+```
+
+## Callbacks
+
+> Callbacks often get a bad rap because they can quickly lead to hard to
+maintain code. One reason for this is situations arrive when you want callbacks
+to run only in certain conditions. In Lucky this is situation is quickly solved
+by adding a new form. For example you might have a `SignUpForm` for a `User`
+that encrypts the users password and sends a welcome email after saving. Or you
+might have an `AdminUserForm` that saves a user and sends an admin specific
+email.
+
+You can use the following callbacks:
+
+* `prepare`
+* `before_save`
+* `after_save(record : T)`
+
+To use them, define a method in the form. Note that the `after_save`
+callback needs to accept the newly created record. In this example, a `User`.
+
+```
+class UserForm < User::BaseForm
+  def after_save(newly_saved_user : User)
+    # do something with the user
+  end
+end
+```
+
+## Passing extra data to forms
+
+Sometimes you need to pass extra data to forms that aren't in the form params.
+For example you might want to pass the currently signed in user so that you know
+who created a record. Here's how you do this:
+
+```
+# This is a great way to pass in an associated record
+needs created_by : User
+```
+
+This will make it so that you must pass in `created_by` when saving or updating
+the `TaskForm`. It will make a getter available for `created_by` so you can use
+it in the form
+
+Here's how you might use the `created_by` value.
+
+```
+def prepare
+  created_by_id.value = created_by.id
+end
+```
+
+## Saving forms without a params object
+
+> This will be improved soon. Right now there is very little type safety when
+creating forms this way.
+
+This can be helpful if you’re saving something that doesn’t need an HTML form,
+like if you only need the params passed in the path.
+
+```
+UserForm.new(name: "Paul").save
+
+# for updates
+UserForm.new(existing_user, name: "David").update
+```
+
+## Sharing common validations, callbacks, etc.
+
+When using multiple forms for one model you often want to share a common set of
+validations, allowances, etc.
+
+You can do this with a module:
+
+```
+# src/forms/mixins/user_form_defaults
+module UserFormDefaults
+ macro included
+   allow name, age, email
+ end
+
+ def prepare
+   validate_old_enough_to_use_website
+ end
+end
+```
+
+Then in your form:
+
+```
+# src/forms/admin_user_form.cr
+class AdminUserForm < User::BaseForm
+ include UserFormDefaults
+ allow work_email
+
+ def prepare
+   super
+   admin.value = true
+ end
+end
+```
+
+## Ideas for naming
+
+In Lucky it is common to have multiple forms per model. This makes it easier to
+understand what a form does and makes them easier to change later without
+breaking other flows.
+
+Here are some ideas for naming:
+
+* `Csv{ModelName}Form` - great for forms that get data from a CSV. e.g. `CsvUserImportForm`
+* `SignUpForm` - for signing up a new user. Encrypt passwords, send welcom eemails, etc.
+* `SignInForm` - check that passwords match
+* `Admin{ModelName}Form` - sometimes admin can set more fields than a regular user. It’s
+  often a good idea to extract a new form for those cases.
