@@ -80,20 +80,26 @@ UserQuery.new.name(“Paul”)
 UserQuery.new.age(28)
 ```
 
-### Casting types
+### Parsing query params
 
-Lucky will accept the type defined in the model or a `String`. If you pass it a
-`String` then Lucky will attempt to cast it to the type.
+Lucky will accept the type defined in the model (e.g. `Int32` for `age`) or a
+`String`. If you pass it a `String` then Lucky will attempt to parse it and use
+the type defined for the field.
 
 For example:
 
 ```
-UserQuery.new.age("30") # will cast to an Int32 automatically
+# Lucky parses the string and use an Int32 in the query
+UserQuery.new.age("30")
+
+# Won't accept other types
+# Fails at compile time because you can't pass a Float
+UserQuery.new.age(30.0)
 ```
 
 > Note that this will change in the future but this is the current behavior. In
 the future only the defined type (`Int32` in this example) will work. You will
-then need to manually cast it. Don't worry though, Lucky will add some helpers
+then need to manually parse it. Don't worry though, Lucky will add some helpers
 to actions and the model to make this easy and maintainable.
 
 ## Ordering results
