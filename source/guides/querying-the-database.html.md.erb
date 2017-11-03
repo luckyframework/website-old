@@ -29,23 +29,13 @@ end
 
 ### Field types
 
-You can use the following types in your field. More will be supported later.
+You can use the following types in your fields.
 
-* `String`
-* `Int32`
-* `Email`
-* `Time`
-* `Bool`
-
-```
-table :my_table do
-  field joined_at : Time
-  # Email type uses a String column in the database.
-  # The difference is that it be downcased and stripped of whitespace
-  # when querying and saving
-  field email : Email
-end
-```
+* `String` - `text` column type. In Postgres [`text` can store strings of any length](https://stackoverflow.com/questions/4848964/postgresql-difference-between-text-and-varchar-character-varying)
+* `Int32` - `int` column type.
+* `Time` - `timestamp` column type.
+* `Float` - `decimal` column type.
+* `Bool` - `bool` column type.
 
 ## Querying the database
 
@@ -64,20 +54,19 @@ end
 `User::BaseQuery` has methods for querying and retrieving users such as:
 
 * `first`
-* `each`
-* `map`
 * `find`
+* All methods included by `Enumerable(T)`, such as `each` and `map`
 
 It also has methods for ordering and adding where clauses. These are generated
 based on the fields defined in your model.
 
 For the model we defined Lucky would generate:
 
-* created_at (automatically added)
-* updated_at (automatically added)
-* id (automatically added)
-* age
-* name
+* `created_at` (automatically added)
+* `updated_at` (automatically added)
+* `id` (automatically added)
+* `age`
+* `name`
 
 ## Where clauses
 
@@ -143,6 +132,7 @@ query.name(“Sally”)
 query.age(30)
 
 # The query will run once `each` is called
+# Results are not cached so a request will be made every time you call `each`
 query.each do |user|
   pp user.name
 end
