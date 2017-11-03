@@ -1,38 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title><%= current_page.data.title %> - Lucky</title>
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
-    <link rel="stylesheet"
-    href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/color-brewer.min.css">
-    <%= stylesheet_link_tag "main" %>
-
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
-  </head>
+  <%= partial "partials/layout_head", locals: {title: "#{current_page.data.title} - Lucky"} %>
   <body class="light-body">
     <main role="main">
-      <header class="header">
-        <div class="header__container">
-          <a href="/">
-            <%= image_tag "logo.svg", class: "header__logo" %>
-          </a>
-
-          <ul class="header-nav">
-            <li>
-              <a href="#">Why Lucky?</a>
-            </li>
-            <li>
-              <a href="/guides/installing.html">Guides</a>
-            </li>
-            <li>
-              <a href="#">GitHub</a>
-            </li>
-          </ul>
-        </div>
-      </header>
+      <%= partial "partials/header" %>
 
       <section class="page-intro">
         <div class="page-intro__container">
