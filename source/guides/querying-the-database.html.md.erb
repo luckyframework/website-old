@@ -105,7 +105,7 @@ You can chain where clauses and most other query methods.
 UserQuery.new.age.gt(28).age.desc_order
 ```
 
-### Running the query
+## Running the query
 
 The query does not actually hit the database until a method is called to fetch a
 result or iterate over results.
@@ -130,7 +130,7 @@ query.each do |user|
 end
 ```
 
-### Finding by ID
+## Finding by ID
 
 ```
 id = 1
@@ -167,7 +167,7 @@ do more advanced queries depending on the field type.
 ### Examples
 
 ```
-UserQuery.new.age.gte(18).name.lower.is("Sally")
+UserQuery.new.age.gte(18).name.lower.is("sally")
 ```
 
 ## Using scopes
@@ -207,7 +207,8 @@ class UserQuery < BaseModel
   end
 end
 
-UserQuery.new.find(1).company # Will return the company associated with the User
+# Will return the company associated with the User
+UserQuery.new.find(1).company
 ```
 
-> Coming soon: Preloading associations to avoid N+1 queries.
+> Preloading associations to avoid N+1 queries will be coming soon.
