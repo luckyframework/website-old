@@ -186,12 +186,15 @@ links and form to automatically set the path *and* HTTP method at the same time.
 
 You can redirect using the `redirect` method:
 
+> Note that for most methods you can pass the action directly if it does not
+need any params. You can see this in the first `redirect` example below.
+
 ```crystal
 class Users::Create < BrowserAction
   action do
     redirect to: Users::Index # Default status is 302
-    redirect to: Users::Show.with(id: "user_id") # If the action need params
-    redirect to: "/somewhere_else" # Redirect using a string
+    redirect to: Users::Show.with(id: "user_id") # If the action needs params
+    redirect to: "/somewhere_else" # Redirect using a string path
     redirect to: Users::Index, status: 301 # Override status
   end
 end
