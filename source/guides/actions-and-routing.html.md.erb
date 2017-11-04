@@ -17,7 +17,8 @@ You can route to an action by using `get`, `put`, `post` and `delete` macros, or
 [Lucky can figure it out for you](#automatically-generate-restful-routes).
 
 ```crystal
-class Users::Index < BaseAction
+# src/actions/users/index.cr
+class Users::Index < BrowserAction
   # GET requests to the /users path are handled by this action
   get "/users" do
     render_text "List of users goes here"
@@ -30,7 +31,8 @@ end
 Sometimes you want to name certain parts of the path and access them as parameters.
 
 ```crystal
-class Users::Show < BaseAction
+# src/actions/users/show.cr
+class Users::Show < BrowserAction
   get "/users/:my_user_id" do
     render_text "User with an id of #{my_user_id}"
   end
@@ -81,7 +83,7 @@ and the second part as one of the resourceful actions listed above.
 ```crystal
 # Users is the resource
 # Show is the RESTful action
-class Users::Show < BaseAction
+class Users::Show < BrowserAction
   # Same as:
   #   get "/users/:id"
   action do
@@ -100,7 +102,7 @@ name,  and the last part as one of the resourceful actions listed above.
 # Projects is the parent resource
 # Users is the nested resource
 # Index is the RESTful action
-class Projects::Users::Index < BaseAction
+class Projects::Users::Index < BrowserAction
   # Same as:
   #   get "/projects/:project_id/users"
   nested_action do
@@ -113,7 +115,7 @@ end
 
 ```crystal
 # Anything before the resource (in this case, `Projects`) will be treated as a namespace
-class Admin::Projects::Index < BaseAction
+class Admin::Projects::Index < BrowserAction
   # Same as:
   #   get "/admin/projects"
   action do
@@ -159,7 +161,7 @@ You can access them as class methods on the action itself. They are:
 * `path` - will return a string
 
 ```crystal
-class Projects::Users::Index < BaseAction
+class Projects::Users::Index < BrowserAction
   # Normally you would use `nested_action`
   # We'll use `get` here to make the example more clear
   get "projects/:project_id/users" do
@@ -184,7 +186,7 @@ links and form to automatically set the path *and* HTTP method at the same time.
 You can redirect using the `redirect` method
 
 ```crystal
-class Users::Create < BaseAction
+class Users::Create < BrowserAction
   action do
     redirect to: "/somewhere_else" # Default status is 302
     redirect to: "/somewhere_else", status: 301 # Override status
@@ -199,7 +201,7 @@ do this, you can use pipes. There is a `before` and `after` macro for running pi
 
 ```
 # src/actions/admin/users/index.cr
-class Admin::Users::Index < BaseAction
+class Admin::Users::Index < BrowserAction
   before require_admin
 
   get "/foo" do
@@ -232,7 +234,7 @@ new type of action. Let's do that for our admin example above.
 
 ```crystal
 # src/actions/admin_action.cr
-abstract class AdminAction < BaseAction
+abstract class AdminAction < BrowserAction
   before require_admin
 
   private def require_admin
@@ -285,7 +287,7 @@ We can then include it in the actions that need it:
 
 ```crystal
 # src/actions/dashboard/show.cr
-class Dashboard::Show < BaseAction
+class Dashboard::Show < BrowserAction
   include LogRequestPipe
 
   get "/dashboard" do
@@ -299,7 +301,7 @@ end
 You can set and access cookies in Lucky like this:
 
 ```
-class FooAction < BaseAction
+class FooAction < BrowserAction
   get "/foo" do
     cookies["name"] = "Sally"
     cookies["name"] # Will return "Sally"
