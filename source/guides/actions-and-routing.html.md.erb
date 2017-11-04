@@ -176,8 +176,9 @@ You can then call these methods
 * `Projects::Users::Index.path(project_id: "my_project_id")` and it will return ->
   `"/projects/my_project_id/users"`
 * `Projects::Users::Index.with(project_id: "my_project_id")` and it will return a
-  `LuckyWeb::Response` whose `#path` method returns
-  `"/projects/my_project_id/users"` and `#method` method return `"GET"`
+  `LuckyWeb::RouteHelper` whose `#path` method returns
+  `"/projects/my_project_id/users"` and `#method` method return `"GET"`. This
+  is what you'll usually use for generating links, submitting forms, and redirecting.
 
 We'll talk about this more in the Pages guide. You can use the route helper with
 links and form to automatically set the path *and* HTTP method at the same time.
