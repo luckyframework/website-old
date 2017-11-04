@@ -158,6 +158,7 @@ You can access them as class methods on the action itself. They are:
 
 * `route` - will return a `LuckyWeb::RouteHelper` object that contains both the
   path, and the method HTTP method
+* `with` - an alias for `route` that is used for passing paramaters
 * `path` - will return a string
 
 ```crystal
@@ -172,9 +173,9 @@ end
 
 You can then call these methods
 
-* `Projects::Users::Index.path("my_project_id")` and it will return ->
+* `Projects::Users::Index.path(project_id: "my_project_id")` and it will return ->
   `"/projects/my_project_id/users"`
-* `Projects::Users::Index.route("my_project_id")` and it will return a
+* `Projects::Users::Index.with(project_id: "my_project_id")` and it will return a
   `LuckyWeb::Response` whose `#path` method returns
   `"/projects/my_project_id/users"` and `#method` method return `"GET"`
 
@@ -183,13 +184,15 @@ links and form to automatically set the path *and* HTTP method at the same time.
 
 ## Redirecting
 
-You can redirect using the `redirect` method
+You can redirect using the `redirect` method:
 
 ```crystal
 class Users::Create < BrowserAction
   action do
-    redirect to: "/somewhere_else" # Default status is 302
-    redirect to: "/somewhere_else", status: 301 # Override status
+    redirect to: Users::Index # Default status is 302
+    redirect to: Users::Show.with(id: "user_id") # If the action need params
+    redirect to: "/somewhere_else" # Redirect using a string
+    redirect to: Users::Index, status: 301 # Override status
   end
 end
 ```
@@ -278,7 +281,7 @@ module LogRequestPipe
   end
 
   private def log_request_path
-    MyCustomLogger.log(context.request.path)
+    MyCustomLogger.log(request.path)
   end
 end
 ```
