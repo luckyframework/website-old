@@ -225,20 +225,22 @@ who created a record. Here's how you do this:
 
 ```
 # This is a great way to pass in an associated record
-needs created_by : User
+class UserForm < User::BaseForm
+  needs created_by : User
+
+  def prepare
+    created_by_id.value = created_by.id
+  end
+end
+
+UserForm.save(params, created_by: a_user) do |form, user|
+  # do something
+end
 ```
 
 This will make it so that you must pass in `created_by` when saving or updating
 the `TaskForm`. It will make a getter available for `created_by` so you can use
-it in the form
-
-Here's how you might use the `created_by` value.
-
-```
-def prepare
-  created_by_id.value = created_by.id
-end
-```
+it in the form, like in the `prepare` method shown in the example.
 
 ## Saving forms without a params object
 
