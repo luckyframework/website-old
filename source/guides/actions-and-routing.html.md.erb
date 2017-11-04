@@ -26,6 +26,29 @@ class Users::Index < BrowserAction
 end
 ```
 
+## Root page
+
+By default Lucky generates a `Home::Index` action that handles the root path `"/"`.
+This is the action that shows you the Lucky logo when you first run `lucky dev`.
+
+Change `Home::Index` to redirect the user to whatever action you want:
+
+```
+# src/actions/home/index.cr
+class Home::Index < BrowserAction
+  get "/" do
+    # Redirect to an action, in this case, `Users::Index`
+    redirect to: Users::Index
+  end
+end
+```
+
+> It may seem strange to redirect as soon as the users visits "/", but it comes
+in handy later on. It makes it easy to redirect to different places depending on
+who the user is. For example, if a user is an admin you may want to redirect
+them to the `Admin::Dashboard::Show` action, and if they're a regular user you
+may want to take them to the regular dashboard at `Dashboard::Show`.
+
 ## Path Parameters
 
 Sometimes you want to name certain parts of the path and access them as parameters.
