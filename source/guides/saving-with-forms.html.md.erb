@@ -86,7 +86,7 @@ allowed you can't use it.
 
 ```
 # src/pages/users/new_page.cr
-class Users::NewPage
+class Users::NewPage < MainPage
  needs user_form : UserForm
 
  render do
