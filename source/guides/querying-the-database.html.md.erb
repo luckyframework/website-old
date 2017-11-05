@@ -18,7 +18,7 @@ Let's add the model for it:
 ```
 # src/models/user.cr
 class User < BaseModel
-  table users do
+  table :users do
     field name : String
     field age : Int32?
   end
