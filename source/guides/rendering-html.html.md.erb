@@ -135,7 +135,7 @@ link "Show user", to: Users::Show.with("user_id"), class: "some-html-class"
 link "List of users", to: Users::Index
 ```
 
-When you pass a route helper like we did with `Users::Show.with("user_id")`, the
+When you pass a route helper as we did with `Users::Show.with("user_id")`, the
 link helper automatically sets the path *and* the correct HTTP verb.
 
 Since the HTTP verb (`GET`, `POST`, `PUT`, etc.) is automatically used by `link`
@@ -180,7 +180,7 @@ end
 ```
 div "email" do
   # Use the `raw` method to render unescaped text
-  raw "&middot;" # Render a middot HTML entitiy
+  raw "&middot;" # Render a middot HTML entity
 end
 ```
 
@@ -318,7 +318,7 @@ end
 
 # src/pages/page_with_sidebar.cr
 abstract class PageWithSidebar < BasePage
-  # The `inherited` hook is built in to Crystal
+  # The `inherited` hook is built into Crystal
   # https://crystal-lang.org/docs/syntax_and_semantics/macros/hooks.html
   macro inherited
     # Tells Lucky to use the SidebarLayout when rendering
