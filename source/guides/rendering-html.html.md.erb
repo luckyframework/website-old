@@ -29,17 +29,17 @@ appended. So if you used `render` in `MyCoolAction`, Lucky would try to render
 You could also tell render exactly which page to render like this:
 
 ```
-render Users::IndexPage, user_name: ["Paul", "Sally", "Jane"]
+render Users::IndexPage, user_names: ["Paul", "Sally", "Jane"]
 ```
 
 This is helpful when you want to render a page used by multiple actions. For
-example, you might have an action for handling user searches that users the
+example, you might have an action for handling user searches that uses the
 `Users::IndexPage`:
 
 ```crystal
 class UserSearches::Show < BaseAction
   get "/user_searches" do
-    render Users::IndexPage, user_name: ["Jane"]
+    render Users::IndexPage, user_names: ["Jane"]
   end
 end
 ```
