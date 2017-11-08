@@ -62,7 +62,7 @@ class Users::Show < BrowserAction
 end
 ```
 
-When you use you start a section of the path with `:` it will generate a param method for your.
+When you start a section of the path with `:` it will generate a param method for your.
 
 In this case anything you pass in the part of the URL for `:my_user_id` will be
 available in the `my_user_id` method. So in this example if you visited
@@ -71,7 +71,7 @@ available in the `my_user_id` method. So in this example if you visited
 ### You can use as many parameters as you want
 
 Every named parameter will have a method generated for it that so that you can
-access the value. You can have as many as you want
+access the value. You can have as many as you want.
 
 For example, `delete "/projects/:project_id/tasks/:id"` would have a
 `project_id` and `id` method generated on the class for accessing the named
