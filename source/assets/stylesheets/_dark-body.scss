@@ -1,0 +1,10 @@
+.dark-body {
+  background-color: $dark-navy;
+  color: $light-gray;
+  border-top: 3px solid $medium-green;
+
+  .header {
+    background-image: none;
+    background-color: #021E37;
+  }
+}

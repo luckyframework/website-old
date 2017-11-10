@@ -16,18 +16,13 @@
 @import "page-intro";
 @import "intro-card";
 @import "hero-container";
+@import "dark-body";
 @import "text-container";
 @import "syntax-colors";
 @import "helpers";
 
 body {
   font-family: 'Lato', sans-serif;
-}
-
-.dark-body {
-  background-color: $dark-navy;
-  color: $light-gray;
-  border-top: 3px solid $bright-green;
 }
 
 .light-body {
