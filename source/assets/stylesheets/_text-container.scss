@@ -47,6 +47,11 @@
     background: #fff;
     border-radius: 4px;
     padding: 2px 4px;
+    color: $dark-navy;
+  }
+
+  blockquote code {
+    background-color: $lighter-gray;
   }
 
   pre, blockquote {
