@@ -1,0 +1,148 @@
+---
+layout: with-intro
+title: Why Lucky?
+intro: >
+  Lucky leverages the type system and meta programming in Crystal to help you
+  create web applications quickly, while maintaining performance and catching
+  subtle bugs that you’d normally miss.
+---
+
+## Type safety without the boilerplate
+
+Type is more annoying than useful if it takes too long to understand and write,
+or if the compiler doesn’t catch bugs.
+
+Lucky does it’s best to make it easy to write type safe html, database queries,
+routes and more. It generates type safe code for you, and makes things type safe
+that most frameworks can’t or don’t. (Link to actions and routes)
+
+For example, when you define model it will create some classes and methods for
+querying, creating, and updating records in a type safe way. If you write a
+query with a mistyped column name or with the wrong type, Crystal will let you
+know. If you try to use a field that doesn’t exist in an HTML form, it’ll let
+you know.
+
+Instead of nil errors in production, Crystal and Lucky help you know about nil
+errors at compile time, before your customers ever see them. Lucky has designed
+its router, HTML, actions, params, and forms so that Crystal can catch as many
+`nil` errors as possible.
+
+[screenshot of it catching a nil error, then show how other methods don’t]
+
+## Send content to users FAST
+
+When you first start a Lucky project you’ll notice that responses are returned
+in microseconds. Lucky helps you spend less time fixing performance issues, and
+more time delighting your customers with fast applications. Less caching. More
+speed.
+
+[screenshot of rendering a page in a few microseconds]
+
+## Spend more time writing software, instead of writing tests and debugging
+
+Lucky and Crystal help you find errors before they reach your customers. This
+helps you write fewer tests, and spend less time figuring out why something
+isn’t working.  Your customers are going to love Lucky.
+
+Lucky is built around helping you write features quickly, and reliably. Type
+safe database queries, rock solid routing, type safe forms and validations, and
+more.
+
+## Say goodbye to nasty nil errors
+
+## Type safe database queries
+
+Lucky will help catch bad queries at compile time. Everything is chainable and
+the methods you can use are determined by the type. So strings can use `ilike`
+and `lower`, but if you try to use those on a string column, Lucky will tell you
+at compile time that it won’t work.
+
+```
+# Show JS and Ruby example and how it wouldn't be caught
+# Users that are 30 or older, are admins and whose email ends with thoughtbot.com
+UserQuery.new.age.gte(30).admin(true).email.ilike("%thoughtbot.com")
+```
+
+## Catch missing assets at compile time
+
+Have you ever used the wrong extension for an asset? Maybe you’ve used the wrong
+folder or misspelled the filename? Instead of wondering why an image or other
+asset isn’t on the page, Lucky will catch it for you at compile time. It checks
+a list of all available assets and will even suggest the right path if you have
+a typo.
+
+[Show “did you mean images/logo.jpeg”]
+
+
+## Reliable and future proof configuration
+
+Lucky will fail to to start if you forget a required configuration option, and
+will tell you exactly which one is missing.
+
+It will also fail to compile if one of your dependencies changes its
+configuration options, and let you know what is missing.
+
+## Update dependencies with confidence
+
+Updating your dependencies will always be difficult, but Crystal makes it a bit
+easier. If a method name changes, or it’s arguments are different from the
+previous version, Crystal will catch it. This makes it much safer to update
+dependencies without introducing bugs.
+
+## Friendly to new team members
+
+Lucky generates a bin/setup script so it’s easy to get started with your Lucky
+project. On top of that Lucky uses Crystal’s type safety to its fullest so that
+new team members can make changes without worrying so much about breaking the
+app.
+
+## Powerful HTML layouts and components
+
+Lucky uses Crystal classes and methods to generate HTML. It may sound crazy at
+first, but the advantages are numerous.
+
+Never accidentally print nil to the page, extract and share partials using
+regular methods. Easily read an entire page by looking at just the render
+method. Text is automatically escaped for security. And it’s all type safe. That
+means no more unmatched closing tags, never sending the wrong parameters to a
+partial.
+
+## Fault proof HTTP verbs
+
+Get, put, post, delete. REST can be a bit unwieldy at times. It’s easy to use
+the right path and wrong verb and then wonder why the router can’t find a
+matching route. Lucky makes this easy by setting both the path and HTTP method
+when generating links, forms and redirects.
+
+```
+# This will set the path and the DELETE HTTP method
+link "Delete", to: Tasks::Delete.with(id: task.id)
+```
+
+## Built in live reloading with Browsersync
+
+CSS and JS reloads almost instantly, and every change to source code is
+automatically recompiled and the page is refreshed. On top of that, Browsersync
+lets you connect through a proxy to easily test pages on your mobile device, or
+simulate slow connections to make sure all your customers are happy, even on
+slow connections.
+
+## Never let an unhandled form param through
+
+Lucky makes sure only allowed parameters are saved to the database. It even
+catches issues at compile time when you try to add a form input for a parameter
+that isn’t allowed.
+
+```
+# Create a form that is used to save a user
+class RegistrationForm < User::BaseForm
+ allow name, email
+end
+
+# Create an HTML form
+form = RegistrationForm.new
+form_for Registrations::Create do
+ # Will fail to compile because this field is not allowed
+ text_input form.company_name
+end
+```
