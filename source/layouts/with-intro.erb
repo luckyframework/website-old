@@ -6,9 +6,9 @@
       <%= partial "partials/header" %>
 
       <%= partial "partials/page-intro", locals: {
-        heading: partial("partials/guide_heading"),
+        heading: current_page.data.title,
         text: current_page.data.intro,
-        card: partial("partials/guide_table_of_contents") } %>
+        card: table_of_contents(current_page) } %>
 
       <section class="text-container text-container--with-table-of-contents">
         <%= yield %>
