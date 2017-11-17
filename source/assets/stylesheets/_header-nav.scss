@@ -2,6 +2,10 @@
   display: flex;
   flex-direction: row;
 
+  li {
+    margin-left: 44px;
+  }
+
   a {
     text-decoration: none;
     color: #fff;
@@ -9,7 +13,6 @@
     display: inline-block;
     font-size: 14px;
     letter-spacing: 1.7px;
-    margin-left: 44px;
 
     &:hover {
       text-decoration: underline;
