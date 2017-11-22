@@ -1,12 +1,25 @@
-.btn-primary {
-  border-radius: 5px;
+.btn {
+  border-radius: 500px;
   background: $medium-green;
   text-transform: uppercase;
   font-weight: bold;
   height: $btn-height;
   font-size: 14px;
+  color: #fff;
+  padding: 15px 30px;
+  text-decoration: none;
+  letter-spacing: 1px;
 
   &:hover {
     background: darken($medium-green, 10%);
+    color: #fff;
+  }
+
+  &--blue {
+    background: $lucky-blue;
+
+    &:hover {
+      background: darken($lucky-blue, 10%);
+    }
   }
 }
