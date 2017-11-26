@@ -14,7 +14,7 @@ Let's say we have an action and we want to render all of our user's names:
 
 ```crystal
 # in src/actions/users/index.cr
-class Users::Index < BaseAction
+class Users::Index < BrowserAction
   action do
     # Renders the Users::IndexPage by default
     render user_names: ["Paul", "Sally", "Jane"]
@@ -37,7 +37,7 @@ example, you might have an action for handling user searches that uses the
 `Users::IndexPage`:
 
 ```crystal
-class UserSearches::Show < BaseAction
+class UserSearches::Show < BrowserAction
   get "/user_searches" do
     render Users::IndexPage, user_names: ["Jane"]
   end
