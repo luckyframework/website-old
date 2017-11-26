@@ -53,7 +53,7 @@ Let's create the page for our `Users::Index` action.
 class Users::IndexPage < MainLayout
   needs user_names : Array(String)
 
-  def render
+  def inner
     ul class: "my-user-list" do
       @user_names.each do |name|
         li name, class: "user-name"
@@ -108,7 +108,7 @@ h1 "My cool test", class: "app-header"
 Order and nesting works about the same as how you would write normal HTML
 
 ```crystal
-def render
+def inner
   # You can have a list
   ul do
     li "List item"
@@ -191,7 +191,7 @@ methods.
 
 ```crystal
 class Users::ShowPage < MainLayout
-  def render
+  def inner
     render_user_header
   end
 
@@ -222,7 +222,7 @@ end
 class Users::ShowPage < MainLayout
   include Users::Components
 
-  def render
+  def inner
     render_user_header
   end
 end
