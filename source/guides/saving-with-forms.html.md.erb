@@ -89,7 +89,7 @@ allowed you can't use it.
 class Users::NewPage < MainLayout
  needs user_form : UserForm
 
- def render
+ def inner
    render_user_form(@user_form)
  end
 
