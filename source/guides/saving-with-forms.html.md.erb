@@ -247,6 +247,33 @@ it in the form, like in the `prepare` method shown in the example.
 > Note that `current_user` is not required when calling `UserForm.new` so, `current_user`
 can be `nil` in the form. That's why we needed to use `try` in the `prepare` method.
 
+### Declaring needs only for update or create
+
+Sometimes you only want to pass extra data when creating or updating a record.
+You can use the `on` option to do that:
+
+```
+class CommentForm < Comment::BaseForm
+  needs author : User, on: :create # or `on: :update`
+
+  def prepare
+    author.try do |user|
+      authored_by_id.value = user.id
+    end
+  end
+end
+
+# You must pass an author when creating
+CommentForm.create(params, author: a_user) do |form, user|
+  # do something
+end
+
+# But you can't when you are updating
+CommentForm.update(comment, params) do |form, user|
+  # do something
+end
+```
+
 ## Saving forms without a params object
 
 > This will be improved soon. Right now there is very little type safety when
