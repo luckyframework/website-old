@@ -199,7 +199,7 @@ class Users::ShowPage < MainLayout
   private def render_user_header
     div class: "user-header" do
       h1 "Users"
-      a "Back to users index", href: Users::Index.path
+      link "Back to users index", to: Users::Index
     end
   end
 end
@@ -230,37 +230,40 @@ end
 
 ## Layouts
 
-There is an automatically generated layout called `MainLayout`. Pages are
-rendered within this layout if you use `MainLayout`. Pages can also define methods
-that the layout can call so that pages can render things in the layout.
+There is an automatically generated layout called `MainLayout`. Pages inherit
+from `MainLayout` or another layout you decide to create. Layouts can also
+declare [abstract
+methods](https://crystal-lang.org/docs/syntax_and_semantics/virtual_and_abstract_types.html)
+or use
+[`responds_to?`](https://crystal-lang.org/docs/syntax_and_semantics/if_varresponds_to.html)
+for more advanced page layouts.
 
 ### Rendering page specific content in the layout
 
-You can define methods on the page so the layout can render them. An example of
-this is found in `MainLayout`:
-
-```
-# src/pages/main_layout.cr
-def page_title
-  # content of the method
-end
-```
-
-This makes it so that every page that inherits from `MainLayout` has a `page_title`
-method.
-
-The layout calls this method to get the page's title
+Let's start with a quick example. In newly generated Lucky projects the
+`MainLayout` has a `render` method that calls `page_title`.
 
 ```
 # in src/pages/main_layout.cr
-title @page.page_title
+def render
+  # Other head, html and body code ommitted for brevity
+  title page_title
+end
+
+def page_title
+  "Welcome to Lucky"
+end
 ```
+
+This makes it so that every page that inherits from `MainLayout` has a page title
+of "Welcome to Lucky".
 
 So to set a page specific title, do this:
 
 ```
 # src/pages/users/index_page.cr
 class Users::IndexPage < MainLayout
+  # Override the page_title method defined by MainLayout
   def page_title
     "List of users"
   end
@@ -272,105 +275,140 @@ This technique can be used to render other types of content, like a sidebar
 
 ```
 # src/pages/main_layout.cr in the `render` method
-div class: "sidebar" do
-  @page.sidebar
+def render
+  # Other layout code left out for brevity
+  div class: "sidebar" do
+    # Now pages can render content in a sidebar
+    render_sidebar
+  end
 end
 
-# src/pages/main_layout.cr
 # This makes it so that every page needs to implement the sidebar method
-abstract def sidebar
+# https://crystal-lang.org/docs/syntax_and_semantics/virtual_and_abstract_types.html
+abstract def render_sidebar
 ```
 
-## Extracting different base pages and layouts
+Then in a page:
 
-Pages look different, they have different layouts. In the following example,
-let's assume some pages have a sidebar while other pages do not. There are a
-couple ways to extract a base layout for pages that include a sidebar.
+```crystal
+class Users::IndexPage < MainLayout
+  def inner
+    text "Rendering something in the main part of the layout"
+  end
 
-### Set up separate pages and layouts
+  def render_sidebar
+    text "This is content for the sidebar"
+  end
+end
+```
 
-Instead of adding a `sidebar` method to your `MainLayout` and `MainLayout` you
-might extract a `PageWithSidebar` and `SidebarLayout`.
+## Adding new layouts
+
+Different pages of apps have different looking layouts. In the following
+example, let's add a simple layout for a authorization pages like sign up, sign
+in, and resetting passwords. This layout only has a form and a title for the
+form.
+
+### Set up a new layout
 
 ```
-# src/pages/sidebar_layout.cr
-class SidebarLayout
-  include LuckyWeb::Page
-  include LuckyWeb::Layout
+# src/pages/auth_layout.cr
+abstract class AuthLayout
+  include Lucky::HTMLPage
+  # These are automatically generated components used by most layouts
+  # They allow you to render flash messages and field errors
+  include Shared::FieldErrorsComponent
+  include Shared::FlashComponent
 
-  # Tells Lucky that pages using this layout must inherit from PageWithSidebar
-  @page : PageWithSidebar
+  needs flash : Lucky::Flash::Store
+
+  # Tells Crystal to ensure all pages define these methods
+  abstract def form_title
+  abstract def inner
 
   def render
-    # `html`, `head` and `body` tags were removed for brevity
+    html_doctype
 
-    body do
-      # Render the main page contents
-      @page.render_inner
+    html lang: "en" do
+      head do
+        utf8_charset
+        title page_title
+        css_link asset("css/app.css")
+        js_link asset("js/app.js")
+      end
 
-      div class: "sidebar" do
-        # Render the sidebar
-        @page.sidebar
+      body do
+        render_flash # Made available by including Shared::FlashComponent
+        div class: "auth-wrapper" do
+          # Render the form title
+          h1 form_title, class: "auth-wrapper-title"
+          div class: "auth-wrapper-form" do
+            # Render the main form
+            inner
+          end
+        end
       end
     end
   end
+
+  def page_title
+    "Welcome to my app"
+  end
 end
 
-# src/pages/page_with_sidebar.cr
-abstract class PageWithSidebar < BasePage
-  # The `inherited` hook is built into Crystal
-  # https://crystal-lang.org/docs/syntax_and_semantics/macros/hooks.html
-  macro inherited
-    # Tells Lucky to use the SidebarLayout when rendering
-    layout SidebarLayout
+# Use the new AuthLayout
+# src/pages/sign_ins/new_page.cr
+class SignIns::NewPage < AuthLayout
+  def form_title
+    "Please sign in to my app"
   end
 
-  # Force pages to implement a sidebar method
-  abstract def sidebar
-end
-
-# Use the new PageWithSidebar
-# src/pages/dashboard/show_page.cr
-class Dashboard::ShowPage < PageWithSidebar
-  def render
-    h1 "My Dashboard"
-  end
-
-  def sidebar
-    ul do
-      li "This is an item in the sidebar"
-    end
+  def inner
+    text "Render for signing in here"
   end
 end
 ```
 
 > Common layout components could be extracted to
-src/components/layouts/components.cr. See ["Extract partials and shared code"](#extract-partials-and-shared-code)
+src/components/shared/{component_name}.cr. See ["Extract partials and shared code"](#extract-partials-and-shared-code)
 
-### Using `responds_to` in the layout
+### Using `responds_to?` in layouts
 
-> This should be used sparingly because it makes it less clear what all pages
-can do. This is shown as an example because it might be helpful if a layout
-only has one or two instances where it needs to conditionally render something
-from a page.
+Sometimes pages have almost the same layout, but have just one or two parts
+that are optional. You can handle this with
+[`responds_to?`](https://crystal-lang.org/docs/syntax_and_semantics/if_varresponds_to.html)
+
+> `responds_to?` should be used when pages mostly look the same, but have just
+minor changes to the layout that happen on some pages. If pages look
+significantly different, consider extracting a new layout class instead.
 
 ```
-# Makes it so that some pages can have sidebar and others can leave it out.
-# In a layouts `render` method
-if @page.responds_to?(:sidebar)
-  @page.sidebar
+# Put this in a layout's `render` method
+# This makes it so that pages can have an optional `help_message`.
+if responds_to?(:help_message)
+  # Use `self.help_message` or Crystal will not be able to tell it is a method call.
+  para self.help_message, class: "help-text"
+end
+
+# In a page with a help message
+class Admin::Users::IndexPage < MainLayout
+  def help_message
+    "Click the 'export' button to export a CSV of all users"
+  end
 end
 ```
 
 ## Sharing data used by all pages
 
-Let's say you want to show the currently signed user on every page. It
-would be a pain to have to type `needs current_user : User` in every page object and
-`expose current_user: find_the_user` in every action. Lucky's got you covered.
+Let's say you want to show the currently signed user on every page in a layout.
+It would be a pain to have to type `needs current_user : User` in every page
+and `expose current_user: find_the_user` in every action. Lucky's got you
+covered.
 
 ### Example using `needs` and `expose`
 
-You can add `needs` to the `MainLayout` if every page needs something.
+You can add `needs` to the `MainLayout` if every page that uses that layout
+needs something.
 
 For actions, we have an `expose` macro that makes it easy to automatically pass
 data to rendered pages.
