@@ -226,21 +226,26 @@ who created a record. Here's how you do this:
 ```
 # This is a great way to pass in an associated record
 class UserForm < User::BaseForm
-  needs created_by : User
+  needs current_user : User
 
   def prepare
-    created_by_id.value = created_by.id
+    current_user.try do |user|
+      modified_by_id.value = user.id
+    end
   end
 end
 
-UserForm.create(params, created_by: a_user) do |form, user|
+UserForm.create(params, current_user: a_user) do |form, user|
   # do something
 end
 ```
 
-This will make it so that you must pass in `created_by` when saving or updating
-the `UserForm`. It will make a getter available for `created_by` so you can use
+This will make it so that you must pass in `current_user` when creating or updating
+the `UserForm`. It will make a getter available for `current_user` so you can use
 it in the form, like in the `prepare` method shown in the example.
+
+> Note that `current_user` is not required when calling `UserForm.new` so, `current_user`
+can be `nil` in the form. That's why we needed to use `try` in the `prepare` method.
 
 ## Saving forms without a params object
 
