@@ -303,10 +303,36 @@ class Users::IndexPage < MainLayout
 end
 ```
 
+### Using `responds_to?` in layouts
+
+Sometimes pages have almost the same layout, but have just one or two parts
+that are optional. You can handle this with
+[`responds_to?`](https://crystal-lang.org/docs/syntax_and_semantics/if_varresponds_to.html)
+
+> `responds_to?` should be used when pages mostly look the same, but have just
+minor changes to the layout that happen on some pages. If pages look
+significantly different, consider extracting a new layout class instead.
+
+```
+# Put this in a layout's `render` method
+# This makes it so that pages can have an optional `help_message`.
+if responds_to?(:help_message)
+  # Use `self.help_message` or Crystal will not be able to tell it is a method call.
+  para self.help_message, class: "help-text"
+end
+
+# In a page with a help message
+class Admin::Users::IndexPage < MainLayout
+  def help_message
+    "Click the 'export' button to export a CSV of all users"
+  end
+end
+```
+
 ## Adding new layouts
 
 Different pages of apps have different looking layouts. In the following
-example, let's add a simple layout for a authorization pages like sign up, sign
+example, let's add a simple layout for authorization pages such as sign up, sign
 in, and resetting passwords. This layout only has a form and a title for the
 form.
 
@@ -318,6 +344,7 @@ abstract class AuthLayout
   include Lucky::HTMLPage
   # These are automatically generated components used by most layouts
   # They allow you to render flash messages and field errors
+  # You can view & edit them in src/components/shared
   include Shared::FieldErrorsComponent
   include Shared::FlashComponent
 
@@ -373,37 +400,11 @@ end
 > Common layout components could be extracted to
 src/components/shared/{component_name}.cr. See ["Extract partials and shared code"](#extract-partials-and-shared-code)
 
-### Using `responds_to?` in layouts
-
-Sometimes pages have almost the same layout, but have just one or two parts
-that are optional. You can handle this with
-[`responds_to?`](https://crystal-lang.org/docs/syntax_and_semantics/if_varresponds_to.html)
-
-> `responds_to?` should be used when pages mostly look the same, but have just
-minor changes to the layout that happen on some pages. If pages look
-significantly different, consider extracting a new layout class instead.
-
-```
-# Put this in a layout's `render` method
-# This makes it so that pages can have an optional `help_message`.
-if responds_to?(:help_message)
-  # Use `self.help_message` or Crystal will not be able to tell it is a method call.
-  para self.help_message, class: "help-text"
-end
-
-# In a page with a help message
-class Admin::Users::IndexPage < MainLayout
-  def help_message
-    "Click the 'export' button to export a CSV of all users"
-  end
-end
-```
-
 ## Sharing data used by all pages
 
-Let's say you want to show the currently signed user on every page in a layout.
-It would be a pain to have to type `needs current_user : User` in every page
-and `expose current_user: find_the_user` in every action. Lucky's got you
+Let's say you want to show the currently signed in user on every page in a
+layout. It would be a pain to have to type `needs current_user : User` in every
+page and `expose current_user: find_the_user` in every action. Lucky's got you
 covered.
 
 ### Example using `needs` and `expose`
@@ -457,7 +458,7 @@ class Users::Index < BrowserAction
   action do
     # Lucky will pass the result of `current_user_name` to the rendered page
     # since we exposed the `current_user_name` in `BrowserAction`.
-    # If we hadn't exposed it we'd do: `render current_user_name: current_user_name`
+    # If we hadn't exposed it we'd have to write: `render current_user_name: current_user_name`
     render
   end
 end
