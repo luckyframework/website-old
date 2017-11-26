@@ -50,7 +50,7 @@ Let's create the page for our `Users::Index` action.
 
 ```crystal
 # in src/pages/users/index_page.cr
-class Users::IndexPage < MainPage
+class Users::IndexPage < MainLayout
   needs user_names : Array(String)
 
   def render
@@ -190,7 +190,7 @@ Extracting code for reuse or clarity is easy since pages are made of classes and
 methods.
 
 ```crystal
-class Users::ShowPage < MainPage
+class Users::ShowPage < MainLayout
   def render
     render_user_header
   end
@@ -219,7 +219,7 @@ module Users::Components
 end
 
 # and use it in the view
-class Users::ShowPage < MainPage
+class Users::ShowPage < MainLayout
   include Users::Components
 
   def render
@@ -231,22 +231,22 @@ end
 ## Layouts
 
 There is an automatically generated layout called `MainLayout`. Pages are
-rendered within this layout if you use `MainPage`. Pages can also define methods
+rendered within this layout if you use `MainLayout`. Pages can also define methods
 that the layout can call so that pages can render things in the layout.
 
 ### Rendering page specific content in the layout
 
 You can define methods on the page so the layout can render them. An example of
-this is found in `MainPage`:
+this is found in `MainLayout`:
 
 ```
-# src/pages/main_page.cr
+# src/pages/main_layout.cr
 def page_title
   # content of the method
 end
 ```
 
-This makes it so that every page that inherits from `MainPage` has a `page_title`
+This makes it so that every page that inherits from `MainLayout` has a `page_title`
 method.
 
 The layout calls this method to get the page's title
@@ -260,7 +260,7 @@ So to set a page specific title, do this:
 
 ```
 # src/pages/users/index_page.cr
-class Users::IndexPage < MainPage
+class Users::IndexPage < MainLayout
   def page_title
     "List of users"
   end
@@ -276,7 +276,7 @@ div class: "sidebar" do
   @page.sidebar
 end
 
-# src/pages/main_page.cr
+# src/pages/main_layout.cr
 # This makes it so that every page needs to implement the sidebar method
 abstract def sidebar
 ```
@@ -289,7 +289,7 @@ couple ways to extract a base layout for pages that include a sidebar.
 
 ### Set up separate pages and layouts
 
-Instead of adding a `sidebar` method to your `MainPage` and `MainLayout` you
+Instead of adding a `sidebar` method to your `MainLayout` and `MainLayout` you
 might extract a `PageWithSidebar` and `SidebarLayout`.
 
 ```
@@ -370,7 +370,7 @@ would be a pain to have to type `needs current_user : User` in every page object
 
 ### Example using `needs` and `expose`
 
-You can add `needs` to the `MainPage` if every page needs something.
+You can add `needs` to the `MainLayout` if every page needs something.
 
 For actions, we have an `expose` macro that makes it easy to automatically pass
 data to rendered pages.
@@ -423,8 +423,8 @@ class Users::Index < BrowserAction
   end
 end
 
-# in src/pages/main_page.cr
-class MainPage < BasePage
+# in src/pages/main_layout.cr
+class MainLayout < BasePage
   include LuckyWeb::Page
 
   # Now every page will require and have access to @current_user_name
@@ -432,9 +432,9 @@ class MainPage < BasePage
 end
 
 # src/pages/users/index_page.cr
-class Users::IndexPage < MainPage
+class Users::IndexPage < MainLayout
   # Don't need to type `needs current_user_name : String`
-  # since it was done in `MainPage`
+  # since it was done in `MainLayout`
 
   def render
     h1 @current_user_name
