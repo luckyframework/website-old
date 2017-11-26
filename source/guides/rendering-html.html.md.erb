@@ -26,7 +26,7 @@ By default `render` will render a page with the name of the class and `Page`
 appended. So if you used `render` in `MyCoolAction`, Lucky would try to render
 `MyCoolActionPage`.
 
-You could also tell render exactly which page to render like this:
+You could also tell `render` exactly which page to render like this:
 
 ```
 render Users::IndexPage, user_names: ["Paul", "Sally", "Jane"]
@@ -78,9 +78,10 @@ something.
 
 ## Rendering HTML in our page
 
-We then created a `render` macro in our class to render our actual HTML. Tags
-are generated with regular Crystal methods. Most all HTML5 tags are available by
-default.
+We then wrote an `inner` method in our class to render our HTML. The
+`inner` will be rendered in your `MainLayout` (defined in
+`src/pages/main_layout.cr`). Tags are generated with regular Crystal methods.
+Most all HTML5 tags are available by default.
 
 > Note that paragraph tags are `para` instead of `p` since `p` is already used
 by Crystal. You can use `pp` to debug output.
