@@ -53,7 +53,7 @@ used by the form to get form params that are set by [submitting an HTML form](#u
 
 ```
 # inside of an action with some form params
-UserForm.save(params) do |form, user|
+UserForm.create(params) do |form, user|
  if user # the user was saved
    puts "Hello #{user.name}"
  else # the user was not saved
@@ -113,7 +113,7 @@ with a quick glance at the `render` method.
 class Users::Create < BrowserAction
   action do
     # params will have the form params sent from the HTML form
-    UserForm.save(params) do |form, user|
+    UserForm.create(params) do |form, user|
       if user # if the user was saved
         redirect to: Home::Index
       else
@@ -233,7 +233,7 @@ class UserForm < User::BaseForm
   end
 end
 
-UserForm.save(params, created_by: a_user) do |form, user|
+UserForm.create(params, created_by: a_user) do |form, user|
   # do something
 end
 ```
@@ -251,7 +251,7 @@ This can be helpful if you’re saving something that doesn’t need an HTML for
 like if you only need the params passed in the path.
 
 ```
-UserForm.new(name: "Paul").save
+UserForm.new(name: "Paul").create
 
 # for updates
 UserForm.new(existing_user, name: "David").update
