@@ -53,7 +53,7 @@ Let's create the page for our `Users::Index` action.
 class Users::IndexPage < MainPage
   needs user_names : Array(String)
 
-  render do
+  def render
     ul class: "my-user-list" do
       @user_names.each do |name|
         li name, class: "user-name"
@@ -108,7 +108,7 @@ h1 "My cool test", class: "app-header"
 Order and nesting works about the same as how you would write normal HTML
 
 ```crystal
-render do
+def render
   # You can have a list
   ul do
     li "List item"
@@ -191,7 +191,7 @@ methods.
 
 ```crystal
 class Users::ShowPage < MainPage
-  render do
+  def render
     render_user_header
   end
 
@@ -222,7 +222,7 @@ end
 class Users::ShowPage < MainPage
   include Users::Components
 
-  render do
+  def render
     render_user_header
   end
 end
@@ -301,7 +301,7 @@ class SidebarLayout
   # Tells Lucky that pages using this layout must inherit from PageWithSidebar
   @page : PageWithSidebar
 
-  render do
+  def render
     # `html`, `head` and `body` tags were removed for brevity
 
     body do
@@ -332,7 +332,7 @@ end
 # Use the new PageWithSidebar
 # src/pages/dashboard/show_page.cr
 class Dashboard::ShowPage < PageWithSidebar
-  render do
+  def render
     h1 "My Dashboard"
   end
 
@@ -436,7 +436,7 @@ class Users::IndexPage < MainPage
   # Don't need to type `needs current_user_name : String`
   # since it was done in `MainPage`
 
-  render do
+  def render
     h1 @current_user_name
   end
 end

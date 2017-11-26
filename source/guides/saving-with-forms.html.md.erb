@@ -89,7 +89,7 @@ allowed you can't use it.
 class Users::NewPage < MainPage
  needs user_form : UserForm
 
- render do
+ def render
    render_user_form(@user_form)
  end
 
