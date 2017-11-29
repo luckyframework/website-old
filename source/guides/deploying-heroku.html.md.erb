@@ -1,5 +1,5 @@
 ---
-title: Deploying Lucky
+title: Deploying Lucky with Heroku
 order: 10
 intro: >
   There are many ways to deploy a Lucky app.
@@ -15,15 +15,24 @@ here are the
 steps you need to get up
 and running:
 
-* Add a git remote that points to your Heroku app
-* Add the following buildpacks in order:
-  * https://github.com/heroku/heroku-buildpack-nodejs
-  * https://github.com/luckyframework/heroku-buildpack-crystal
-* Set the `LUCKY_ENV` environment variable to `production`
-* Generate a secret key with `lucky gen.secret_key`
-* Set the `SECRET_KEY_BASE` environment variable to the generated key
-* Add a [postgresql database](https://elements.heroku.com/addons/heroku-postgresql) add-on
-* `git push` up to Heroku
+* Add a git remote that points to your Heroku app:
+`heroku git:remote -a <APP-NAME>`
+* Add the following buildpacks in
+order:
+  * `heroku buildpacks:add https://github.com/heroku/heroku-buildpack-nodejs`
+  * `heroku buildpacks:add https://github.com/luckyframework/heroku-buildpack-crystal`
+* Set `LUCKY_ENV` to `production`:
+`heroku config:set LUCKY_ENV=production`
+* Generate a secret key:
+`lucky gen.secret_key`
+* Set `SECRET_KEY_BASE`:
+`heroku config:set SECRET_KEY_BASE=<GENERATED_SECRET_KEY>`
+* Add a
+[postgresql database](https://elements.heroku.com/addons/heroku-postgresql)
+add-on:
+`heroku addons:create heroku-postgresql:hobby-dev`
+* Push to Heroku:
+`git push heroku master`
 
 Each step is explained in more detail below.
 
@@ -47,16 +56,14 @@ we'll use the placeholder `<APP-NAME>`.
 
 ## Setting up git for Heroku
 
+The
+[Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli#download-and-install)
+will let us manage our app from the command line.
 A normal installation of Lucky
 [requires](/guides/installing#install-required-dependencies)
-that the
-[Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli#download-and-install)
-is installed,
-so we should already have the `heroku` command which we'll use below.
-The Heroku CLI will let us manage our app from the command line.
-Heroku uses git remotes to connect our local Lucky app to the remote app.
-
-Add the proper git remote using the Heroku CLI:
+that it's installed,
+so we should already have the `heroku` command.
+The first thing we'll do is to connect our Lucky app to the Heroku app by adding a git remote:
 
 ```bash
 $ heroku git:remote -a <APP-NAME>
@@ -66,6 +73,9 @@ $ heroku git:remote -a <APP-NAME>
 
 Most Lucky apps are built with both Crystal
 and Node.js.
+Heroku uses
+[buildpacks](https://devcenter.heroku.com/articles/buildpacks)
+to compile each executable portion of an app.
 The Node.js buildpack must go first so that Heroku can compile the app's assets before Lucky is compiled.
 To enable a Node.js app on Heroku,
 we'll add the
