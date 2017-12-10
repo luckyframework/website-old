@@ -14,13 +14,6 @@
       <%= yield %>
     </main>
     <%= partial "partials/analytics" %>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
-    <script type="text/javascript"> docsearch({
-      apiKey: '576424427b2189ea2d57cc245beaa67c',
-      indexName: 'luckyframework',
-      inputSelector: '.algolia-docsearch',
-      debug: false // Set debug to true if you want to inspect the dropdown
-      });
-  </script>
+    <%= partial "partials/docsearch"%>
   </body>
 </html>
