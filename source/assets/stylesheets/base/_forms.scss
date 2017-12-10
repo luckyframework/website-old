@@ -30,37 +30,12 @@ textarea {
 
 #{$all-text-inputs} {
   appearance: none;
-  background-color: $base-background-color;
-  border: $base-border;
-  border-radius: $base-border-radius;
-  box-shadow: $_form-box-shadow;
   box-sizing: border-box;
-  margin-bottom: $small-spacing;
   padding: $base-spacing / 3;
-  transition: border-color $base-duration $base-timing;
   width: 100%;
 
-  &:hover {
-    border-color: shade($base-border-color, 20%);
-  }
-
-  &:focus {
-    border-color: $action-color;
-    box-shadow: $_form-box-shadow-focus;
-    outline: none;
-  }
-
   &:disabled {
-    background-color: shade($base-background-color, 5%);
     cursor: not-allowed;
-
-    &:hover {
-      border: $base-border;
-    }
-  }
-
-  &::placeholder {
-    color: tint($base-font-color, 40%);
   }
 }
 
@@ -75,12 +50,10 @@ textarea {
 }
 
 [type="file"] {
-  margin-bottom: $small-spacing;
   width: 100%;
 }
 
 select {
-  margin-bottom: $small-spacing;
   width: 100%;
 }
 
