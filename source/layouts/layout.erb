@@ -6,6 +6,7 @@
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <%= stylesheet_link_tag "main" %>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
   </head>
   <body class="dark-body">
     <main role="main">
@@ -13,5 +14,13 @@
       <%= yield %>
     </main>
     <%= partial "partials/analytics" %>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+    <script type="text/javascript"> docsearch({
+      apiKey: '576424427b2189ea2d57cc245beaa67c',
+      indexName: 'luckyframework',
+      inputSelector: '.algolia-docsearch',
+      debug: false // Set debug to true if you want to inspect the dropdown
+      });
+  </script>
   </body>
 </html>
