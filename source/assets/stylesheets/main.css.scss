@@ -13,6 +13,7 @@
 @import "main-header";
 @import "header";
 @import "header-nav";
+@import "algolia-docsearch";
 @import "page-intro";
 @import "intro-card";
 @import "hero-container";
@@ -22,9 +23,9 @@
 @import "helpers";
 
 body {
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
 }
 
 .light-body {
-  background: #F4F7F6;
+  background: #f4f7f6;
 }
