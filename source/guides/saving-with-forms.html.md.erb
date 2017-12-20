@@ -14,7 +14,7 @@ maintainability, and catching bugs at compile time.
 
 When you set up a model, a `{ModelName}::BaseForm` will be created so that you can inherit
 from it and customize validations, callbacks, and what fields are allowed to be
-set.
+set. `{ModelName}::BaseForm` automatically defines a form field for each model field.
 
 We’ll be using the migration and model from the [Querying
 guide](/guides/querying-the-database/). Once you have that set up, let’s set
