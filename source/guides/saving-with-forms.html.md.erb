@@ -77,6 +77,10 @@ UserForm.update(user, params) do |form, updated_user|
 end
 ```
 
+In contrast to `create`, `update` will always pass the record to the block. To check
+if any changes were persisted, you can call `form.save_succeeded?`, or `form.valid?`
+to check if the submitted data was valid.
+
 ## Using with HTML forms
 
 You can use forms in HTML like this:
