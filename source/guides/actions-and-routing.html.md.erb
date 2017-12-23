@@ -21,7 +21,7 @@ You can route to an action by using `get`, `put`, `post` and `delete` macros, or
 class Users::Index < BrowserAction
   # GET requests to the /users path are handled by this action
   get "/users" do
-    render_text "List of users goes here"
+    text "List of users goes here"
   end
 end
 ```
@@ -57,7 +57,7 @@ Sometimes you want to name certain parts of the path and access them as paramete
 # src/actions/users/show.cr
 class Users::Show < BrowserAction
   get "/users/:my_user_id" do
-    render_text "User with an id of #{my_user_id}"
+    text "User with an id of #{my_user_id}"
   end
 end
 ```
@@ -110,7 +110,7 @@ class Users::Show < BrowserAction
   # Same as:
   #   get "/users/:id"
   action do
-    render_text "The user with id of #{id}"
+    text "The user with id of #{id}"
   end
 end
 ```
@@ -129,7 +129,7 @@ class Projects::Users::Index < BrowserAction
   # Same as:
   #   get "/projects/:project_id/users"
   nested_action do
-    render_text "Render list of users in project #{project_id}"
+    text "Render list of users in project #{project_id}"
   end
 end
 ```
@@ -142,7 +142,7 @@ class Admin::Projects::Index < BrowserAction
   # Same as:
   #   get "/admin/projects"
   action do
-    render_text "Render list of projects"
+    text "Render list of projects"
   end
 end
 ```
@@ -189,7 +189,7 @@ class Projects::Users::Index < BrowserAction
   # Normally you would use `nested_action`
   # We'll use `get` here to make the example more clear
   get "projects/:project_id/users" do
-    render_text "Users"
+    text "Users"
   end
 end
 ```
@@ -236,7 +236,7 @@ class Admin::Users::Index < BrowserAction
   before require_admin
 
   get "/foo" do
-    render_text "List of users"
+    text "List of users"
   end
 
   private def require_admin
@@ -289,7 +289,7 @@ the `require_admin` pipe:
 # Note we're now inheriting from AdminAction
 class Admin::Users::Index < AdminAction
   get "/foo" do
-    render_text "List of users"
+    text "List of users"
   end
 end
 ```
@@ -322,7 +322,7 @@ class Dashboard::Show < BrowserAction
   include LogRequestPipe
 
   get "/dashboard" do
-    render_text "The dashboard"
+    text "The dashboard"
   end
 end
 ```
@@ -339,7 +339,7 @@ class FooAction < BrowserAction
 
     session["name"] = "Sally"
     session["name"] # Will return "Sally"
-    render_text "Cookies!"
+    text "Cookies!"
   end
 end
 ```
