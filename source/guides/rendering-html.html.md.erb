@@ -348,8 +348,6 @@ abstract class AuthLayout
   include Shared::FieldErrorsComponent
   include Shared::FlashComponent
 
-  needs flash : Lucky::Flash::Store
-
   # Tells Crystal to ensure all pages define these methods
   abstract def form_title
   abstract def inner
