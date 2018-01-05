@@ -214,7 +214,7 @@ will be added soon.
 Right now you can define `has_many` and `belongs_to` associations.
 
 ```
-class UserQuery < BaseModel
+class User < BaseModel
   table users do
     has_many tasks : Task
     belongs_to company : Company
