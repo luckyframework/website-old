@@ -53,7 +53,7 @@ Let's create the page for our `Users::Index` action.
 class Users::IndexPage < MainLayout
   needs user_names : Array(String)
 
-  def inner
+  def content
     ul class: "my-user-list" do
       @user_names.each do |name|
         li name, class: "user-name"
@@ -78,8 +78,8 @@ something.
 
 ## Rendering HTML in our page
 
-We then wrote an `inner` method in our class to render our HTML. The
-`inner` will be rendered in your `MainLayout` (defined in
+We then wrote an `content` method in our class to render our HTML. The
+`content` will be rendered in your `MainLayout` (defined in
 `src/pages/main_layout.cr`). Tags are generated with regular Crystal methods.
 Most all HTML5 tags are available by default.
 
@@ -109,7 +109,7 @@ h1 "My cool test", class: "app-header"
 Order and nesting works about the same as how you would write normal HTML
 
 ```crystal
-def inner
+def content
   # You can have a list
   ul do
     li "List item"
@@ -192,7 +192,7 @@ methods.
 
 ```crystal
 class Users::ShowPage < MainLayout
-  def inner
+  def content
     render_user_header
   end
 
@@ -223,7 +223,7 @@ end
 class Users::ShowPage < MainLayout
   include Users::Components
 
-  def inner
+  def content
     render_user_header
   end
 end
@@ -293,7 +293,7 @@ Then in a page:
 
 ```crystal
 class Users::IndexPage < MainLayout
-  def inner
+  def content
     text "Rendering something in the main part of the layout"
   end
 
@@ -350,7 +350,7 @@ abstract class AuthLayout
 
   # Tells Crystal to ensure all pages define these methods
   abstract def form_title
-  abstract def inner
+  abstract def content
 
   def render
     html_doctype
@@ -370,7 +370,7 @@ abstract class AuthLayout
           h1 form_title, class: "auth-wrapper-title"
           div class: "auth-wrapper-form" do
             # Render the main form
-            inner
+            content
           end
         end
       end
@@ -389,7 +389,7 @@ class SignIns::NewPage < AuthLayout
     "Please sign in to my app"
   end
 
-  def inner
+  def content
     text "Render for signing in here"
   end
 end
