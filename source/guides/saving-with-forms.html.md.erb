@@ -93,7 +93,7 @@ allowed you can't use it.
 class Users::NewPage < MainLayout
   needs user_form : UserForm
 
-  def inner
+  def content
     render_user_form(@user_form)
   end
 
@@ -371,7 +371,7 @@ Using virtual fields in HTMLworks exactly the same as with database fields:
 class SignUps::NewPage < MainLayout
   needs sign_up_form : SignUpForm
 
-  def inner
+  def content
     render_sign_up_form(@sign_up_form)
   end
 
