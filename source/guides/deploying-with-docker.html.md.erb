@@ -3,7 +3,7 @@ title: Deploying a Lucky App with Docker
 order: 11
 intro: >
   There are many ways to deploy a Lucky app.
-  This guide will cover the steps required to deploy a Lucky app 
+  This guide will cover the steps required to deploy a Lucky app
   as a Docker container.
 ---
 
@@ -16,36 +16,40 @@ steps you need to get up
 and running:
 
 * Create a `Dockerfile` in the application's root directory with the following contents:
-  ```dockerfile
-  FROM crystallang/crystal:latest
 
-  COPY ./ /opt/crystal
-  RUN crystal build --no-debug -o /opt/crystal/server /opt/crystal/src/server.cr
+```dockerfile
+FROM crystallang/crystal:latest
 
-  ENV PORT=8080
-  ENV LUCKY_ENV=production
-  ENV APP_DOMAIN=http://localhost:8080
-  ENV SECRET_KEY_BASE=changeme
-  ENV DATABASE_URL=localhost
+COPY ./ /opt/crystal
+RUN crystal build --no-debug -o /opt/crystal/server /opt/crystal/src/server.cr
 
-  EXPOSE 8080
-  CMD ["/opt/crystal/server"]
-  ```
+ENV PORT=8080
+ENV LUCKY_ENV=production
+ENV APP_DOMAIN=http://localhost:8080
+ENV SECRET_KEY_BASE=changeme
+ENV DATABASE_URL=localhost
+
+EXPOSE 8080
+CMD ["/opt/crystal/server"]
+```
 
 * Compile all assets
-  ```bash
-  $ brunch build
-  ```
+
+```bash
+$ brunch build
+```
 
 * Build a Docker image
-  ```bash
-  $ docker build -t myapp:latest .
-  ```
+
+```bash
+$ docker build -t myapp:latest .
+```
 
 * Run the Docker image
-  ```bash
-  $ docker run -p 8080:8080 --rm -it myapp:latest
-  ```
+
+```bash
+$ docker run -p 8080:8080 --rm -it myapp:latest
+```
 
 Each step is explained in more detail below.
 
@@ -55,9 +59,14 @@ For those new to Docker, or those that want more guidance, we'll walk through th
 
 ## Dockerfile
 
-The `Dockerfile` describes how Docker should build a Docker image of your Lucky app. The `Dockerfile` uses [the official `crystal-lang` Docker image](https://hub.docker.com/r/crystallang/crystal/) as a basis for the build. This base image itself is based off of a `Ubuntu Xenial` image, and has the latest release of the Crystal language compiler and toolchain installed. To specify a particular Crystal version, we can change the first line in the `Dockerfile` to specify the desired Crystal version, for example `FROM crystallang/crystal:0.24.1`. The Docker Hub lists [all available versions](https://hub.docker.com/r/crystallang/crystal/tags/).
+The `Dockerfile` describes how Docker should build a Docker image of your Lucky app.
+
+The `Dockerfile` uses [the official crystal-lang Docker image](https://hub.docker.com/r/crystallang/crystal/) as a basis for the build. This base image itself is based off of a `Ubuntu Xenial` image, and has the latest release of the Crystal language compiler and toolchain installed.
+
+To specify a particular Crystal version, we can change the first line in the `Dockerfile` to specify the desired Crystal version, for example `FROM crystallang/crystal:0.24.1`. The Docker Hub lists [all available versions](https://hub.docker.com/r/crystallang/crystal/tags/).
 
 The following is an example of a `Dockerfile` that will let you deploy your Lucky app with Docker:
+
 ```dockerfile
 FROM crystallang/crystal:latest
 
@@ -85,9 +94,10 @@ Lucky needs a couple of environment variables to operate as a production app. Th
 * Change the `Dockerfile` and set `ENV LUCKY_ENV=production`
 
 * Alternatively, any settings specfied in the `Dockerfile` can be overwritten at runtime by passing the configuration to the `docker run` command.
-  ```bash
-  $ docker run --rm -it -p 8080:8080 -e LUCKY_ENV=production myapp:latest
-  ```
+
+```bash
+$ docker run --rm -it -p 8080:8080 -e LUCKY_ENV=production myapp:latest
+```
 
 ### `SECRET_KEY_BASE`
 
@@ -98,34 +108,37 @@ this key will give us a unique value for our site's cookies.
 Once we have our secret key,
 we can set the `SECRET_KEY_BASE` environment variable with that key:
 
-* Change the `Dockerfile` and set `ENV SECRET_KEY_BASE=` to the generated key. 
+* Change the `Dockerfile` and set `ENV SECRET_KEY_BASE=` to the generated key.
 
 * Alternatively, any settings specfied in the `Dockerfile` can be overwritten at runtime by passing the configuration to the `docker run` command.
-  ```bash
-  $ docker run --rm -it -p 8080:8080 -e SECRET_KEY_BASE=mykey myapp:latest
-  ```
+
+```bash
+$ docker run --rm -it -p 8080:8080 -e SECRET_KEY_BASE=mykey myapp:latest
+```
 
 ### `DATABASE_URL`
 
 We can either configure the app to connect to a separate database, or to run a database container alongside our app container. To use an existing database:
 
-* Change the `Dockerfile` and set `ENV DATABASE_URL=` to the desired connection configuration. 
+* Change the `Dockerfile` and set `ENV DATABASE_URL=` to the desired connection configuration.
 
 * Alternatively, any settings specfied in the `Dockerfile` can be overwritten at runtime by passing the configuration to the `docker run` command.
-  ```bash
-  $ docker run --rm -it -p 8080:8080 -e DATABASE_URL=myconnection myapp:latest
-  ```
+
+```bash
+$ docker run --rm -it -p 8080:8080 -e DATABASE_URL=myconnection myapp:latest
+```
 
 ### `APP_DOMAIN`
 
-This setting is used when the `Lucky::RouteHelper` generates URLs for your Lucky application. In production this should be set to your network-routable FQDN. 
+This setting is used when the `Lucky::RouteHelper` generates URLs for your Lucky application. In production this should be set to your network-routable FQDN.
 
-* Change the `Dockerfile` and set `ENV APP_DOMAIN=` to the desired URL, for example `https://my_app.com`. 
+* Change the `Dockerfile` and set `ENV APP_DOMAIN=` to the desired URL, for example `https://my_app.com`.
 
 * Alternatively, any settings specfied in the `Dockerfile` can be overwritten at runtime by passing the configuration to the `docker run` command.
-  ```bash
-  $ docker run --rm -it -p 8080:8080 -e APP_DOMAIN=https://my_app.com myapp:latest
-  ```
+
+```bash
+$ docker run --rm -it -p 8080:8080 -e APP_DOMAIN=https://my_app.com myapp:latest
+```
 
 ## Building the app container image
 
@@ -150,15 +163,17 @@ we are ready to run our container image.
 
 We are ready to launch a container from our new Docker image.
 
-* To run a single instance of the app that will terminate when you kill the shell, we would pass the `--rm` and `-it` flags to the `docker run` command:
-  ```bash
-  $ docker run -p 8080:8080 --rm -it myapp:latest
-  ```
+To run a single instance of the app that will terminate when you kill the shell, we would pass the `--rm` and `-it` flags to the `docker run` command:
 
-* To run the app in the background, we would pass the `-d` flag to the `docker run` command:
-  ```bash
-  $ docker run -p 8080:8080 -d myapp:latest
-  ```
+```bash
+$ docker run -p 8080:8080 --rm -it myapp:latest
+```
+
+To run the app in the background, we would pass the `-d` flag to the `docker run` command:
+
+```bash
+$ docker run -p 8080:8080 -d myapp:latest
+```
 
 ## FAQ
 
@@ -191,7 +206,7 @@ server.listen
 ```
 
 ### Bulding the Docker image takes very long on "Sending build context to Docker daemon"
-By default the build process creates a `tar` archive of the folder contents and sends this tar-file to the Docker daemon process. With a large amount of dependencies this may take a while. 
+By default the build process creates a `tar` archive of the folder contents and sends this tar-file to the Docker daemon process. With a large amount of dependencies this may take a while.
 
 However, we can significantly speed up the process by excluding the `node_modules` folder from the build context (Assets are compiled by brunch, separately). To do so, create a file `.dockerignore` with the following contents in the same directory as the `Dockerfile`:
 
