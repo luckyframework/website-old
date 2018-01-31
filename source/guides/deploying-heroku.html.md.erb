@@ -27,6 +27,8 @@ order:
 `lucky gen.secret_key`
 * Set `SECRET_KEY_BASE`:
 `heroku config:set SECRET_KEY_BASE=<GENERATED_SECRET_KEY>`
+* Set `APP_DOMAIN`:
+`heroku config:set APP_DOMAIN=https://your-domain.com`
 * Add a
 [postgresql database](https://elements.heroku.com/addons/heroku-postgresql)
 add-on:
@@ -115,6 +117,14 @@ and use additional environment variables for its configuration:
 
 ```bash
 $ heroku config:set LUCKY_ENV=production
+```
+
+### `APP_DOMAIN`
+
+Lucky needs the app's domain when it builds full URLs.
+
+```bash
+$ heroku config:set APP_DOMAIN=https://myapp.com
 ```
 
 ### `SECRET_KEY_BASE`
