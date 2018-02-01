@@ -37,7 +37,7 @@ measure to make sure that parameters can only be set that you want to allow. For
 example, you might not want your users to be able to set an admin status through
 the `UserForm`.
 
-To allow a field, use the `allow` macro:
+To allow a field to be saved to the database, use the `allow` macro:
 
 ```
 # src/forms/user_form.cr
@@ -181,12 +181,12 @@ make sure the user is old enough to use the site.
 
 ```
 def prepare
-  validate_is_old_enough age
+  validate_is_old_enough
 end
 
-private def user_is_old_enough(field)
+private def user_is_old_enough
   # The value might be `nil` so we need to use `try`.
-  field.value.try do |value|
+  age.value.try do |value|
     if value < 13
       field.add_error "must be at least 13 to use this site"
     end
