@@ -19,17 +19,17 @@ Let's add the model for it:
 # src/models/user.cr
 class User < BaseModel
   table :users do
-    field name : String
-    field age : Int32?
+    column name : String
+    column age : Int32?
   end
 end
 ```
 
 > You can add a `?` to the end of any type to mark it as nilable.
 
-### Field types
+### Column types
 
-You can use the following types in your fields.
+You can use the following types in your columns.
 
 * `String` - `text` column type. In Postgres [`text` can store strings of any length](https://stackoverflow.com/questions/4848964/postgresql-difference-between-text-and-varchar-character-varying)
 * `Int32` - `int` column type.
@@ -58,7 +58,7 @@ end
 * All methods included by `Enumerable(T)`, such as `each` and `map`
 
 It also has methods for ordering and adding where clauses. These are generated
-based on the fields defined in your model.
+based on the columns defined in your model.
 
 For the model we defined Lucky would generate:
 
@@ -84,7 +84,7 @@ UserQuery.new.age(28)
 
 Lucky will accept the type defined in the model (e.g. `Int32` for `age`) or a
 `String`. If you pass it a `String` then Lucky will attempt to parse it and use
-the type defined for the field.
+the type defined for the column.
 
 For example:
 
@@ -157,7 +157,7 @@ UserQuery.new.age(30).find(1)
 ## Type specific query methods
 
 The previous section mostly focused on simple equality queries, but you can also
-do more advanced queries depending on the field type.
+do more advanced queries depending on the column type.
 
 ### All types
 
