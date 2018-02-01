@@ -221,6 +221,30 @@ class UserForm < User::BaseForm
 end
 ```
 
+## Passing data without route params
+
+Often times you want to add extra data to a form that the user does not fill out.
+
+In this example, we'll associate a comment with a post:
+
+```
+class Posts::Comments::Create < BrowserAction
+  action do
+    post = PostQuery.find(id)
+    # Params contain the title and body, but not the post_id
+    # So we set it ourselves
+    CommentForm.create(params, post_id: post.id) do |form, comment|
+      # Do something with the form and comment
+    end
+  end
+end
+```
+
+This sets the `post_id` when instantiating the form. You can pass anything
+that is defined as a `column` on your model. Note that the fields are type
+safe, so you don't need to worry about typos or passing the wrong types.
+Lucky is set up to make sure it works automatically.
+
 ## Passing extra data to forms
 
 Sometimes you need to pass extra data to forms that aren't in the form params.
