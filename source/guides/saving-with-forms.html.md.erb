@@ -37,7 +37,7 @@ measure to make sure that parameters can only be set that you want to allow. For
 example, you might not want your users to be able to set an admin status through
 the `UserForm`.
 
-To allow a field, use the `allow` macro:
+To allow a field to be saved to the database, use the `allow` macro:
 
 ```
 # src/forms/user_form.cr
@@ -54,11 +54,11 @@ used by the form to get form params that are set by [submitting an HTML form](#u
 ```
 # inside of an action with some form params
 UserForm.create(params) do |form, user|
- if user # the user was saved
-   puts "Hello #{user.name}"
- else # the user was not saved
-   pp form.errors
- end
+  if user # the user was saved
+    puts "Hello #{user.name}"
+  else # the user was not saved
+    pp form.errors
+  end
 end
 ```
 
@@ -73,9 +73,13 @@ if there are no errors while saving. If there are errors, the user will be `nil`
 # inside of an action with some form params
 user = UserQuery.new.first
 UserForm.update(user, params) do |form, updated_user|
- # do something with the form and user
+  # do something with the form and user
 end
 ```
+
+In contrast to `create`, `update` will always pass the record to the block. To check
+if any changes were persisted, you can call `form.save_succeeded?`, or `form.valid?`
+to check if the submitted data was valid.
 
 ## Using with HTML forms
 
@@ -87,21 +91,21 @@ allowed you can't use it.
 ```
 # src/pages/users/new_page.cr
 class Users::NewPage < MainLayout
- needs user_form : UserForm
+  needs user_form : UserForm
 
- def content
-   render_user_form(@user_form)
- end
+  def content
+    render_user_form(@user_form)
+  end
 
- private def render_user_form(f)
-   form_for Users::Create do
-     label_for f.name
-     text_input f.name
-     errors_for f.name
+  private def render_user_form(f)
+    form_for Users::Create do
+      label_for f.name
+      text_input f.name
+      errors_for f.name
 
-     submit "Save User"
-   end
- end
+      submit "Save User"
+    end
+  end
 end
 ```
 
@@ -142,11 +146,11 @@ You can use validations inside of the `prepare` callback:
 
 ```
 class UserForm < User::BaseForm
- allow name
+  allow name
 
- def prepare
-   validate_required name
- end
+  def prepare
+    validate_required name
+  end
 end
 ```
 
@@ -164,9 +168,9 @@ This means that to access their value you must call `value` on the field.
 
 ```
 class UserForm < User::BaseForm
- def prepare
-   pp name.value
- end
+  def prepare
+    pp name.value
+  end
 end
 ```
 
@@ -177,12 +181,12 @@ make sure the user is old enough to use the site.
 
 ```
 def prepare
-  validate_is_old_enough age
+  validate_is_old_enough
 end
 
-private def user_is_old_enough(field)
+private def user_is_old_enough
   # The value might be `nil` so we need to use `try`.
-  field.value.try do |value|
+  age.value.try do |value|
     if value < 13
       field.add_error "must be at least 13 to use this site"
     end
@@ -217,6 +221,30 @@ class UserForm < User::BaseForm
 end
 ```
 
+## Passing data without route params
+
+Often times you want to add extra data to a form that the user does not fill out.
+
+In this example, we'll associate a comment with a post:
+
+```
+class Posts::Comments::Create < BrowserAction
+  action do
+    post = PostQuery.find(id)
+    # Params contain the title and body, but not the post_id
+    # So we set it ourselves
+    CommentForm.create(params, post_id: post.id) do |form, comment|
+      # Do something with the form and comment
+    end
+  end
+end
+```
+
+This sets the `post_id` when instantiating the form. You can pass anything
+that is defined as a `column` on your model. Note that the fields are type
+safe, so you don't need to worry about typos or passing the wrong types.
+Lucky is set up to make sure it works automatically.
+
 ## Passing extra data to forms
 
 Sometimes you need to pass extra data to forms that aren't in the form params.
@@ -229,9 +257,7 @@ class UserForm < User::BaseForm
   needs current_user : User
 
   def prepare
-    current_user.try do |user|
-      modified_by_id.value = user.id
-    end
+    modified_by_id.value = current_user.id
   end
 end
 
@@ -244,17 +270,18 @@ This will make it so that you must pass in `current_user` when creating or updat
 the `UserForm`. It will make a getter available for `current_user` so you can use
 it in the form, like in the `prepare` method shown in the example.
 
-> Note that `current_user` is not required when calling `UserForm.new` so, `current_user`
-can be `nil` in the form. That's why we needed to use `try` in the `prepare` method.
-
-### Declaring needs only for update or create
+### Declaring needs only for update, create, or save
 
 Sometimes you only want to pass extra data when creating or updating a record.
 You can use the `on` option to do that:
 
+* `:update` if only required for update
+* `:create` if only required for create
+* `:save` if required for update and create, but now when calling `new`
+
 ```
 class CommentForm < Comment::BaseForm
-  needs author : User, on: :create # or `on: :update`
+  needs author : User, on: :create # can also be `:update`, `:save`
 
   def prepare
     author.try do |user|
@@ -262,6 +289,10 @@ class CommentForm < Comment::BaseForm
     end
   end
 end
+
+> Note that `author` is not required when calling `UserForm.new` when using
+the `on` option. This means `author` can be `nil` in the form. That's why we
+needed to use `try` in the `prepare` method.
 
 # You must pass an author when creating
 CommentForm.create(params, author: a_user) do |form, user|
@@ -272,7 +303,17 @@ end
 CommentForm.update(comment, params) do |form, user|
   # do something
 end
+
+# You also can't pass it in when instantiating a new CommentForm
+CommentForm.new
 ```
+
+> **When should I use `on`?** If you are building an server rendered HTML app
+then you will almost always wants to use `on :save|:update|:create` because
+you will call `MyForm.new` without the needs. If you are building a JSON API
+you may want to omit the `on` option since you rarely use `.new`. If you omit
+`on` then you don't need to worry about the value ever being `nil`, which can
+make your program more reliable and easier to understand.
 
 ## Virtual fields
 
@@ -374,13 +415,13 @@ You can do this with a module:
 ```
 # src/forms/mixins/user_form_defaults
 module UserFormDefaults
- macro included
-   allow name, age, email
- end
+  macro included
+    allow name, age, email
+  end
 
- def prepare
-   validate_old_enough_to_use_website
- end
+  def prepare
+    validate_old_enough_to_use_website
+  end
 end
 ```
 
@@ -389,13 +430,13 @@ Then in your form:
 ```
 # src/forms/admin_user_form.cr
 class AdminUserForm < User::BaseForm
- include UserFormDefaults
- allow work_email
+  include UserFormDefaults
+  allow work_email
 
- def prepare
-   super
-   admin.value = true
- end
+  def prepare
+    super
+    admin.value = true
+  end
 end
 ```
 

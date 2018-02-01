@@ -48,9 +48,33 @@ alter :users do
 end
 ```
 
-## Custom SQL
+## Adding indices
 
-Lucky only has methods for a small set of possible changes you can make to your tables.
+```crystal
+# Add them while creating the column
+add email : String, index: true
+
+# Add a unique index
+add email : String, unique: true
+
+# Add an index after the fact
+# Note: Do this *inside* of a `create` or `alter` block
+add_index :email
+add_index :email, unique: true
+```
+
+## Adding associations
+
+```crystal
+  belongs_to User, on_delete: :cascade
+```
+
+This will create a `user_id` column with an index, a foreign key, and a
+cascade constraint.
+
+You must always pass an `on_delete` option
+
+## Custom SQL
 
 For things Lucky doesn't support, you can use `execute` to run any sql you want.
 
