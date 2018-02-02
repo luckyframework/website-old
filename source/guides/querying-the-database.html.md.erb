@@ -208,21 +208,97 @@ UserQuery.new.adults.search("Sal")
 
 ## Using associations
 
-LuckyRecord currently has limited support for associations, but more features
-will be added soon.
-
-Right now you can define `has_many` and `belongs_to` associations.
+Right now you can define `has_many`, `has_one`, and `belongs_to` associations.
 
 ```
 class User < BaseModel
   table users do
+    has_one supervisor : Supervisor
     has_many tasks : Task
     belongs_to company : Company
   end
 end
 
 # Will return the company associated with the User
-UserQuery.new.find(1).company
+UserQuery.new.preload_company.find(1).company
 ```
 
-> Preloading associations to avoid N+1 queries will be coming soon.
+### Making associations optional
+
+Sometimes associations are not required. To do that add a `?` to the end of the type.
+
+```crystal
+belongs_to company : Company?
+```
+
+> Make sure to make the column nilable in your migration as well: `belongs_to Company?`
+
+### Has many through (many-to-many)
+
+Let's say we want to have many tags that can belong to any number of posts.
+
+Here are the models:
+
+```crystal
+# This is what will join the posts and tags together
+class Tagging < BaseModel
+  table :taggings do
+    belongs_to tag : Tag
+    belongs_to post : Post
+  end
+end
+
+class Tag < BaseModel
+  table :tags do
+    column name : String
+    has_many taggings : Tagging
+    has_many posts : Post, through: :taggings
+  end
+end
+
+class Post < BaseModel
+  table :posts do
+    column title : String
+    has_many taggings : Tagging
+    has_many tags : Tag, through: :taggings
+  end
+end
+```
+
+> The associations *must* be declared on both ends (the Post and the Tag in
+this example), otherwise you will get a compile time error
+
+## Preloading associations
+
+In development and test environemnts Lucky requries preloading associations.
+If you forget to preload an association, a runtime error will be raised when
+you try to access it. In production, the association will be lazy loaded so
+that users do not see errors.
+
+This solution means you will find N+1 queries in development and test, and
+users will never see an error in production.
+
+To preload, just call `preload_{association name}` on the query:
+
+```crystal
+PostQuery.new.preload_comments
+```
+
+### Customizing how associations are preloaded
+
+Sometimes you want to order preloads, or add where clauses. To do this, use the
+`preload` method on the query and pass a query object for the association.
+
+```crystal
+PostQuery.new.preload(CommentQuery.new.published(true))
+```
+
+This is also how you would do nested preloads:
+
+```crystal
+# Preload the post's comments, and the comment's author
+PostQuery.new.preload(CommentQuery.new.preload_author)
+```
+
+> Note that you can only pass query objects to `preload` if the association
+is defined, otherwise you will get a type error.
