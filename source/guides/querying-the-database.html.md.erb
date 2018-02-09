@@ -302,3 +302,40 @@ PostQuery.new.preload(CommentQuery.new.preload_author)
 
 > Note that you can only pass query objects to `preload` if the association
 is defined, otherwise you will get a type error.
+
+## Joining and querying associations
+
+Let's say you have a `Post` model with `has many comments: Comment`, the
+`Comment` model has a `rating` column that is an integer, and the highest rating
+is 5 and lowest is 1.
+
+If we want to get all posts that have at least 1 highly rated comment, we
+could do something like this:
+
+```
+class PostQuery < Post::BaseQuery
+  def with_highly_rated_comments
+    # Join the comments
+    join_comments
+
+    # Get posts with at least one comment with rating greater than or equal to 4
+    comments { |comment_query| comment_query.rating.gte(4) }
+
+    # Or do the same thing with the block shorthand syntax
+    # See "Short one-argument syntax" in https://crystal-lang.org/docs/syntax_and_semantics/blocks_and_procs.html
+    comments(&.rating.gte(4))
+  end
+end
+
+# Or do the same without making a scope method:
+PostQuery.new.join_comments.comments(&.rating.gte(4))
+```
+
+These are all the supported join types for associations:
+
+* `join_{{association_name}}`
+* `inner_join_{{association_name}}`
+* `left_join{{association_name}}`
+
+So if `Project` `has_many tasks : Task` you'd have `join_tasks`,
+`inner_join_tasks`, etc.
