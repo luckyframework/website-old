@@ -368,3 +368,56 @@ class FooAction < BrowserAction
   end
 end
 ```
+
+## Flash messages
+
+You can show messages using `flash`. This works similarly to Rails, Phoenix,
+and other frameworks.
+
+### Type safe flash messages
+
+The built in messages types are `success`, `danger` and `info`. Using these
+will cause compile time errors if you accidentally mistype something. It is
+recommended to stick to these whenever possible.
+
+```
+# In an action
+flash.success = "It worked!"
+flash.danger = "That did not work"
+flash.info = "Be cool"
+```
+
+These will be rendered by the flash component in
+`src/components/shared/flash_component.cr`. The flash component is called
+from your `MainLayout` (`src/pages/main_layout.cr`) by the `render_flash`
+method.
+
+You can modify the layout or the component to add classes, change where flash
+is rendered, etc.
+
+### Setting other messages
+
+The built in messages are `success`, `danger` and `info`, but you can use anything
+you'd like:
+
+```
+flash["something_special"] = "Super spesh"
+flash["something_special"] # => "Super spesh"
+```
+
+### Clearing and keeping flashes
+
+Sometimes you want to show a flash only for the current request:
+
+```
+# Typically used when calling `render` instead of `redirect`
+# That way the message shows for the current request only
+flash.now.success = "Woo-hoo!"
+```
+
+Or sometimes you want to keep all messages for the next request:
+
+```
+# Useful when you want to redirect to another page while keeping the flash messages
+flash.keep_all
+```
