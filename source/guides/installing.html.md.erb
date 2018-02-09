@@ -11,8 +11,10 @@ intro: >
 
 To get Lucky, you need to install these first.
 
-* [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli#download-and-install)
-  (later Lucky will support foreman, and forego as well)
+* Install one of these process managers: [Overmind (recommended)](https://github.com/DarthSim/overmind#installation),
+  [Heroku CLI (great if you plan to use Heroku to deploy)](https://devcenter.heroku.com/articles/heroku-cli#download-and-install),
+  [forego](https://github.com/ddollar/forego#installation),
+  or [foreman](https://github.com/ddollar/foreman#installation).
 * [Node](https://nodejs.org/en/download/)
 * [Yarn](https://yarnpkg.com/lang/en/docs/install/)
 * [Crystal](https://crystal-lang.org/docs/installation/). Requires at least v0.24.1
@@ -66,5 +68,10 @@ To start the server and run your project, first change into the directory for yo
 newly created app with `cd {project_name}`. Then run `bin/setup` to install dependencies
 and `lucky dev` to start the server.
 
-Running `lucky dev` will use the Heroku CLI to start the processes defined in `Procfile.dev`.
-By default `Procfile.dev` will start the lucky server, and will start Brunch to compile assets.
+Running `lucky dev` will use an installed process manager (Overmind, Foreman,
+etc.) to start the processes defined in `Procfile.dev`. By default
+`Procfile.dev` will start the lucky server, and will start asset compilation.
+
+> Lucky will look for a number of process managers. So if you prefer Forego
+and someone else on your team prefers to use Overmind, `lucky dev` will work
+for both of you.
