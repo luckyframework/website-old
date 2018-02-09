@@ -48,8 +48,18 @@ end
 
 Now you will be able to save the user’s name with form params.
 
-> Actions have a `params` method that returns a `LuckyWeb::Params` object. This is
-used by the form to get form params that are set by [submitting an HTML form](#using-with-html-forms).
+## Creating records
+
+> Actions have a `params` method that returns a `LuckyWeb::Params` object.
+This is used by the form to get form params that are set by [submitting an
+HTML form](#using-with-html-forms) or [when saving with a JSON API](/guides/writing-json-apis#saving-to-the-database).
+
+To create a record, you pass a block that is run whether the save is
+successful or not.
+
+You will *always* receive the form object, but you will only get the saved
+user if there are no errors while saving. If there are errors, the user will
+be `nil`.
 
 ```
 # inside of an action with some form params
@@ -61,11 +71,6 @@ UserForm.create(params) do |form, user|
   end
 end
 ```
-
-You pass a block that is run whether the save is successful or not.
-
-You will *always* receive the form object, but you will only get the saved user
-if there are no errors while saving. If there are errors, the user will be `nil`.
 
 ## Updating records
 
