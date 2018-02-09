@@ -154,6 +154,21 @@ UserQuery.new.find(id)
 UserQuery.new.age(30).find(1)
 ```
 
+## Shorthand methods
+
+There are a few methods that are used so often that we've added shortcut methods:
+
+* `find`
+* `first`
+* `last`
+
+```
+id = 1
+UserQuery.find(id)
+UserQuery.first
+UserQuery.last
+```
+
 ## Type specific query methods
 
 The previous section mostly focused on simple equality queries, but you can also
