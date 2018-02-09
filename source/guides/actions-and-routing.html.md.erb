@@ -62,11 +62,13 @@ class Users::Show < BrowserAction
 end
 ```
 
-When you start a section of the path with `:` it will generate a param method for your.
+When you start a section of the path with `:` it will generate method for
+that param in your action.
 
-In this case anything you pass in the part of the URL for `:my_user_id` will be
-available in the `my_user_id` method. So in this example if you visited
-`/users/123` then it would return a text response of `User with an id of 123`.
+In this case anything you pass in the part of the URL for `:my_user_id` will
+be available in the `my_user_id` method. So in this example if you visited
+`/users/123` then the `my_user_id` would return a text response of `User with
+an id of 123`.
 
 ### You can use as many parameters as you want
 
