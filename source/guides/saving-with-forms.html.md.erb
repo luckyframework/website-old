@@ -55,9 +55,9 @@ used by the form to get form params that are set by [submitting an HTML form](#u
 # inside of an action with some form params
 UserForm.create(params) do |form, user|
   if user # the user was saved
-    puts "Hello #{user.name}"
-  else # the user was not saved
-    pp form.errors
+    render Users::ShowPage, user: user
+  else
+    render Users::NewPage, form: form
   end
 end
 ```
@@ -67,19 +67,37 @@ You pass a block that is run whether the save is successful or not.
 You will *always* receive the form object, but you will only get the saved user
 if there are no errors while saving. If there are errors, the user will be `nil`.
 
-### Updating records
+## Updating records
 
 ```
 # inside of an action with some form params
 user = UserQuery.new.first
 UserForm.update(user, params) do |form, updated_user|
-  # do something with the form and user
+  if form.saved?
+    render Users::ShowPage, user: updated_user
+  else
+    render Users::NewPage, form: form
+  end
 end
 ```
 
 In contrast to `create`, `update` will always pass the record to the block. To check
-if any changes were persisted, you can call `form.save_succeeded?`, or `form.valid?`
-to check if the submitted data was valid.
+if any changes were persisted, you can call `form.saved?`, or `form.valid?`
+to check if the submitted data was saved.
+
+### Update with `update!`
+
+`update!` will raise if the form fails to save or is invalid.
+This version is often used when [writing JSON APIs](/guides/writing-json-apis).
+
+```
+user = UserQuery.new.first
+UserForm.update!(user, params) # Returns the updated user or raises
+```
+
+## Using with JSON endpoints
+
+See [Writing JSON APIs guide](/guides/writing-json-apis#saving-to-the-database).
 
 ## Using with HTML forms
 

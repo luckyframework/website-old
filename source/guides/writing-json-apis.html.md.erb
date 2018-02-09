@@ -97,6 +97,9 @@ formatted in a way LuckyRecord knows how to handle.
 Let’s say you have a form called `ArticleForm`. Lucky will look for the data
 nested under an `article` key:
 
+> Remember to `allow {{field name}}` or the field will be ignored. In this case,
+add `allow title` to the `ArticleForm` to allow the `title` field to be saved.
+
 ```json
 {
   "article": {
@@ -104,9 +107,6 @@ nested under an `article` key:
   }
 }
 ```
-
-> Remember to set the content type to `application/json` so Lucky knows that
-it should process the request as JSON.
 
 And then save it like you normally would:
 
@@ -123,6 +123,9 @@ class Api::Articles::Create < ApiAction
   end
 end
 ```
+
+> Remember to set the content type to `application/json` so Lucky knows that
+it should process the request as JSON.
 
 ## Handling errors productively
 
