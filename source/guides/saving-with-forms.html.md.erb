@@ -223,6 +223,9 @@ Lucky comes with a few built in validations:
 
 * `validate_required` - ensures that a field is not `nil` or blank (e.g. `""`).
 * `validate_confirmation_of` - ensures that fields have the same values.
+* `validate_acceptance_of` - great for checking if someone accepts terms of service.
+* `validate_inclusion_of` - check that value is in a list of accepted values.
+* `validate_size_of` - check the size of a number.
 
 > Note: non-nillable (required) fields automatically use
 `validate_required`. They will run after the `prepare` callback. This way data
@@ -234,10 +237,18 @@ You can use validations inside of the `prepare` callback:
 
 ```
 class UserForm < User::BaseForm
-  allow name
+  allow name, password, password_confirmation, terms_of_service, age
 
   def prepare
     validate_required name
+    validate_confirmation_of password, with: password_confirmation
+    validate_acceptance_of terms_of_service
+    validate_inclusion_of age, in: [30, 40, 50]
+    # Showing these version as an example
+    # You would not want all three of these on a real form
+    validate_size_of name, is: 4 # Name must be 4 characters long
+    validate_size_of name, min: 4 # Can't be too short
+    validate_size_of name, max: 8 # Must have a short name
   end
 end
 ```
