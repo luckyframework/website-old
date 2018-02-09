@@ -184,6 +184,13 @@ do more advanced queries depending on the column type.
 UserQuery.new.age.gte(18).name.lower.is("sally")
 ```
 
+## Deleting a record
+
+```
+user = UserQuery.new.find(id)
+user.delete
+```
+
 ## Using scopes
 
 Generally it's best to name your query methods so they are easy to understand
