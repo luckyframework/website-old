@@ -86,7 +86,7 @@ to check if the submitted data was valid.
 You can use forms in HTML like this:
 
 > Remember: you *must* `allow` a field in order to use it in a form. If it isn’t
-allowed you can't use it.
+allowed the program will not compile.
 
 ```
 # src/pages/users/new_page.cr
@@ -126,6 +126,71 @@ class Users::Create < BrowserAction
       end
     end
   end
+end
+```
+
+### Select, email input, and other special inputs
+
+The main inputs that you can use with Lucky:
+
+* `text_input`
+* `email_input`
+* `color_input`
+* `hidden_input`
+* `number_input`
+* `telephone_input`
+* `url_input`
+* `search_input`
+* `password_input`
+* `range_input`
+* `textarea`
+
+```
+# Example using an email input
+email_input f.email, optional_html_attributes: "anything"
+```
+
+### Submit
+
+Call `submit` with the text to display
+
+```
+# In a page
+submit "Text", optional_html_attributes: "anything you want"
+```
+
+### Checkboxes
+
+```
+# If checked, will set the `admin` column to true
+checkbox f.admin, value: "true"
+```
+
+### Select with options
+
+```
+# Assuming you have a form with a category_id allowed
+select_input form.category_id do
+  options_for_select(form.category_id, categories_for_select)
+end
+
+private def categories_for_select
+  CategoryQuery.new.map do |category|
+    # The first element is the display name
+    # The second element is the value sent to the form
+    {category.title, category.id}
+  end
+end
+```
+
+### Labels
+
+```
+label_for f.title # Will display "Title"
+label_for f.title, "Custom Title" # Will display "Custom Title"
+label_for f.title do
+  text "Custom Title"
+  strong "(required)"
 end
 ```
 
