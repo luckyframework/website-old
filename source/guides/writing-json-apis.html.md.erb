@@ -161,9 +161,8 @@ class Api::Articles::Create < ApiAction
   action do
     # create! will raise if the params are invalid
     # The InvalidFormError will be caught and handled automatically
-    ArticleForm.create!(params) do |form, article|
-      json ShowJSON.new(article), Status::Created
-    end
+    article = ArticleForm.create!(params)
+    json ShowJSON.new(article), Status::Created
   end
 end
 ```
