@@ -24,6 +24,7 @@ Nothing at the moment.
 
 - Swapped the sassc gem for sass. ([#22])
 - Improved CircleCI configuration. ([#24])
+- Updated Migrations guide. ([#73])
 
 ## Removed
 
