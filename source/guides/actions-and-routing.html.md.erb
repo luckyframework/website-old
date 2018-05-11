@@ -26,6 +26,7 @@ You can route to an action by using `get`, `put`, `post` and `delete` macros, or
 class Users::Index < BrowserAction
   # GET requests to the /users path are handled by this action
   get "/users" do
+    # `text` sends plain/text to the client
     text "List of users goes here"
   end
 end
@@ -94,7 +95,7 @@ class Users::Index < BrowserAction
   param page : Int32 = 1
 
   action do
-    render_text "All users starting on page #{page}"
+    text "All users starting on page #{page}"
   end
 end
 ```
