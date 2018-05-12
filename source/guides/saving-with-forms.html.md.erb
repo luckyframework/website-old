@@ -14,7 +14,7 @@ maintainability, and catching bugs at compile time.
 
 When you set up a model, a `{ModelName}::BaseForm` will be created so that you can inherit
 from it and customize validations, callbacks, and what fields are allowed to be
-set. `{ModelName}::BaseForm` automatically defines a form field for each model field.
+filled. `{ModelName}::BaseForm` automatically defines a form field for each model field.
 
 We’ll be using the migration and model from the [Querying
 guide](/guides/querying-the-database/). Once you have that set up, let’s set
@@ -33,20 +33,20 @@ and sends them a welcome email.
 ## Allowing params to be saved
 
 By default you won’t be able to set any data from params. This is a security
-measure to make sure that parameters can only be set that you want to allow. For
-example, you might not want your users to be able to set an admin status through
-the `UserForm`.
+measure to make sure that parameters can only be set that you want to allow
+users to fill out. For example, you might not want your users to be able to
+set an admin status through the `UserForm`.
 
-To allow a field to be saved to the database, use the `allow` macro:
+To allow a field to be saved to the database, use the `fillable` macro:
 
 ```
 # src/forms/user_form.cr
 class UserForm < User::BaseForm
-  allow name
+  fillable name
 end
 ```
 
-Now you will be able to save the user’s name with form params.
+Now you will be able to fill out the user’s name with form params.
 
 ## Creating records
 
@@ -108,8 +108,8 @@ See [Writing JSON APIs guide](/guides/writing-json-apis#saving-to-the-database).
 
 You can use forms in HTML like this:
 
-> Remember: you *must* `allow` a field in order to use it in a form. If it isn’t
-allowed the program will not compile.
+> Remember: you *must* mark a field as `fillable` in order to use it in a
+> form. If it isn’t fillable the program will not compile.
 
 ```
 # src/pages/users/new_page.cr
@@ -192,7 +192,7 @@ checkbox f.admin, value: "true"
 ### Select with options
 
 ```
-# Assuming you have a form with a category_id allowed
+# Assuming you have a form with a fillable category_id
 select_input form.category_id do
   options_for_select(form.category_id, categories_for_select)
 end
@@ -237,7 +237,7 @@ You can use validations inside of the `prepare` callback:
 
 ```
 class UserForm < User::BaseForm
-  allow name, password, password_confirmation, terms_of_service, age
+  fillable name, password, password_confirmation, terms_of_service, age
 
   def prepare
     validate_required name
@@ -439,7 +439,7 @@ require "crypto/bcrypt/password"
 
 class SignUpForm < User::BaseForm
   # These are fields that will be saved to the database
-  allow name, email
+  fillable name, email
   # Fields that users can fill out, but aren't saved to the database
   virtual password : String
   virtual password_confirmation : String
@@ -515,7 +515,7 @@ You can do this with a module:
 # src/forms/mixins/user_form_defaults
 module UserFormDefaults
   macro included
-    allow name, age, email
+    fillable name, age, email
   end
 
   def prepare
@@ -530,7 +530,7 @@ Then in your form:
 # src/forms/admin_user_form.cr
 class AdminUserForm < User::BaseForm
   include UserFormDefaults
-  allow work_email
+  fillable work_email
 
   def prepare
     super

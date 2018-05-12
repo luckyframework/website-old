@@ -97,8 +97,9 @@ formatted in a way LuckyRecord knows how to handle.
 Let’s say you have a form called `ArticleForm`. Lucky will look for the data
 nested under an `article` key:
 
-> Remember to `allow {{field name}}` or the field will be ignored. In this case,
-add `allow title` to the `ArticleForm` to allow the `title` field to be saved.
+> Remember to add `fillable {{field name}}` or the field will be ignored. In
+> this case, add `fillable title` to the `ArticleForm` to allow the `title`
+> field to be saved.
 
 ```json
 {

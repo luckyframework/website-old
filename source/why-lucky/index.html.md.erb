@@ -161,12 +161,12 @@ sure all your customers are happy, even on slow connections.
 
 Lucky makes sure only allowed parameters are saved to the database. It even
 catches issues at compile time when you try to add a form input for a parameter
-that isn’t allowed.
+that isn’t allowed to be filled out.
 
 ```
 # A form that is used to register a new user
 class RegistrationForm < User::BaseForm
- allow name, email # company_name is not allowed
+  fillable name, email # company_name is not allowed to be filled out
 end
 
 # An HTML form for a user to fill out
