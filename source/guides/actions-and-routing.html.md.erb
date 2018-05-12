@@ -258,10 +258,11 @@ class Users::Create < BrowserAction
 end
 ```
 
-## Using pipes
+## Run code before or after actions with pipes
 
-Sometimes you want to do things before or after running one or more actions. To
-do this, you can use pipes. There is a `before` and `after` macro for running pipes.
+Sometimes you want to do things before or after running one or more actions.
+To do this, you can use pipes. There is a `before` and `after` macro for
+running pipes.
 
 ```
 # src/actions/admin/users/index.cr
@@ -286,20 +287,59 @@ class Admin::Users::Index < BrowserAction
 end
 ```
 
-Pipe methods *must* explicitly return `continue` or return a
-`LuckyWeb::Response` by rendering, or redirecting. If a `LuckyWeb::Response` is
+Pipe methods *must* return `continue` or return a
+`LuckyWeb::Response` by rendering or redirecting. If a `LuckyWeb::Response` is
 returned by rendering or redirecting, then no other pipe will run and the action
 will not be called.
 
-### Sharing common pipes
+## Sharing common logic with mixin modules
 
-Sometimes you want to apply a pipe to many actions. To do that you can extract a
-new type of action. Let's do that for our admin example above.
+> This is recommended over class inheritance in most cases. It is more flexible
+> and can be used across action types.
+
+Sometimes logic need to be shared in a more flexible way. Let's say we want
+to log certain actions. We may want to log actions in our API or
+browser-based HTML actions so it doesn't make sense to extract a base class
+like `LoggedAction` Instead we'll use a `LogRequestPipe` mixin module:
+
+```crystal
+# src/actions/mixins/log_request_pipe.cr
+module LogRequestPipe
+  macro included
+    after log_request_path
+  end
+
+  private def log_request_path
+    MyCustomLogger.log(request.path)
+  end
+end
+```
+
+We can then include it in the actions that need it:
+
+```crystal
+# src/actions/dashboard/show.cr
+class Dashboard::Show < BrowserAction
+  include LogRequestPipe
+
+  get "/dashboard" do
+    text "The dashboard"
+  end
+end
+```
+
+## Sharing common logic with inheritance
+
+Sometimes you want to apply a pipe or other code to many actions. To do that
+you can extract a new type of action. Let's do that for our admin example
+above.
 
 ```crystal
 # src/actions/admin_action.cr
 abstract class AdminAction < BrowserAction
-  before require_admin
+  macro inherited
+    before require_admin
+  end
 
   private def require_admin
     if current_user.admin?
@@ -327,38 +367,6 @@ class Admin::Users::Index < AdminAction
 end
 ```
 
-### Sharing pipes with modules
-
-Sometimes pipes need to be shared in a more flexible way. Let's say we want to
-log certain actions. They may be admin action or guest actions so it doesn't make
-sense to extract a base class like `LoggedAction` Instead we'll use a
-`LogRequestPipe` module:
-
-```crystal
-# src/pipes/log_request_pipe.cr
-module LogRequestPipe
-  macro included
-    after log_request_path
-  end
-
-  private def log_request_path
-    MyCustomLogger.log(request.path)
-  end
-end
-```
-
-We can then include it in the actions that need it:
-
-```crystal
-# src/actions/dashboard/show.cr
-class Dashboard::Show < BrowserAction
-  include LogRequestPipe
-
-  get "/dashboard" do
-    text "The dashboard"
-  end
-end
-```
 
 ## Cookies and sessions
 
@@ -396,12 +404,12 @@ flash.info = "Be cool"
 ```
 
 These will be rendered by the flash component in
-`src/components/shared/flash_component.cr`. The flash component is called
+`src/components/shared/flash_messages.cr`. The flash component is called
 from your `MainLayout` (`src/pages/main_layout.cr`) by the `render_flash`
 method.
 
-You can modify the layout or the component to add classes, change where flash
-is rendered, etc.
+You can modify the layout or the component to add HTML classes, change where
+flash is rendered, etc.
 
 ### Setting other messages
 

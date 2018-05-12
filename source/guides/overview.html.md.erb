@@ -88,13 +88,14 @@ Custom HTTP handlers. These can be used to do something for all HTTP requests.
 Great for things like loggers, setting up headers that apply to all requests,
 etc.
 
-It's more likely that you will use `pipes` for most business logic because they
-can be used selectively on a per action basis.
+It's more likely that you will use `action/mixins` for most business logic
+because they can be used selectively on a per action basis.
 
-### `pipes` folder
+### `actions/mixins` folder
 
-Pipes are used to do things before or after an action is run. Great for
-authentication, authorization, or ensuring certain headers are set.
+Actions mixins are modules that you can include in actions. Great for
+authentication, authorization, setting up finders or ensuring certain headers
+are set.
 
 ### `queries` folder
 
