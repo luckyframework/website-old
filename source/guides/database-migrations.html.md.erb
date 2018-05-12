@@ -16,13 +16,129 @@ First you'll need to create a database using `lucky db.create`
 
 You can drop the database by calling `lucky db.drop`
 
-## Generating a new migration
+## Migration
 
-When you want to add or modify the database you can create a new migration using `lucky gen.migration {migration_name}`
+### Introduction
+
+Migrations are an easy way to alter database schema in a convenient
+ and easy way over time.
+
+ You can think of migration as 'version control' for your database.
+
+### Generating a new migration
+
+To create a new migration, use the `lucky gen.migration` command.
+
+> When you want to add or modify the database you can create a new migration using `lucky gen.migration {migration_name}`
 
 For example:
 
 `lucky gen.migration CreateUsers` or `lucky gen.migration AddAgeToUsers`
+
+The new migration file will be placed in the `db/migrations` directory.
+
+Each migration filename contains a timestamp which allows Lucky to determine the order of migrations.
+
+### Migration Structure
+
+A migration class contains two methods: `migrate` and `rollback`. 
+The `migrate` method is used to add new tables, columns, or indexes 
+to your database, while the `rollback` method reverses the operations performed by the `migrate` method.
+
+```crystal
+ class CreateUsers::V20180305232601 < LuckyMigrator::Migration::V1
+  def migrate
+     create :users do
+      add name : String
+      add email : String
+      add avatar : String?
+      add password : String
+
+     end
+
+    # Run custom SQL with execute
+    #
+    # execute "CREATE UNIQUE INDEX things_title_index ON things (title);"
+  end
+
+  def rollback
+     drop :things
+  end
+end
+```
+
+### Running a migration
+
+To run all your outstanding migrations, run the `db.migrate` command.
+> `lucky db.migrate`
+
+### Rolling back migration
+
+To rollback the latest migration command, use the `rollback` command.
+
+> `lucky db.rollback`
+
+### Column Modifiers
+
+Column modifiers can be applied when creating or changing a column:
+
+* `index`: Adds an index for the column.
+
+  ```crystal
+    add first_name : String, index: true
+  ```
+* `unique`: Specifies that a column's value should be unique.
+
+  ```crystal
+    add username : String, unique: true
+  ```
+
+* `create_index`: Adds an index to a specified column.
+
+  ```crystal
+   create_index :users, :last_name, unique: true
+  ```
+
+* `drop_index`: Removes an index to a specified column.
+
+  ```crystal
+    drop_index :users, :last_name, if_exists: true, on_delete: :cascade
+  ```
+
+* `create_foreign_key`: Adds foreign key constraint to guarantee referential integrity.
+    
+   ```crystal
+    create_foreign_key :comments, :users, on_delete: :cascade, column: :author_id, primary_key: :id
+   ```
+
+* `default`: Allows to set a default value on the column.
+
+  ```crystal
+    add age : Int32, default: 1
+  ```
+
+* `precision`:  Defines the precision for the decimal fields, 
+    representing the total number of digits in the number.
+
+* `scale`: Defines the scale for the decimal fields, 
+  representing the number of digits after the decimal point.
+
+  ```crystal
+    add salary : Float, precision: 10, scale: 2
+   ```
+
+  Note: `precision` and `scale` are set only on columns with Float type.
+
+* `belongs_to`: creates a one-to-one match with another model.This means that this class contains the foreign key.
+
+  ```crystal
+   def migrate
+    create :comments do
+      add_belongs_to user : User, references: :users, on_delete: :cascade
+      add author_id : Int64
+    end
+  ```
+
 
 ## Creating and altering tables
 
@@ -78,6 +194,3 @@ You must always pass an `on_delete` option
 
 For things Lucky doesn't support, you can use `execute` to run any sql you want.
 
-## Running and rolling back migrations
-
-`lucky db.migrate` and `lucky db.rollback`
