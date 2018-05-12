@@ -417,9 +417,9 @@ make your program more reliable and easier to understand.
 ## Virtual fields
 
 Sometimes you want users to submit data that isn't saved to the database. For that
-we use `allow_virtual`.
+we use `virtual`.
 
-Here's an example of using `allow_virtual` to create a sign up form:
+Here's an example of using `virtual` to create a sign up form:
 
 ```
 # First we create a model
@@ -441,9 +441,9 @@ class SignUpForm < User::BaseForm
   # These are fields that will be saved to the database
   allow name, email
   # Fields that users can fill out, but aren't saved to the database
-  allow_virtual password : String
-  allow_virtual password_confirmation : String
-  allow_virtual terms_of_service : Bool
+  virtual password : String
+  virtual password_confirmation : String
+  virtual terms_of_service : Bool
 
   def prepare
     # Make sure the user has checked the terms of service box
