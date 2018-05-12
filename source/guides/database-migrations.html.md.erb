@@ -41,8 +41,8 @@ Each migration filename contains a timestamp which allows Lucky to determine the
 
 ### Migration Structure
 
-A migration class contains two methods: `migrate` and `rollback`. 
-The `migrate` method is used to add new tables, columns, or indexes 
+A migration class contains two methods: `migrate` and `rollback`.
+The `migrate` method is used to add new tables, columns, or indexes
 to your database, while the `rollback` method reverses the operations performed by the `migrate` method.
 
 ```crystal
@@ -106,7 +106,7 @@ Column modifiers can be applied when creating or changing a column:
   ```
 
 * `create_foreign_key`: Adds foreign key constraint to guarantee referential integrity.
-    
+
    ```crystal
     create_foreign_key :comments, :users, on_delete: :cascade, column: :author_id, primary_key: :id
    ```
@@ -117,10 +117,10 @@ Column modifiers can be applied when creating or changing a column:
     add age : Int32, default: 1
   ```
 
-* `precision`:  Defines the precision for the decimal fields, 
+* `precision`:  Defines the precision for the decimal fields,
     representing the total number of digits in the number.
 
-* `scale`: Defines the scale for the decimal fields, 
+* `scale`: Defines the scale for the decimal fields,
   representing the number of digits after the decimal point.
 
   ```crystal
@@ -129,16 +129,19 @@ Column modifiers can be applied when creating or changing a column:
 
   Note: `precision` and `scale` are set only on columns with Float type.
 
-* `belongs_to`: creates a one-to-one match with another model.This means that this class contains the foreign key.
+* `add_belongs_to`: creates a one-to-one or many-to-many match with another model. This means that this class contains the foreign key.
 
   ```crystal
    def migrate
     create :comments do
-      add_belongs_to user : User, references: :users, on_delete: :cascade
-      add author_id : Int64
+      # This will create an author_id column with an index and a foreign_key
+      # set to the users table.
+      #
+      # When the associated author is delete, their comments are also deleted
+      # because we set on_delete: :cascade
+      add_belongs_to author : User, on_delete: :cascade
     end
   ```
-
 
 ## Creating and altering tables
 
@@ -193,4 +196,3 @@ You must always pass an `on_delete` option
 ## Custom SQL
 
 For things Lucky doesn't support, you can use `execute` to run any sql you want.
-
