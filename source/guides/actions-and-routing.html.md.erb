@@ -35,16 +35,25 @@ end
 ## Root page
 
 By default Lucky generates a `Home::Index` action that handles the root path `"/"`.
-This is the action that shows you the Lucky logo when you first run `lucky dev`.
+This is the action that shows you the Lucky welcome page when you first run `lucky dev`.
 
 Change `Home::Index` to redirect the user to whatever action you want:
 
 ```
 # src/actions/home/index.cr
 class Home::Index < BrowserAction
+  include Auth::SkipRequireSignIn
+  unexpose current_user
+
   get "/" do
-    # Redirect to an action, in this case, `Users::Index`
-    redirect to: Users::Index
+    if current_user?
+      # By default signed in users go to the profile page
+      # You can redirect them somewhere else if you prefer
+      redirect Me::Show
+    else
+      # Change this to redirect to a different page when not signed in
+      render Lucky::WelcomePage
+    end
   end
 end
 ```
