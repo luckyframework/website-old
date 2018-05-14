@@ -303,19 +303,44 @@ that encrypts the users password and sends a welcome email after saving. Or you
 might have an `AdminUserForm` that saves a user and sends an admin specific
 email.
 
-You can use the following callbacks:
+### Prepare callback
 
-* `prepare`
-* `before_save`
-* `after_save(record : T)`
-
-To use them, define a method in the form. Note that the `after_save`
-callback needs to accept the newly created record. In this example, a `User`.
+The `prepare` callback is run whenever a form is validated or saved. It is
+customized by defining a `prepare` method. Validations and custom parsing
+that is required for validation generally go in this callback.
 
 ```
-class UserForm < User::BaseForm
-  def after_save(newly_saved_user : User)
-    # do something with the user
+class PostForm < Post::BaseForm
+  def prepare
+    validate_size_of title, min: 3
+  end
+end
+```
+
+### Callbacks for running before and after save
+
+* `before_save`
+* `before_create`
+* `before_update`
+* `after_save`
+* `after_create`
+* `after_update`
+
+Create a method you'd like to run and then pass the method name to the
+callback macro. Note that the methods used by the `after_*` callbacks needs
+to accept the newly created record. In this example, a `Post`.
+
+```
+class PostForm < Post::BaseForm
+  before_save run_this_before_save
+  after_create run_this_after_create
+
+  def run_this_before_save
+    # do something
+  end
+
+  def run_this_after_create(newly_created_post : Post)
+    # do something
   end
 end
 ```
