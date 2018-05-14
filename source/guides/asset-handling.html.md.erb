@@ -7,31 +7,32 @@ intro: >
   websites more fluid.
 ---
 
-## Asset handling with brunch
+## Asset handling with Webpack and Laravel Mix
 
-By default Lucky comes set up with asset handling using brunch. Brunch is
-configured with Babel to make your JavaScript work with on most browsers, and
-PostCSS with a variety of plugins to make writing CSS easier.
+By default Lucky comes set up with asset handling using Webpack through
+Laravel Mix. Laravel Mix is a wrapper for common Webpack functionality that
+makes configuring Webpack much simpler.
 
-## Why brunch?
+## Why Laravel Mix instead of plain Webpack?
 
-Because it's delicious.
+Lucky uses Laravel Mix because it is very simple to configure, it's fast, and
+it works well for a lot of apps. It is also has methods for configuring
+webpack as you normally would so you have the full power of Webpack when you
+need something more complex.
 
-## Seriously, why brunch?
-
-Lucky uses brunch because it is very simple to configure, it's fast, and it
-works well for a lot of apps.
-
-For a lot of people the default brunch setup will work out of the box, or with
+For a lot of people the default Laravel Mix setup will work out of the box, or with
 little configuration.
 
-If another asset handler is a better choice for you, feel free to use it! All
-Lucky needs is a json manifest of the files in `public/manifest.json`. Lucky
-uses that file to fingerprint assets in production.
+## Configuring Webpack
+
+There is a `webpack.mix.js` file in your project root. You can modify this to
+set up React, change your entry points, etc.
+
+Check out the Laravel Mix documentation for more examples of what you can do.
 
 ## Structuring your JavaScript
 
-Babel is set up so you can use new features of JavaScript. You can modify settings in the `.babelrc` file.
+Babel is set up so you can use new features of JavaScript.
 
 The entry point for JavaScript is `static/js/app.js`. You'll see that by default
 it imports Turbolinks for fast page rendering and RailsUjs to handle AJAX, links
@@ -39,42 +40,27 @@ with PUT and DELETE requests, and a few other things. Check the
 [Turbolinks](https://github.com/turbolinks/turbolinks) and
 [RailsUjs](https://github.com/rails/jquery-ujs/wiki) docs for more info.
 
-Note that RailsUjs is required if you are rendering HTML pages in Lucky. If you
-remove it, PUT and DELETE links will no longer work correctly.  You can safely
-remove Turoblinks without any problems if you don't want to use it.
+Note that *RailsUjs is required* if you are rendering HTML pages in Lucky. If
+you remove it, PUT and DELETE links will no longer work correctly. You can
+safely remove Turoblinks without any problems if you don't want to use it.
 
 To add new JavaScript add files to `static/js/{filename}` and import them in `static/js/app.js`
 
 ## Structuring your CSS
 
-The main css file is `static/css/app.css`.
+The main css file is `static/css/app.scss` and is rendered using SASS.
+Laravel Mix also sets up autoprefixer so you you styles automatically have
+vendor prefixes.
 
-You can import other files by putting them in `static/css/*`, and importing them
-from `app.css`. For example, you might put a component in `static/css/components/btn.pcss`.
-Remember to end the file with `.pcss` so it's imported correctly.
-
-There are some common imports in `static/css/app.css` that you can uncomment when
-you add files to those folders.
-
-```scss
-/* This is the default file in static/css/app.css
-@import "normalize.css";
-
-/* Uncomment these when you add files to variables, mixins or components */
-
-/* @import "variables/**.pcss"; */
-/* @import "mixins/**.pcss"; */
-/* For example, add `static/css/components/btn.pcss` and uncomment the next line */
-/* @import "components/**.pcss"; */
-```
+You can import other files by putting them in `static/css/*`, and importing
+them from `app.scss`. For example, you might put a component in
+`static/css/components/_btn.scss`. Remember to end the file with `.scss` so
+it's imported correctly.
 
 Lucky comes with some helpful plugins to make CSS a pleasure to write:
 
-* [Lost grid system](http://lostgrid.org)
+* [Lost grid system](http://lostgrid.org) for easily writing grids
 * [Normalize.css](https://necolas.github.io/normalize.css/) for making styles consistent
-* [postcssnext](http://cssnext.io) for making CSS backwards compatible
-* [postcss-sass-color-functions](https://www.npmjs.com/package/postcss-sass-color-functions) for working with colors
-* [PreCSS](https://github.com/jonathantneal/precss) which gives you things like mixins, partial imports, etc.
 
 ## Removing unwanted packages
 
@@ -84,14 +70,36 @@ remove the ones you don't want, run `yarn remove {package_name}`.
 If it is a CSS or JavaScript package you may also need to remove the imports from
 `static/css/app.css` or `static/js/app.js`.
 
+## Images, fonts and other assets
+
+You can put images, fonts and other assets in the `static/assets` folder.
+
+### Background images in CSS
+
+Webpack is set up to ensure your background images are present and
+fingerprinted. To have Webpack check your background images and make sure
+they are ready for caching, make sure to use relative URLs:
+
+```sass
+// Webpack will find the image and rewrite the URL
+background: url("../images/my-background.jpg")
+
+// Webpack will not do anything special because the path is not relative
+background: url("/images/my-background.jpg")
+```
+
 ## Loading assets
 
-You can access assets by using the `asset` helper in pages.
+You can get a path to your assets by using the `asset` helper in pages.
 
 ```crystal
 # in a page
 img src: asset("images/logo.png")
 ```
+
+Note that assets are checked at compile time so if it is not found, Lucky will
+let you know. It will also let you know if you had a typo and suggest an asset
+that is close to what you typed.
 
 ## Automatic reloading
 
@@ -119,5 +127,5 @@ is no fingerprint.
 If you deploy to Heroku, then you won't need to do anything. Lucky is already
 set up to build assets in production.
 
-If deploying outside Heroku, make sure to run `yarn run brunch -- build
---production` *before* compiling your project.
+If deploying outside Heroku, make sure to run `yarn prod` *before* compiling
+your project.
