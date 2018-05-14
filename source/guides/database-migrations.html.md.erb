@@ -16,6 +16,23 @@ First you'll need to create a database using `lucky db.create`
 
 You can drop the database by calling `lucky db.drop`
 
+## Seeding the database with data
+
+Lucky generates tasks for seeding the database with sample data and required data.
+There are instructions in the generated tasks that tell you how to use them.
+
+They are found in `tasks/create_sample_seeds.cr` and `tasks/create_required_seeds.cr`
+
+Run them with:
+
+* `lucky db.create_sample_seeds`
+* `lucky db.create_required_seeds`
+
+> These tasks are run when running `bin/setup`, but nothing is run in
+production by default. If you have required seeds that need to be run for
+your app to work you should probably run `lucky db.create_required_seeds` after
+you deploy your app.
+
 ## Migration
 
 ### Introduction
