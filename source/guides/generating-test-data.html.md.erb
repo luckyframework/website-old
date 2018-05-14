@@ -12,8 +12,8 @@ intro: >
 # spec/support/boxes/post_box.cr
 class PostBox < LuckyRecord::Box
   def initialize
-    title “My Post”
-    body “Test Body”
+    title "My Post"
+    body "Test Body"
   end
 end
 ```
@@ -28,6 +28,6 @@ PostBox.create_pair
 ### Overriding data
 
 ```
-PostBox.create &.title(“Draft”).body(“custom body”)
-PostBox.create_pair &.title(“Draft”)
+PostBox.create &.title("Draft").body("custom body")
+PostBox.create_pair &.title("Draft")
 ```
