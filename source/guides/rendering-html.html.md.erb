@@ -8,108 +8,6 @@ intro: >
   modules.
 ---
 
-## Layouts
-
-Pages have layouts that make it easier to share common elements.
-
-### Layouts in a default Lucky application
-
-* `MainLayout` - The layout used when a user is signed in
-* `GuestLayout` - The layout used when the user is not signed in
-
-Pages inherit from `MainLayout`, `GuestLayout` or another layout you decide to create.
-Layouts can declare [abstract
-methods](https://crystal-lang.org/docs/syntax_and_semantics/virtual_and_abstract_types.html)
-or use
-[`responds_to?`](https://crystal-lang.org/docs/syntax_and_semantics/if_varresponds_to.html)
-for more advanced page layouts.
-
-### Rendering page specific content in the layout
-
-Let's start with a quick example. In newly generated Lucky projects your
-layouts call `shared_layout_head`. This method is defined in
-`Shared::LayoutHead`. If you look in the `src/components/shared/layout_head`
-file you'll see that it defines and calls a `page_title` method.
-
-this means that you can customize the page title in your page by writing a
-`page_title` method:
-
-So to set a page specific title, do this:
-
-```
-# src/pages/users/index_page.cr
-class Users::IndexPage < MainLayout
-  # Override the page_title method that was originally
-  # defined in Shared::LayoutHead
-  def page_title
-    "List of users"
-  end
-end
-```
-
-This technique can be used to render other types of content, like a sidebar
-(similar to `content_for` in Rails):
-
-```
-# src/pages/main_layout.cr in the `render` method
-def render
-  # Other layout code left out for brevity
-  div class: "sidebar" do
-    # Now pages can render content in a sidebar
-    render_sidebar
-  end
-end
-
-# This makes it so that every page needs to implement the sidebar method
-# https://crystal-lang.org/docs/syntax_and_semantics/virtual_and_abstract_types.html
-abstract def render_sidebar
-```
-
-Then in a page:
-
-```crystal
-class Users::IndexPage < MainLayout
-  def content
-    text "Rendering something in the main part of the layout"
-  end
-
-  def render_sidebar
-    text "This is content for the sidebar"
-  end
-end
-```
-
-### Using `render_if_defined` in layouts for optional content
-
-Sometimes pages have almost the same layout, but have just one or two parts
-that are optional. You can handle this with
-[`responds_to?`](https://crystal-lang.org/docs/syntax_and_semantics/if_varresponds_to.html)
-and `render_if_defined`.
-
-> `responds_to?` should be used when pages mostly look the same, but have just
-minor changes to the layout that happen on some pages. If pages look
-significantly different, consider extracting a new layout class instead.
-
-```
-# Put this in a layout's `render` method
-# This makes it so that pages can have an optional `help_message`.
-if responds_to?(:help_section)
-  div class: "help-section" do
-    render_if_defined :help_section
-  end
-end
-
-# In a page with a help message
-class Admin::Users::IndexPage < MainLayout
-  def help_section
-    para "Click the 'export' button to export a CSV of all users"
-  end
-end
-```
-
-> Common layout components could be extracted to
-src/components/shared/{component_name}.cr. See ["Extract partials and shared code"](#extract-partials-and-shared-code)
-
 ## Rendering a page
 
 Let's say we have an action and we want to render all of our user's names:
@@ -264,6 +162,108 @@ div "email" do
   raw "&middot;" # Render a middot HTML entity
 end
 ```
+
+## Layouts
+
+Pages have layouts that make it easier to share common elements.
+
+### Layouts in a default Lucky application
+
+* `MainLayout` - The layout used when a user is signed in
+* `GuestLayout` - The layout used when the user is not signed in
+
+Pages inherit from `MainLayout`, `GuestLayout` or another layout you decide to create.
+Layouts can declare [abstract
+methods](https://crystal-lang.org/docs/syntax_and_semantics/virtual_and_abstract_types.html)
+or use
+[`responds_to?`](https://crystal-lang.org/docs/syntax_and_semantics/if_varresponds_to.html)
+for more advanced page layouts.
+
+### Rendering page specific content in the layout
+
+Let's start with a quick example. In newly generated Lucky projects your
+layouts call `shared_layout_head`. This method is defined in
+`Shared::LayoutHead`. If you look in the `src/components/shared/layout_head`
+file you'll see that it defines and calls a `page_title` method.
+
+this means that you can customize the page title in your page by writing a
+`page_title` method:
+
+So to set a page specific title, do this:
+
+```
+# src/pages/users/index_page.cr
+class Users::IndexPage < MainLayout
+  # Override the page_title method that was originally
+  # defined in Shared::LayoutHead
+  def page_title
+    "List of users"
+  end
+end
+```
+
+This technique can be used to render other types of content, like a sidebar
+(similar to `content_for` in Rails):
+
+```
+# src/pages/main_layout.cr in the `render` method
+def render
+  # Other layout code left out for brevity
+  div class: "sidebar" do
+    # Now pages can render content in a sidebar
+    render_sidebar
+  end
+end
+
+# This makes it so that every page needs to implement the sidebar method
+# https://crystal-lang.org/docs/syntax_and_semantics/virtual_and_abstract_types.html
+abstract def render_sidebar
+```
+
+Then in a page:
+
+```crystal
+class Users::IndexPage < MainLayout
+  def content
+    text "Rendering something in the main part of the layout"
+  end
+
+  def render_sidebar
+    text "This is content for the sidebar"
+  end
+end
+```
+
+### Using `render_if_defined` in layouts for optional content
+
+Sometimes pages have almost the same layout, but have just one or two parts
+that are optional. You can handle this with
+[`responds_to?`](https://crystal-lang.org/docs/syntax_and_semantics/if_varresponds_to.html)
+and `render_if_defined`.
+
+> `responds_to?` should be used when pages mostly look the same, but have just
+minor changes to the layout that happen on some pages. If pages look
+significantly different, consider extracting a new layout class instead.
+
+```
+# Put this in a layout's `render` method
+# This makes it so that pages can have an optional `help_message`.
+if responds_to?(:help_section)
+  div class: "help-section" do
+    render_if_defined :help_section
+  end
+end
+
+# In a page with a help message
+class Admin::Users::IndexPage < MainLayout
+  def help_section
+    para "Click the 'export' button to export a CSV of all users"
+  end
+end
+```
+
+> Common layout components could be extracted to
+src/components/shared/{component_name}.cr. See ["Extract partials and shared code"](#extract-partials-and-shared-code)
 
 ## Extract partials and shared code
 
