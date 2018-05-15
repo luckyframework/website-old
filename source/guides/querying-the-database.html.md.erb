@@ -9,12 +9,11 @@ intro: >
 
 ## Setting up a model
 
-We'll assume we ran a migration that created a name and age column. The name is
-a `String` and the age is an `Int32?`. The `age` column allows null because the
-type is nilable (designated by the `?`).
+Let's create a `User` model with `lucky gen.model User` and then add some
+columns. The name is a `String` and the age is an `Int32?`. The `age` column
+allows null because the type is nilable (designated by the `?`).
 
-Let's add the model for it with `lucky gen.model User` and then add some
-columns:
+> Note: we'll assume we ran a migration that created a name and age column.
 
 ```
 # src/models/user.cr
