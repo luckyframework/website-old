@@ -8,7 +8,109 @@ intro: >
   modules.
 ---
 
-## Rendering a page from an action
+## Layouts
+
+Pages have layouts that make it easier to share common elements.
+
+### Layouts in a default Lucky application
+
+* `MainLayout` - The layout used when a user is signed in
+* `GuestLayout` - The layout used when the user is not signed in
+
+Pages inherit from `MainLayout`, `GuestLayout` or another layout you decide to create.
+Layouts can declare [abstract
+methods](https://crystal-lang.org/docs/syntax_and_semantics/virtual_and_abstract_types.html)
+or use
+[`responds_to?`](https://crystal-lang.org/docs/syntax_and_semantics/if_varresponds_to.html)
+for more advanced page layouts.
+
+### Rendering page specific content in the layout
+
+Let's start with a quick example. In newly generated Lucky projects your
+layouts call `shared_layout_head`. This method is defined in
+`Shared::LayoutHead`. If you look in the `src/components/shared/layout_head`
+file you'll see that it defines and calls a `page_title` method.
+
+this means that you can customize the page title in your page by writing a
+`page_title` method:
+
+So to set a page specific title, do this:
+
+```
+# src/pages/users/index_page.cr
+class Users::IndexPage < MainLayout
+  # Override the page_title method that was originally
+  # defined in Shared::LayoutHead
+  def page_title
+    "List of users"
+  end
+end
+```
+
+This technique can be used to render other types of content, like a sidebar
+(similar to `content_for` in Rails):
+
+```
+# src/pages/main_layout.cr in the `render` method
+def render
+  # Other layout code left out for brevity
+  div class: "sidebar" do
+    # Now pages can render content in a sidebar
+    render_sidebar
+  end
+end
+
+# This makes it so that every page needs to implement the sidebar method
+# https://crystal-lang.org/docs/syntax_and_semantics/virtual_and_abstract_types.html
+abstract def render_sidebar
+```
+
+Then in a page:
+
+```crystal
+class Users::IndexPage < MainLayout
+  def content
+    text "Rendering something in the main part of the layout"
+  end
+
+  def render_sidebar
+    text "This is content for the sidebar"
+  end
+end
+```
+
+### Using `render_if_defined` in layouts for optional content
+
+Sometimes pages have almost the same layout, but have just one or two parts
+that are optional. You can handle this with
+[`responds_to?`](https://crystal-lang.org/docs/syntax_and_semantics/if_varresponds_to.html)
+and `render_if_defined`.
+
+> `responds_to?` should be used when pages mostly look the same, but have just
+minor changes to the layout that happen on some pages. If pages look
+significantly different, consider extracting a new layout class instead.
+
+```
+# Put this in a layout's `render` method
+# This makes it so that pages can have an optional `help_message`.
+if responds_to?(:help_section)
+  div class: "help-section" do
+    render_if_defined :help_section
+  end
+end
+
+# In a page with a help message
+class Admin::Users::IndexPage < MainLayout
+  def help_section
+    para "Click the 'export' button to export a CSV of all users"
+  end
+end
+```
+
+> Common layout components could be extracted to
+src/components/shared/{component_name}.cr. See ["Extract partials and shared code"](#extract-partials-and-shared-code)
+
+## Rendering a page
 
 Let's say we have an action and we want to render all of our user's names:
 
@@ -16,37 +118,16 @@ Let's say we have an action and we want to render all of our user's names:
 # in src/actions/users/index.cr
 class Users::Index < BrowserAction
   action do
-    # Renders the Users::IndexPage by default
-    render user_names: ["Paul", "Sally", "Jane"]
+    # Renders the Users::IndexPage
+    render IndexPage user_names: ["Paul", "Sally", "Jane"]
   end
 end
 ```
 
-By default `render` will render a page with the name of the class and `Page`
-appended. So if you used `render` in `MyCoolAction`, Lucky would try to render
-`MyCoolActionPage`.
+## Creating a page
 
-You could also tell `render` exactly which page to render like this:
-
-```
-render Users::IndexPage, user_names: ["Paul", "Sally", "Jane"]
-```
-
-This is helpful when you want to render a page used by multiple actions. For
-example, you might have an action for handling user searches that uses the
-`Users::IndexPage`:
-
-```crystal
-class UserSearches::Show < BrowserAction
-  get "/user_searches" do
-    render Users::IndexPage, user_names: ["Jane"]
-  end
-end
-```
-
-## Adding a page
-
-Let's create the page for our `Users::Index` action.
+Let's create the page for our `Users::Index` action. You can generate a file
+quickly with `lucky gen.page Users::IndexPage`, then modify it:
 
 ```crystal
 # in src/pages/users/index_page.cr
@@ -119,7 +200,6 @@ def content
   footer "Copyright Notice"
 end
 ```
-
 
 ## Special tags (link, form helpers, etc.)
 
@@ -209,8 +289,8 @@ end
 ### Share between pages with a module
 
 ```crystal
-# in src/components/users/components.cr
-module Users::Components
+# in src/components/users/header.cr
+module Users::Header
   private def render_user_header
     div class: "user-header" do
       h1 "Users"
@@ -221,182 +301,13 @@ end
 
 # and use it in the view
 class Users::ShowPage < MainLayout
-  include Users::Components
+  include Users::Header
 
   def content
     render_user_header
   end
 end
 ```
-
-## Layouts
-
-There is an automatically generated layout called `MainLayout`. Pages inherit
-from `MainLayout` or another layout you decide to create. Layouts can also
-declare [abstract
-methods](https://crystal-lang.org/docs/syntax_and_semantics/virtual_and_abstract_types.html)
-or use
-[`responds_to?`](https://crystal-lang.org/docs/syntax_and_semantics/if_varresponds_to.html)
-for more advanced page layouts.
-
-### Rendering page specific content in the layout
-
-Let's start with a quick example. In newly generated Lucky projects the
-`MainLayout` has a `render` method that calls `page_title`.
-
-```
-# in src/pages/main_layout.cr
-def render
-  # Other head, html and body code ommitted for brevity
-  title page_title
-end
-
-def page_title
-  "Welcome to Lucky"
-end
-```
-
-This makes it so that every page that inherits from `MainLayout` has a page title
-of "Welcome to Lucky".
-
-So to set a page specific title, do this:
-
-```
-# src/pages/users/index_page.cr
-class Users::IndexPage < MainLayout
-  # Override the page_title method defined by MainLayout
-  def page_title
-    "List of users"
-  end
-end
-```
-
-This technique can be used to render other types of content, like a sidebar
-(similar to `content_for` in Rails):
-
-```
-# src/pages/main_layout.cr in the `render` method
-def render
-  # Other layout code left out for brevity
-  div class: "sidebar" do
-    # Now pages can render content in a sidebar
-    render_sidebar
-  end
-end
-
-# This makes it so that every page needs to implement the sidebar method
-# https://crystal-lang.org/docs/syntax_and_semantics/virtual_and_abstract_types.html
-abstract def render_sidebar
-```
-
-Then in a page:
-
-```crystal
-class Users::IndexPage < MainLayout
-  def content
-    text "Rendering something in the main part of the layout"
-  end
-
-  def render_sidebar
-    text "This is content for the sidebar"
-  end
-end
-```
-
-### Using `responds_to?` in layouts
-
-Sometimes pages have almost the same layout, but have just one or two parts
-that are optional. You can handle this with
-[`responds_to?`](https://crystal-lang.org/docs/syntax_and_semantics/if_varresponds_to.html)
-
-> `responds_to?` should be used when pages mostly look the same, but have just
-minor changes to the layout that happen on some pages. If pages look
-significantly different, consider extracting a new layout class instead.
-
-```
-# Put this in a layout's `render` method
-# This makes it so that pages can have an optional `help_message`.
-if responds_to?(:help_message)
-  # Use `self.help_message` or Crystal will not be able to tell it is a method call.
-  para self.help_message, class: "help-text"
-end
-
-# In a page with a help message
-class Admin::Users::IndexPage < MainLayout
-  def help_message
-    "Click the 'export' button to export a CSV of all users"
-  end
-end
-```
-
-## Adding new layouts
-
-Different pages of apps have different looking layouts. In the following
-example, let's add a simple layout for authorization pages such as sign up, sign
-in, and resetting passwords. This layout only has a form and a title for the
-form.
-
-### Set up a new layout
-
-```
-# src/pages/auth_layout.cr
-abstract class AuthLayout
-  include Lucky::HTMLPage
-  # These are automatically generated components used by most layouts
-  # They allow you to render flash messages and field errors
-  # You can view & edit them in src/components/shared
-  include Shared::FieldErrorsComponent
-  include Shared::FlashComponent
-
-  # Tells Crystal to ensure all pages define these methods
-  abstract def form_title
-  abstract def content
-
-  def render
-    html_doctype
-
-    html lang: "en" do
-      head do
-        utf8_charset
-        title page_title
-        css_link asset("css/app.css")
-        js_link asset("js/app.js")
-      end
-
-      body do
-        render_flash # Made available by including Shared::FlashComponent
-        div class: "auth-wrapper" do
-          # Render the form title
-          h1 form_title, class: "auth-wrapper-title"
-          div class: "auth-wrapper-form" do
-            # Render the main form
-            content
-          end
-        end
-      end
-    end
-  end
-
-  def page_title
-    "Welcome to my app"
-  end
-end
-
-# Use the new AuthLayout
-# src/pages/sign_ins/new_page.cr
-class SignIns::NewPage < AuthLayout
-  def form_title
-    "Please sign in to my app"
-  end
-
-  def content
-    text "Render for signing in here"
-  end
-end
-```
-
-> Common layout components could be extracted to
-src/components/shared/{component_name}.cr. See ["Extract partials and shared code"](#extract-partials-and-shared-code)
 
 ## Sharing data used by all pages
 
@@ -440,42 +351,10 @@ end
 
 ### Full example
 
-```
-# in src/actions/browser_action.cr
-class BrowserAction
-  # This will now pass the result of calling current_user_name to every page
-  expose current_user_name
+The best way to learn about `expose` and `needs` is to look at the default generated
+actions in `src/actions` such as the `BrowserAction` in `src/actions/browser_action.cr`.
 
-  private def current_user_name
-    "The signed in user"
-  end
-end
+Then take a look at the layouts in `src/pages` to see how they use `needs`.
 
-# src/actions/users/index.cr
-class Users::Index < BrowserAction
-  action do
-    # Lucky will pass the result of `current_user_name` to the rendered page
-    # since we exposed the `current_user_name` in `BrowserAction`.
-    # If we hadn't exposed it we'd have to write: `render current_user_name: current_user_name`
-    render
-  end
-end
-
-# in src/pages/main_layout.cr
-class MainLayout < BasePage
-  include LuckyWeb::Page
-
-  # Now every page will require and have access to @current_user_name
-  needs current_user_name : String
-end
-
-# src/pages/users/index_page.cr
-class Users::IndexPage < MainLayout
-  # Don't need to type `needs current_user_name : String`
-  # since it was done in `MainLayout`
-
-  def render
-    h1 @current_user_name
-  end
-end
-```
+It is also helpful to look at the action mixins in `src/actions/mixins` these
+declare the exposures and pipes for authentication.
