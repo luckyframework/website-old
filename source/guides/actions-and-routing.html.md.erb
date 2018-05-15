@@ -21,6 +21,9 @@ which route it handles in the class itself.
 You can route to an action by using `get`, `put`, `post` and `delete` macros, or
 [Lucky can figure it out for you](#automatically-generate-restful-routes).
 
+Let's generate an index action for showing users with `lucky
+gen.action.browser Users::Index` to see what a simple action looks like:
+
 ```crystal
 # src/actions/users/index.cr
 class Users::Index < BrowserAction
@@ -31,6 +34,10 @@ class Users::Index < BrowserAction
   end
 end
 ```
+
+> Note `lucky gen.action.browser` is used to create actions that should be
+shown in a browser. You can also use `lucky gen.action.api` for actions meant
+to be used for a JSON API.
 
 ## Root page
 
