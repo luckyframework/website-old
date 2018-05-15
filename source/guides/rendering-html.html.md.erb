@@ -134,6 +134,48 @@ end
 > Since the link automatically includes the HTTP verb, you are guaranteed at
 compile time that the link will go to the right place.
 
+### Gotchas when using `link`
+
+Crystal will search for constants (classes and modules) in the current
+namespace first. This usually works fine, but there are times when Crystal
+may not know how to find the correct constant. In this case you can prefix
+the constant with `::` to look at the root namespace. This is best explained
+with an example
+
+Let's say we have a nested action and a non-nested action like this:
+
+```
+# Tasks nested in Projects namespace
+class Projects::Tasks::Index < BrowserAction
+  # call the action
+end
+
+# Tasks is not nested
+class Tasks::Show < BrowserAction
+  # call the action
+end
+```
+
+Crystal will incorrectly look for `Tasks::Show` in `Projects::Tasks`:
+
+```
+class Projects::Tasks::IndexPage < MainLayout
+  def content
+    # Crystal will look for Projects::Tasks::Show since it is called within
+    # Projects::Tasks. Crystal will see the Tasks constant and assume that's
+    # what we want
+    link "View task", Tasks::Show.with(123)
+  end
+end
+```
+
+To fix this, prefix the call constant with `::`
+
+```
+# This tells Crystal to look for the top-level Tasks constant
+link "View task", ::Tasks::Show.with(123)
+```
+
 ### Rendering HTML forms
 
 There are some helpers for rendering HTML forms. For more info see the [saving
