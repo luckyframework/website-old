@@ -6,10 +6,6 @@ intro: >
   forms to validate, format, and save data in a type safe and flexible way.
 ---
 
-> Expect forms in Lucky to change often while in alpha. We will be experimenting
-a lot with different APIs to try to keep the best balance between simplicity,
-maintainability, and catching bugs at compile time.
-
 # Setting up a form
 
 When you set up a model, a `{ModelName}::BaseForm` will be created so that you can inherit
@@ -26,9 +22,9 @@ class UserForm < User::BaseForm
 end
 ```
 
-> You can have more than one form object to save a record in different ways. For
-example, you might have a `RegistrationForm` that encrypts the user’s password
-and sends them a welcome email.
+> You can have more than one form object to save a record in different ways.
+For example, default Lucky apps have a `SignUpForm` specifically for handling
+user sign ups.
 
 ## Allowing params to be saved
 
@@ -74,6 +70,10 @@ end
 
 ## Updating records
 
+In contrast to `create`, `update` will always pass the record to the block. To check
+if any changes were persisted, you can call `form.saved?`, or `form.valid?`
+to check if the submitted data was saved.
+
 ```
 # inside of an action with some form params
 user = UserQuery.new.first
@@ -86,14 +86,11 @@ UserForm.update(user, params) do |form, updated_user|
 end
 ```
 
-In contrast to `create`, `update` will always pass the record to the block. To check
-if any changes were persisted, you can call `form.saved?`, or `form.valid?`
-to check if the submitted data was saved.
-
 ### Update with `update!`
 
 `update!` will raise if the form fails to save or is invalid.
-This version is often used when [writing JSON APIs](/guides/writing-json-apis).
+This version is often used when [writing JSON APIs](/guides/writing-json-apis)
+or for creating sample data in your the seed tasks in the `/tasks` folder.
 
 ```
 user = UserQuery.new.first
@@ -117,10 +114,10 @@ class Users::NewPage < MainLayout
   needs user_form : UserForm
 
   def content
-    render_user_form(@user_form)
+    render_form(@user_form)
   end
 
-  private def render_user_form(f)
+  private def render_form(f)
     form_for Users::Create do
       label_for f.name
       text_input f.name
@@ -132,7 +129,7 @@ class Users::NewPage < MainLayout
 end
 ```
 
-> A private method `render_user_form` is extracted because it makes it easier to
+> A private method `render_form` is extracted because it makes it easier to
 reference the form as `f`. It also makes it easier to see what a page looks like
 with a quick glance at the `render` method.
 
@@ -151,6 +148,38 @@ class Users::Create < BrowserAction
   end
 end
 ```
+
+### Simplify inputs with `Shared::Field`
+
+In the above form we had to write a fair amount of code to show a label, input,
+and errors tag. Lucky generates a `Shared::Field` component that you can use
+and customize to make this simpler. It is found in `src/components/shared/field.cr`
+and is used in pages like this:
+
+```
+# in a page
+field(f.name) { |i| text_input(i) }
+
+# equivalent to
+label_for f.name
+text_input f.name
+errors_for f.name
+```
+
+You can pass the same options to `text_input` as you normally would:
+
+```
+field(f.name) { |i| text_input(i, autofocus: "true", class: "input") }
+```
+
+Or use a different kind of input
+
+```
+field(f.email) { |i| email_input(i) }
+```
+
+Look in `src/components/shared/field.cr` to see even more options and customize
+the generated markup.
 
 ### Select, email input, and other special inputs
 
@@ -496,10 +525,10 @@ class SignUps::NewPage < MainLayout
   needs sign_up_form : SignUpForm
 
   def content
-    render_sign_up_form(@sign_up_form)
+    render_form(@sign_up_form)
   end
 
-  private def render_sign_up_form(f)
+  private def render_form(f)
     form_for SignUps::Create do
       # labels and errors_for ommitted for brevity
       f.text_input f.name
@@ -516,17 +545,14 @@ end
 
 ## Saving forms without a params object
 
-> This will be improved soon. Right now there is very little type safety when
-creating forms this way.
-
 This can be helpful if you’re saving something that doesn’t need an HTML form,
 like if you only need the params passed in the path.
 
 ```
-UserForm.new(name: "Paul").create
+UserForm.create!(name: "Paul")
 
 # for updates
-UserForm.new(existing_user, name: "David").update
+UserForm.update!(existing_user, name: "David")
 ```
 
 ## Sharing common validations, callbacks, etc.
@@ -537,14 +563,15 @@ validations, allowances, etc.
 You can do this with a module:
 
 ```
-# src/forms/mixins/user_form_defaults
-module UserFormDefaults
-  macro included
-    fillable name, age, email
-  end
-
-  def prepare
-    validate_old_enough_to_use_website
+# src/forms/mixins/age_validation.cr
+module AgeValidation
+  private def validate_old_enough_to_use_website
+    # The value of age might be `nil` so we need to use `try`
+    age.value.try do |value|
+      if value < 13
+        field.add_error "must be at least 13 to use this site"
+      end
+    end
   end
 end
 ```
@@ -554,11 +581,12 @@ Then in your form:
 ```
 # src/forms/admin_user_form.cr
 class AdminUserForm < User::BaseForm
-  include UserFormDefaults
-  fillable work_email
+  include AgeValidation
+  fillable email, age
 
   def prepare
-    super
+    # Call the validation
+    validate_old_enough_to_use_website
     admin.value = true
   end
 end
