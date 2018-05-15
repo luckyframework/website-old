@@ -442,11 +442,13 @@ class CommentForm < Comment::BaseForm
     end
   end
 end
+```
 
 > Note that `author` is not required when calling `UserForm.new` when using
 the `on` option. This means `author` can be `nil` in the form. That's why we
 needed to use `try` in the `prepare` method.
 
+```
 # You must pass an author when creating
 CommentForm.create(params, author: a_user) do |form, user|
   # do something
