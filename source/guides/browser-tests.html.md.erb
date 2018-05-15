@@ -78,7 +78,7 @@ class PublishPostFlow < BaseFlow
 
   def publish_post
     fill_form ArticleForm,
-	    title: "Published Post"
+      title: "Published Post"
     click "@publish-post"
   end
 
