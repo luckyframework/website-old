@@ -1,5 +1,5 @@
 ---
-title: Querying the Database
+title: Models and Querying the Database
 order: 6
 intro: >
   Lucky comes with a flexible and type safe ORM called LuckyRecord. It allows for
@@ -13,7 +13,8 @@ We'll assume we ran a migration that created a name and age column. The name is
 a `String` and the age is an `Int32?`. The `age` column allows null because the
 type is nilable (designated by the `?`).
 
-Let's add the model for it:
+Let's add the model for it with `lucky gen.model User` and then add some
+columns:
 
 ```
 # src/models/user.cr
@@ -53,7 +54,8 @@ end
 
 `User::BaseQuery` has methods for querying and retrieving users such as:
 
-* `first`
+* `first` - will rise if a record is not found
+* `first?` - for when you want to allow `nil` to be returned
 * `find`
 * All methods included by `Enumerable(T)`, such as `each` and `map`
 
