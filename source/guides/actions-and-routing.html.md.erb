@@ -309,11 +309,11 @@ will not be called.
 Sometimes logic need to be shared in a more flexible way. Let's say we want
 to log certain actions. We may want to log actions in our API or
 browser-based HTML actions so it doesn't make sense to extract a base class
-like `LoggedAction` Instead we'll use a `LogRequestPipe` mixin module:
+like `LoggedAction` Instead we'll use a `LogRequest` mixin module:
 
 ```crystal
-# src/actions/mixins/log_request_pipe.cr
-module LogRequestPipe
+# src/actions/mixins/log_request.cr
+module LogRequest
   macro included
     after log_request_path
   end
@@ -329,7 +329,7 @@ We can then include it in the actions that need it:
 ```crystal
 # src/actions/dashboard/show.cr
 class Dashboard::Show < BrowserAction
-  include LogRequestPipe
+  include LogRequest
 
   get "/dashboard" do
     text "The dashboard"
@@ -375,7 +375,6 @@ class Admin::Users::Index < AdminAction
   end
 end
 ```
-
 
 ## Cookies and sessions
 
