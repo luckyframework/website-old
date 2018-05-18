@@ -29,6 +29,10 @@ order:
 `heroku config:set SECRET_KEY_BASE=<GENERATED_SECRET_KEY>`
 * Set `APP_DOMAIN`:
 `heroku config:set APP_DOMAIN=https://your-domain.com`
+* If you are sending emails, set `SEND_GRID_KEY`:
+`heroku config:set SEND_GRID_KEY=<key from sendgrid.com>`. If you're not
+sending emails, go to `config/email.cr` and change the adapter to
+`Carbon::DevAdapter`.
 * Add a
 [postgresql database](https://elements.heroku.com/addons/heroku-postgresql)
 add-on:
@@ -141,6 +145,20 @@ $ lucky gen.secret_key
 <GENERATED_SECRET_KEY>
 $ heroku config:set SECRET_KEY_BASE=<GENERATED_SECRET_KEY>
 ```
+
+### `SEND_GRID_KEY` (optional)
+
+If you are sending emails, you'll need to sign up for an account and get an
+API key from SendGrid.com. Once you have it we can set the `SECRET_KEY_BASE`
+environment variable:
+
+```bash
+$ heroku config:set SEND_GRID_KEY=<KEY>
+```
+
+If you don't need to send emails, you'll need to change the config in
+`config/email.cr` to use the `Carbon::DevAdapter`. When you open the file there
+will be comments showing you what to do.
 
 ## Adding a database
 
