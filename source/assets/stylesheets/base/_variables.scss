@@ -1,5 +1,5 @@
 // Typography
-$base-font-family: 'Lato' $font-stack-system;
+$base-font-family: "Lato" $font-stack-system;
 $heading-font-family: $base-font-family;
 
 // Line height
@@ -39,3 +39,5 @@ $focus-outline-offset: 2px;
 // Animations
 $base-duration: 150ms;
 $base-timing: ease;
+
+$transition-base: 0.1s ease-in-out all;
