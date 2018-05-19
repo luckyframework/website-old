@@ -1,10 +1,14 @@
 .dark-body {
-  background-color: $dark-navy;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  background-image: linear-gradient(0deg, #274f8c 0%, #002748 100%);
   color: $light-gray;
   border-top: 3px solid $medium-green;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
 
   .header {
     background-image: none;
-    background-color: #021E37;
+    background-color: #021e37;
   }
 }

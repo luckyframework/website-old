@@ -9,17 +9,20 @@
   padding: 15px 30px;
   text-decoration: none;
   letter-spacing: 1px;
+  display: inline-block;
+  transition: $transition-base;
+  box-shadow: 0 3px 30px 0 rgba(0, 0, 0, 0.2);
+  background-image: linear-gradient(-180deg, #3de69f 0%, #22c37f 100%);
+  transform: scale(1);
 
   &:hover {
-    background: darken($medium-green, 10%);
     color: #fff;
+    transform: scale(1.05);
+    box-shadow: 0 12px 30px 0 rgba(0, 0, 0, 0.4);
   }
 
   &--blue {
     background: $lucky-blue;
-
-    &:hover {
-      background: darken($lucky-blue, 10%);
-    }
+    background-image: linear-gradient(-180deg, #47c4ff 0%, #2ba4ec 100%);
   }
 }
