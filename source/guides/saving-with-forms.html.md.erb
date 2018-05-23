@@ -255,6 +255,7 @@ Lucky comes with a few built in validations:
 * `validate_acceptance_of` - great for checking if someone accepts terms of service.
 * `validate_inclusion_of` - check that value is in a list of accepted values.
 * `validate_size_of` - check the size of a number.
+* `validate_uniqueness_of` - to only allow one record with a field's value
 
 > Note: non-nillable (required) fields automatically use
 `validate_required`. They will run after the `prepare` callback. This way data
@@ -273,6 +274,9 @@ class UserForm < User::BaseForm
     validate_confirmation_of password, with: password_confirmation
     validate_acceptance_of terms_of_service
     validate_inclusion_of age, in: [30, 40, 50]
+    validate_uniqueness_of name
+    # Alternatively, pass optional second argument to use a custom query
+    validate_uniqueness_of name, query: UserQuery.new.name.lower
     # Showing these version as an example
     # You would not want all three of these on a real form
     validate_size_of name, is: 4 # Name must be 4 characters long
