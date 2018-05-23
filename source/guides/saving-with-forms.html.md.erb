@@ -274,7 +274,9 @@ class UserForm < User::BaseForm
     validate_confirmation_of password, with: password_confirmation
     validate_acceptance_of terms_of_service
     validate_inclusion_of age, in: [30, 40, 50]
-    validate_uniqueness_of name, query: UserQuery.new.name.lower # optional second argument to pass a custom query
+    validate_uniqueness_of name
+    # Alternatively, pass optional second argument to use a custom query
+    validate_uniqueness_of name, query: UserQuery.new.name.lower
     # Showing these version as an example
     # You would not want all three of these on a real form
     validate_size_of name, is: 4 # Name must be 4 characters long
