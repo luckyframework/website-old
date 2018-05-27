@@ -57,7 +57,7 @@ something.
 
 ## Rendering HTML in our page
 
-We then wrote an `content` method in our class to render our HTML. The
+We then wrote a `content` method in our class to render our HTML. The
 `content` will be rendered in your `MainLayout` (defined in
 `src/pages/main_layout.cr`). Tags are generated with regular Crystal methods.
 Most all HTML5 tags are available by default.
@@ -186,7 +186,7 @@ data with forms](/guides/saving-with-forms/#using-with-html-forms) guide.
 Sometimes you want to render plain text. To do that use the `text` method.
 
 > Strings rendered with `text` are automatically HTML escaped for security. Text
-passed to tags are also escaped.
+passed to tags is also escaped.
 
 ```
 div "email" do
