@@ -1,11 +1,13 @@
-<%= table_of_contents(current_page) %>
+<h2 class="intro-card__heading">
+  All Guides
+</h2>
 
-<% if next_guide_page %>
-  <ul>
+<ul>
+  <% guides_pages.each do |guide_page| %>
     <li>
-      <a href="/<%= next_guide_page.path %>" class="intro-card__link intro-card__link--prominent">
-        Next: <%= next_guide_page.data.title %>
+      <a href="/<%= guide_page.path.gsub(".html", "") %>" class="intro-card__link <%= nav_active(guide_page.path) %>">
+        <%= guide_page.data.title %>
       </a>
     </li>
-  </ul>
-<% end %>
+  <% end %>
+</ul>

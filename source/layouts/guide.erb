@@ -6,12 +6,17 @@
       <%= partial "partials/header" %>
 
       <%= partial "partials/page-intro", locals: {
-        heading: partial("partials/guide_heading"),
-        text: current_page.data.intro,
+        heading: current_page.data.title,
         card: partial("partials/guide_table_of_contents") } %>
 
       <section class="text-container text-container--with-table-of-contents">
         <%= yield %>
+
+        <% if next_guide_page %>
+          <a href="/<%= next_guide_page.path %>" class="intro-card__link intro-card__link--prominent">
+            Next: <%= next_guide_page.data.title %>
+          </a>
+        <% end %>
       </section>
     </main>
     <%= partial "partials/analytics" %>

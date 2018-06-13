@@ -2,14 +2,19 @@
   @include centered-container;
   margin: 30px auto;
   color: $dark-navy;
-  font-size: 18px;
+  font-size: 16px;
   padding-bottom: 40px;
 
   &--with-table-of-contents {
-    padding-right: $intro-card-width + 60px;
+    padding-left: $intro-card-width + 60px;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     margin: 60px 0 24px 0;
 
     &:first-child {
@@ -21,8 +26,9 @@
     margin: 0 0 28px 0;
   }
 
-  h1, h2 {
-    color: #14A98F;
+  h1,
+  h2 {
+    color: #14a98f;
     letter-spacing: 1.8px;
     text-transform: uppercase;
     font-size: 18px;
@@ -58,8 +64,9 @@
     background-color: $lighter-gray;
   }
 
-  pre, blockquote {
-    background: #FFFFFF;
+  pre,
+  blockquote {
+    background: #ffffff;
     border-radius: 4px;
     padding: 10px 10px 10px 16px;
     margin: 30px 0 30px -16px;

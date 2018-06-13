@@ -1,29 +1,49 @@
+$intro-card-padding: 38px;
+
 .intro-card {
-  background: #FFFFFF;
-  box-shadow: 0 2px 11px 0 rgba(0,0,0,0.10);
+  background: #ffffff;
+  box-shadow: 0 2px 11px 0 rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  padding: 20px 38px;
+  padding: 20px 0;
   box-sizing: border-box;
   width: $intro-card-width;
 
+  &__heading {
+    text-transform: uppercase;
+    color: $dark-navy;
+    font-size: 13px;
+    border-bottom: 1px solid $light-gray;
+    opacity: 0.4;
+    margin: 10px 15px;
+    padding-bottom: 15px;
+    margin-left: $intro-card-padding;
+  }
+
   &__link {
     display: block;
-    padding: 13px 0;
-    color: $dark-navy;
+    padding: 12px $intro-card-padding;
+    color: $dark-gray;
     text-decoration: none;
     display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.1px;
 
-    a:hover {
-      text-decoration: underline;
+    &:hover {
+      background: transparantize($lucky-blue, 30%);
+    }
+
+    &.active {
+      color: $white;
+      background: $lucky-blue;
     }
   }
 
   &__link--prominent {
-    color: #15A38B;
+    color: #15a38b;
     font-size: 13px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     text-decoration: underline;
   }
-
 }
