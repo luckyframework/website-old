@@ -5,9 +5,16 @@
         <%= heading %>
       </h1>
 
-      <p class="page-intro__text">
-        <%= text %>
-      </p>
+      <ul class="page-intro__toc <% if heading_nodes(current_page).size > 6 %>page-intro__toc--wide<% end %>">
+        <% heading_nodes(current_page).each do |heading| %>
+          <li>
+            <%= content_tag :a,
+              heading.text,
+              href: "#" + heading[:id],
+              class: "page-intro__toc-link" %>
+          </li>
+        <% end %>
+      </ul>
     </div>
 
     <div class="intro-card">

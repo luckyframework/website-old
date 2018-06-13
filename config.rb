@@ -1,6 +1,8 @@
 require "lib/table_of_contents_helper"
+require "lib/nav_active_helper"
 
 helpers TableOfContentsHelper
+helpers NavActiveHelper
 
 activate :aria_current
 activate :autoprefixer
