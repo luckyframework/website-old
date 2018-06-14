@@ -6,7 +6,7 @@
   .intro-card {
     position: absolute;
     top: 20px;
-    left: 0;
+    left: 10px;
   }
 
   &__container {
@@ -54,6 +54,7 @@
 
     &--wide {
       column-count: 2;
+      break-inside: avoid;
     }
   }
 
@@ -68,6 +69,7 @@
     line-height: 24px;
     padding-left: 20px;
     max-width: 350px;
+    break-inside: avoid;
 
     &:hover {
       color: $white;

@@ -13,7 +13,7 @@
         <%= yield %>
 
         <% if next_guide_page %>
-          <a href="/<%= next_guide_page.path %>" class="intro-card__link intro-card__link--prominent">
+          <a href="/<%= next_guide_page.path %>" id="next-page-link" class="btn btn--subtle">
             Next: <%= next_guide_page.data.title %>
           </a>
         <% end %>
