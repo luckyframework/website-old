@@ -25,4 +25,16 @@
     background: $lucky-blue;
     background-image: linear-gradient(-180deg, #47c4ff 0%, #2ba4ec 100%);
   }
+
+  &--subtle {
+    border-radius: 5px;
+    box-shadow: none;
+    border: 1px solid $medium-green;
+
+    &:hover {
+      transform: inherit;
+      box-shadow: inherit;
+      text-decoration: underline;
+    }
+  }
 }
