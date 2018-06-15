@@ -17,7 +17,7 @@ To respond with JSON we use the `json` method in an action:
 ```
 # in src/actions/api/articles/show.cr
 class Api::Articles::Show < ApiAction
-  action do
+  route do
     json({title: "My Post"})
     # Add an optional status code
     json({title: "My Post"}, Status::OK) # or use an integer like `200`
@@ -52,7 +52,7 @@ end
 
 # in the action
 class Api::Articles::Show < ApiAction
-  action do
+  route do
     article = ArticleQuery.new.find(id)
     json Articles::ShowSerializer.new(article)
   end
@@ -81,7 +81,7 @@ end
 
 # in src/actions/api/articles/index.cr
 class Api::Articles::Index < ApiAction
-  action do
+  route do
     articles = ArticleQuery.new
     total = ArticleQuery.new.count
     json Articles::IndexSerializer.new(articles, total)
@@ -113,7 +113,7 @@ And then save it like you normally would:
 
 ```crystal
 class Api::Articles::Create < ApiAction
-  action do
+  route do
     ArticleForm.create(params) do |form, article|
       if article
         json Articles::ShowSerializer.new(article), Status::Created
@@ -159,7 +159,7 @@ using `create!` in our action:
 
 ```crystal
 class Api::Articles::Create < ApiAction
-  action do
+  route do
     # create! will raise if the params are invalid
     # The InvalidFormError will be caught and handled automatically
     article = ArticleForm.create!(params)

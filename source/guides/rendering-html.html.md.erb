@@ -15,7 +15,7 @@ Let's say we have an action and we want to render all of our user's names:
 ```crystal
 # in src/actions/users/index.cr
 class Users::Index < BrowserAction
-  action do
+  route do
     # Renders the Users::IndexPage
     render IndexPage user_names: ["Paul", "Sally", "Jane"]
   end
@@ -110,7 +110,7 @@ link "Link Text", to: "/somewhere", class: "some-html-class"
 # The real power comes when used with route helers from actions
 link "Show user", to: Users::Show.with("user_id"), class: "some-html-class"
 
-# Leave off `with` if an action doesn't need params
+# Leave off `with` if an route doesn't need params
 link "List of users", to: Users::Index
 ```
 
@@ -372,7 +372,7 @@ it manually:
 ```
 # Without `expose`
 class Users::Index < BrowserAction
-  action do
+  route do
     render current_user_name: current_user_name
   end
 
@@ -385,7 +385,7 @@ end
 class Users::Index < BrowserAction
   expose current_user_name
 
-  action do
+  route do
     render
   end
 end
