@@ -135,7 +135,7 @@ with a quick glance at the `render` method.
 
 ```
 class Users::Create < BrowserAction
-  action do
+  route do
     # params will have the form params sent from the HTML form
     UserForm.create(params) do |form, user|
       if user # if the user was saved
@@ -386,7 +386,7 @@ In this example, we'll associate a comment with a post:
 
 ```
 class Posts::Comments::Create < BrowserAction
-  action do
+  route do
     post = PostQuery.find(id)
     # Params contain the title and body, but not the post_id
     # So we set it ourselves

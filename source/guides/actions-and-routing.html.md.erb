@@ -110,7 +110,7 @@ Other times you may want to accept parameters in the query string, e.g. `https:/
 class Users::Index < BrowserAction
   param page : Int32 = 1
 
-  action do
+  route do
     text "All users starting on page #{page}"
   end
 end
@@ -144,12 +144,12 @@ REST is a way to make access to resources more uniform. It consists of the follo
 * `Update` - update an existing resource
 * `Delete` - delete the resource
 
-Use the `action` and `nested_action` macros to generate RESTful routes
+Use the `route` and `nested_route` macros to generate RESTful routes
 automatically based on the class name.
 
-### `action`
+### `route`
 
-For `action`, it will use the first part of the class name as the resource name,
+For `route`, it will use the first part of the class name as the resource name,
 and the second part as one of the resourceful actions listed above.
 
 ```crystal
@@ -158,13 +158,13 @@ and the second part as one of the resourceful actions listed above.
 class Users::Show < BrowserAction
   # Same as:
   #   get "/users/:id"
-  action do
+  route do
     text "The user with id of #{id}"
   end
 end
 ```
 
-### `nested_action`
+### `nested_route`
 
 For a nested resource it will use the third to last part as the
 nested resource name, the second to last part of the class name as the resource
@@ -177,7 +177,7 @@ name,  and the last part as one of the resourceful actions listed above.
 class Projects::Users::Index < BrowserAction
   # Same as:
   #   get "/projects/:project_id/users"
-  nested_action do
+  nested_route do
     text "Render list of users in project #{project_id}"
   end
 end
@@ -190,7 +190,7 @@ end
 class Admin::Projects::Index < BrowserAction
   # Same as:
   #   get "/admin/projects"
-  action do
+  route do
     text "Render list of projects"
   end
 end
@@ -198,7 +198,7 @@ end
 
 ### Examples of automatically generated routes
 
-For the `action` macro:
+For the `route` macro:
 
 *  `Users::Index`  -> `get "/users"`
 *  `Users::Show`  -> `get "/users/:id"`
@@ -210,7 +210,7 @@ For the `action` macro:
 * Multiple namespaces: `Api::V1::Users::Show`  -> `get "/api/v1/users/:id"`
 * Multi-word namespace: `MyAdminSection::Users::Show`  -> `get "/my_admin_section/users/:id"`
 
-For the `nested_action` macro:
+For the `nested_route` macro:
 
 *  `Projects::Users::Index`  -> `get "/projects/:project_id/users"`
 *  `Projects::Users::Show`  -> `get "/projects/:project_id/users/:id"`
@@ -235,7 +235,7 @@ You can access them as class methods on the action itself. They are:
 
 ```crystal
 class Projects::Users::Index < BrowserAction
-  # Normally you would use `nested_action`
+  # Normally you would use `nested_route`
   # We'll use `get` here to make the example more clear
   get "projects/:project_id/users" do
     text "Users"
@@ -265,7 +265,7 @@ need any params. You can see this in the first `redirect` example below.
 
 ```crystal
 class Users::Create < BrowserAction
-  action do
+  route do
     redirect to: Users::Index # Default status is 302
     redirect to: Users::Show.with(id: "user_id") # If the action needs params
     redirect to: "/somewhere_else" # Redirect using a string path
