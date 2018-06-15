@@ -15,9 +15,9 @@ To get Lucky, you need to install these first.
   [Heroku CLI (great if you plan to use Heroku to deploy)](https://devcenter.heroku.com/articles/heroku-cli#download-and-install),
   [forego](https://github.com/ddollar/forego#installation),
   or [foreman](https://github.com/ddollar/foreman#installation).
-* [Node](https://nodejs.org/en/download/)
+* [Node](https://nodejs.org/en/download/). Requires at least v6
 * [Yarn](https://yarnpkg.com/lang/en/docs/install/)
-* [Crystal](https://crystal-lang.org/docs/installation/). Requires at least v0.24.1
+* [Crystal](https://crystal-lang.org/docs/installation/). Requires at least v0.25
 * Postgres ([macOS](https://postgresapp.com)/[Others](https://wiki.postgresql.org/wiki/Detailed_installation_guides))
 * Necessary libraries: On Debian (Ubuntu should be similar) run "apt-get install libc6-dev libevent-dev libpcre2-dev libssl1.0-dev libyaml-dev zlib1g-dev"
 
@@ -44,7 +44,7 @@ Crystal knows where OpenSSL is located.
 
 * `git clone` the CLI repo at https://github.com/luckyframework/lucky_cli
 * cd into the newly cloned directory
-* Check out latest [released version](https://github.com/luckyframework/lucky_cli/releases) `git checkout v0.10.0`
+* Check out latest [released version](https://github.com/luckyframework/lucky_cli/releases) `git checkout v0.11.0`
 * Run `crystal deps`
 * Run `crystal build src/lucky.cr --release --no-debug`
 * Move the generated `lucky` binary to your path. Most of the time you can move
