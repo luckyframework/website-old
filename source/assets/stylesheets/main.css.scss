@@ -19,8 +19,32 @@
 @import "dark-body";
 @import "text-container";
 @import "syntax-colors";
-@import "algolia-docsearch";
+@import "docsearch";
 @import "helpers";
+
+.algolia-docsearch {
+  background: transparentize($color: #fff, $amount: 0.8);
+  border-radius: 20px;
+  border: none;
+  color: #fff;
+  margin: 0;
+  max-width: 160px;
+  padding-left: 15px;
+
+  &:focus {
+    background: #fff;
+    color: #000;
+  }
+
+  &::placeholder {
+    color: transparentize($color: #fff, $amount: 0.4);
+    font-style: italic;
+  }
+
+  &:focus::placeholder {
+    color: transparentize($color: #000, $amount: 0.6);
+  }
+}
 
 body {
   font-family: "Lato", sans-serif;
