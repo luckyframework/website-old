@@ -30,7 +30,8 @@ $intro-card-padding: 38px;
     letter-spacing: 1.1px;
 
     &:hover {
-      background: transparantize($lucky-blue, 30%);
+      background: $lighter-gray;
+      text-decoration: underline;
     }
 
     &.active {
