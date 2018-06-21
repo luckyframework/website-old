@@ -17,7 +17,7 @@ Let's say we have an action and we want to render all of our user's names:
 class Users::Index < BrowserAction
   route do
     # Renders the Users::IndexPage
-    render IndexPage user_names: ["Paul", "Sally", "Jane"]
+    render IndexPage, user_names: ["Paul", "Sally", "Jane"]
   end
 end
 ```
