@@ -196,7 +196,7 @@ add_index :email, unique: true
       # This will create an author_id column with an index and a foreign_key
       # set to the users table.
       #
-      # When the associated author is deleteed, their comments are also deleted
+      # When the associated author is deleted, their comments are also deleted
       # because we set on_delete: :cascade
       add_belongs_to author : User, on_delete: :cascade
     end
