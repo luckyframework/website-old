@@ -54,7 +54,7 @@ Then create a Flow object that performs the interactions and assertions:
 
 ```
 # spec/support/flows/publish_post_flow.cr
-class PublishPostFlow < BaseFlow
+class PublishPostFlow < LuckyFlow
   def start_draft
     visit Articles::Index
     click "@new-post"
