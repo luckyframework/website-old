@@ -66,11 +66,10 @@ to your database, while the `rollback` method reverses the operations performed 
  class CreateUsers::V20180305232601 < LuckyMigrator::Migration::V1
   def migrate
      create :users do
-      add name : String
-      add email : String
-      add avatar : String?
-      add password : String
-
+       add name : String
+       add email : String
+       add avatar : String?
+       add password : String
      end
 
     # Run custom SQL with execute
