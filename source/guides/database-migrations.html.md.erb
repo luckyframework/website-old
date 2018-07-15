@@ -209,7 +209,7 @@ Note that the `on_delete` option *must* be set. Options are `:cascade`, `:restri
 As mentioned above, lucky automatically adds an integer based `id` column as the primary key to any table
 created in a migration. For reasons such as not giving away the number of records in a table, and making it
 slightly harder to guess record ids, you might prefer to use uuids in the `id` column.
-This can be done by specifying a `primary_key_type` when using the `table` macro:
+This can be done by specifying a `primary_key_type` when using the `create`-table macro:
 
 ```crystal
 create :comments, primary_key_type: LuckyMigrator::PrimaryKeyType::UUID do
