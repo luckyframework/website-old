@@ -27,6 +27,14 @@ end
 
 > You can add a `?` to the end of any type to mark it as nilable.
 
+For the model we defined Lucky would generate:
+
+* `created_at` (automatically added)
+* `updated_at` (automatically added)
+* `id` (automatically added)
+* `age`
+* `name`
+
 > Specify `table :users, primary_key_type: :uuid` to use uuids instead of integers for the record id.
   Don't forget to make the same change in the migration.
 
@@ -64,14 +72,6 @@ end
 
 It also has methods for ordering and adding where clauses. These are generated
 based on the columns defined in your model.
-
-For the model we defined Lucky would generate:
-
-* `created_at` (automatically added)
-* `updated_at` (automatically added)
-* `id` (automatically added)
-* `age`
-* `name`
 
 ## Where clauses
 
