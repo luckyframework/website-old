@@ -209,7 +209,7 @@ Note that the `on_delete` option *must* be set. Options are `:cascade`, `:restri
 As mentioned above, lucky automatically adds an integer based `id` column as the primary key to any table
 created in a migration. For reasons such as not giving away the number of records in a table, and making it
 slightly harder to guess record ids, you might prefer to use uuids in the `id` column.
-This can be done by specifying a primary_key_type when using the `table` macro:
+This can be done by specifying a `primary_key_type` when using the `table` macro:
 
 ```crystal
 create :comments, primary_key_type: LuckyMigrator::PrimaryKeyType::UUID do
@@ -227,7 +227,7 @@ class Comment < LuckyRecord::Model
 end
 ```
 
-The model's `id` property will now be of crystal's type [https://crystal-lang.org/api/latest/UUID.html](UUID).
+The model's `id` property will now be of crystal's type [UUID](https://crystal-lang.org/api/latest/UUID.html).
 Uuid based primary key columns also work with associations. When adding an association in a migration, use
 the `foreign_key_type` argument to match the primary key type of the relation:
 
