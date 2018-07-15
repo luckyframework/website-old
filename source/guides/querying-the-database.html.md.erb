@@ -27,6 +27,9 @@ end
 
 > You can add a `?` to the end of any type to mark it as nilable.
 
+> Specify `table :users, primary_key_type: :uuid` to use uuids instead of integers for the record id.
+  Don't forget to make the same change in the migration.
+
 ### Column types
 
 You can use the following types in your columns.
