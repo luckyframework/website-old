@@ -339,7 +339,7 @@ Sometimes you have a single model and don't need to preload items. Or maybe
 you *can't* preload because the model record is already loaded. In those cases
 you can use the association name with `!`:
 
-```
+```crystal
 post = PostQuery.first
 # Returns the associated author and does not trigger a preload error
 post.author!
@@ -354,7 +354,7 @@ is 5 and lowest is 1.
 If we want to get all posts that have at least 1 highly rated comment, we
 could do something like this:
 
-```
+```crystal
 class PostQuery < Post::BaseQuery
   def with_highly_rated_comments
     # Join the comments
