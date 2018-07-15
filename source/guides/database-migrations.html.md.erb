@@ -235,7 +235,7 @@ the `foreign_key_type` argument to match the primary key type of the relation:
 # applies to both `create`-ing and `alter`-ing tables:
 create :comments do
   # ...
-  add_belongs_to post : Post, foreign_key_type: LuckyMigrator::PrimaryKeyType::UUID
+  add_belongs_to post : Post, on_delete: :cascade, foreign_key_type: LuckyMigrator::PrimaryKeyType::UUID
 end
 ```
 
