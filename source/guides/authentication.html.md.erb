@@ -111,7 +111,7 @@ it is usually best to extract a new layout.
 * First, Duplicate the `MainLayout` in `src/pages/main_layout.cr` and give it a new name.
 
 
-* Then, memove `needs current_user : User` from the new layout if this page is
+* Then, remove `needs current_user : User` from the new layout if this page is
   only for signed out users. If the page may have a signed in user make the
   `User` nilable: `needs current_user : User?`
 * If you remove `needs current_user` because the layout is *only for signed
