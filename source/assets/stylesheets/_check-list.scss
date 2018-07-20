@@ -1,0 +1,11 @@
+.check-list {
+  li {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 20C4.477 20 0 15.523 0 10S4.477 0 10 0s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM7.707 9.293L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414z' fill='#183E6C' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-position: left 3.75px;
+    background-repeat: no-repeat;
+    padding-left: 34px;
+    font-size: 18px;
+    background-size: 20px;
+    margin: 10px 0;
+  }
+}
