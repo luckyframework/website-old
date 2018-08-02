@@ -34,7 +34,7 @@ You can use the following types in your columns.
 * `String` - `text` column type. In Postgres [`text` can store strings of any length](https://stackoverflow.com/questions/4848964/postgresql-difference-between-text-and-varchar-character-varying)
 * `Int32` - `int` column type.
 * `Time` - `timestamp` column type.
-* `Float` - `decimal` column type.
+* `Float64` - `decimal` column type.
 * `Bool` - `bool` column type.
 
 ## Querying the database
@@ -94,7 +94,7 @@ For example:
 UserQuery.new.age("30")
 
 # Won't accept other types
-# Fails at compile time because you can't pass a Float
+# Fails at compile time because you can't pass a Float64
 UserQuery.new.age(30.0)
 ```
 
