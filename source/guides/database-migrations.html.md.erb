@@ -140,10 +140,10 @@ Column modifiers can be applied when creating or changing a column:
   representing the number of digits after the decimal point.
 
   ```crystal
-    add salary : Float, precision: 10, scale: 2
+    add salary : Float64, precision: 10, scale: 2
    ```
 
-  Note: `precision` and `scale` are set only on columns with Float type.
+  Note: `precision` and `scale` are set only on columns with Float64 type.
 
 ## Creating and altering tables
 
@@ -155,7 +155,7 @@ create :users do
 end
 ```
 
-> Lucky currently supports `String, Int32, Bool, Float, Time and UUID`.
+> Lucky currently supports `String, Int32, Bool, Float64, Time and UUID`.
 
 ### Altering a table
 

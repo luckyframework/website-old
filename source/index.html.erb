@@ -19,3 +19,41 @@
     <a href="/guides/installing" class="btn">Get Started</a>
   </div>
 </div>
+
+<div class="contrasting-container">
+  <div class="code-samples">
+    <h2 class="heading">What does Lucky look like?</h2>
+    <ul class="tab-group">
+      <li>
+        <a href="#" class="tab -selected" data-image="json-api">JSON API</a>
+      </li>
+      <li>
+        <a href="#" class="tab" data-image="database">Query the Database</a>
+      </li>
+      <li>
+        <a href="#" class="tab" data-image="rendering-html">Rendering HTML</a>
+      </li>
+      <li>
+        <a href="#" class="tab" data-image="spa">React, Vue.js, and SPAs</a>
+      </li>
+    </ul>
+    <%= image_tag "code-samples/json-api.png", id: "code-sample" %>
+  </div>
+</div>
+
+<script type="text/javascript">
+  var tabs = Array.from(document.getElementsByClassName("tab"))
+  var codeSample = document.getElementById("code-sample")
+
+  tabs.forEach(function(tab){
+    tab.addEventListener("click", function(e) {
+      e.preventDefault()
+      tabs.forEach(function(tab) {
+        tab.classList.remove("-selected")
+      })
+      e.target.classList.add("-selected")
+      var imageName = e.target.getAttribute('data-image')
+      codeSample.setAttribute("src", "/assets/images/code-samples/" + imageName + ".png")
+    })
+  });
+</script>

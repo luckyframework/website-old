@@ -1,0 +1,27 @@
+.tab-group {
+  @include clearfix;
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
+  margin: 0 auto;
+  max-width: 800px;
+  padding-top: 20px;
+  font-weight: 600;
+
+  li {
+    float: left;
+  }
+
+  .tab {
+    transition: all 0.2s;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 40px;
+    color: $medium-gray;
+
+    &.-selected {
+      background: #333;
+      color: $white;
+    }
+  }
+}
