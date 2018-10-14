@@ -3,6 +3,11 @@
   margin-left: auto;
   margin-right: auto;
   box-sizing: border-box;
-  padding-left: 24px;
-  padding-right: 24px;
+  padding-left: 12px;
+  padding-right: 12px;
+
+  @include medium-up {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
 }
