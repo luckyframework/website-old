@@ -85,7 +85,7 @@ h1 "My cool test"
 h1 "My cool test", class: "app-header"
 ```
 
-Order and nesting works about the same as how you would write normal HTML
+Order and nesting works about the same as how you would write normal HTML.
 
 ```crystal
 def content
@@ -140,7 +140,7 @@ Crystal will search for constants (classes and modules) in the current
 namespace first. This usually works fine, but there are times when Crystal
 may not know how to find the correct constant. In this case you can prefix
 the constant with `::` to look at the root namespace. This is best explained
-with an example
+with an example.
 
 Let's say we have a nested action and a non-nested action like this:
 
@@ -228,7 +228,7 @@ layouts call `shared_layout_head`. This method is defined in
 `Shared::LayoutHead`. If you look in the `src/components/shared/layout_head`
 file you'll see that it defines and calls a `page_title` method.
 
-this means that you can customize the page title in your page by writing a
+This means that you can customize the page title in your page by writing a
 `page_title` method:
 
 So to set a page specific title, do this:
@@ -305,7 +305,7 @@ end
 ```
 
 > Common layout components could be extracted to
-src/components/shared/{component_name}.cr. See ["Extract partials and shared code"](#extract-partials-and-shared-code)
+`src/components/shared/{component_name}.cr`. See ["Extract partials and shared code"](#extract-partials-and-shared-code)
 
 ## Extract partials and shared code
 
