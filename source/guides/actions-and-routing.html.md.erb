@@ -383,38 +383,68 @@ class Admin::Users::Index < AdminAction
 end
 ```
 
-## Cookies and sessions
+## Cookies and Sessions
 
-You can set and access cookies in Lucky like this:
+You can set and access cookies/session values in Lucky like this:
 
 ```
 class FooAction < BrowserAction
   get "/foo" do
-    cookies["name"] = "Sally"
-    cookies["name"] # Will return "Sally"
+    cookies.set("name", "Sally")
+    cookies.get("name") # Will return "Sally"
+    cookies.get?("person") # Will return nil
 
-    session["name"] = "Sally"
-    session["name"] # Will return "Sally"
+    # You can use Symbol for your key as well
+    session.set(:name, "Sally")
+    session.get(:name) # Will return "Sally"
+    session.get("person") # oops! An exception is raised because this key doesn't exist
     text "Cookies!"
   end
 end
 ```
 
+Cookies are encrypted by Lucky by default when you use `set`. If you
+need to set a raw value unencrypted, Lucky gives you that option:
+
+```
+cookies.set_raw("name", "Sally") # Sets a raw unencrypted cookie
+cookies.get_raw("name") # Will return "Sally"
+```
+
+### Clearing Sessions and Cookies
+
+If you need to remove a session
+
+```
+# Delete a specific session key
+session.delete(:name)
+
+# Clear the current session
+session.clear
+
+# Delete a specific cookie
+cookies.delete("name")
+
+# Delete all cookies
+cookies.clear
+```
+
 ## Flash messages
 
-You can show messages using `flash`. This works similarly to Rails, Phoenix,
-and other frameworks.
+You can show messages using `flash`. A flash message is a simple String that is
+passed between two actions. This is used for notifying the user an action was a success
+or failed. (e.g. "Record was saved successfully")
 
 ### Type safe flash messages
 
-The built in messages types are `success`, `danger` and `info`. Using these
+The built in messages types are `success`, `failure` and `info`. Using these
 will cause compile time errors if you accidentally mistype something. It is
 recommended to stick to these whenever possible.
 
 ```
 # In an action
 flash.success = "It worked!"
-flash.danger = "That did not work"
+flash.failure = "That did not work"
 flash.info = "Be cool"
 ```
 
@@ -428,27 +458,11 @@ flash is rendered, etc.
 
 ### Setting other messages
 
-The built in messages are `success`, `danger` and `info`, but you can use anything
+The built in messages are `success`, `failure` and `info`, but you can use anything
 you'd like:
 
 ```
-flash["something_special"] = "Super spesh"
-flash["something_special"] # => "Super spesh"
+flash.set("something_special", "Super spesh")
+flash.get("something_special") # => "Super spesh"
 ```
 
-### Clearing and keeping flashes
-
-Sometimes you want to show a flash only for the current request:
-
-```
-# Typically used when calling `render` instead of `redirect`
-# That way the message shows for the current request only
-flash.now.success = "Woo-hoo!"
-```
-
-Or sometimes you want to keep all messages for the next request:
-
-```
-# Useful when you want to redirect to another page while keeping the flash messages
-flash.keep_all
-```
