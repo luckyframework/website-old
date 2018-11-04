@@ -63,7 +63,7 @@ The `migrate` method is used to add new tables, columns, or indexes
 to your database, while the `rollback` method reverses the operations performed by the `migrate` method.
 
 ```crystal
- class CreateUsers::V20180305232601 < LuckyMigrator::Migration::V1
+ class CreateUsers::V20180305232601 < LuckyRecord::Migrator::Migration::V1
   def migrate
      create :users do
        add name : String
@@ -164,7 +164,7 @@ alter :users do
   add phone : String
   remove :age
 
-  # Sometimes you need things that LuckyMigrator doesn't support
+  # Sometimes you need things that LuckyRecord doesn't support
   execute "custom SQL"
 end
 ```
