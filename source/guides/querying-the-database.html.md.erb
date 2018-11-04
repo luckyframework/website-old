@@ -161,6 +161,17 @@ UserQuery.new.find(id)
 # You can also chain methods before calling find, first, etc.
 UserQuery.new.age(30).find(1)
 ```
+  
+## Ensuring no results are returned
+  
+```
+UserQuery.new.none
+```
+  
+This can be helpful when under certain conditions you want the resultd to be empty.
+  
+> This method does not return an empty array immediately. You can still chain other query methods, but it
+  will always return no records. For example: `UserQuery.new.none.first` will never return a result  
 
 ## Shorthand methods
 
