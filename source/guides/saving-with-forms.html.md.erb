@@ -222,8 +222,8 @@ checkbox f.admin, value: "true"
 
 ```
 # Assuming you have a form with a fillable category_id
-select_input form.category_id do
-  options_for_select(form.category_id, categories_for_select)
+select_input f.category_id do
+  options_for_select(f.category_id, categories_for_select)
 end
 
 private def categories_for_select
