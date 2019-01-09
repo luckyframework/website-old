@@ -1,0 +1,121 @@
+---
+title: Logging and Error Handling
+order: 11
+intro: >
+  Logging your data and handling errors are two very important parts to developing your app.
+  Lucky allows you to customize your log output, as well as choose how you want to handle your errors.
+---
+
+## Logging
+
+By default, Lucky formats the log output to look like `GET 200 / TIMESTAMP (27.0µs)`. This is broken down in to several parts:
+
+* The HTTP request method
+* The HTTP server status
+* The requested route
+* The current timestamp of the request (by default only in production)
+* and the elapsed time
+
+## Logger Options
+
+### show_timestamps : Bool
+Show/Hide the current timestamp of the request. By default this is shown only in production
+
+### log_formatter : Lucky::LogFormatters::Base
+Customize how your log is formatted, and what information it shows. By default this is the `DefaultLogFormatter`
+
+### enabled : Bool
+An option to turn on/off logging. By default this is set to true.
+
+## Log Formatters
+
+To customize your logging output, you can create a custom Log Formatter. Open your `config/log_handler.cr` file to add this option:
+
+```crystal
+Lucky::LogHandler.configure do |settings|
+  settings.show_timestamps = Lucky::Env.production?
+  settings.log_formatter = MyCustomFormatter.new
+end
+```
+
+> Note: Be sure to require this new formatter in your stack. I suggest in `src/dependencies.cr`
+
+The structure for the formatters is a class that inherits from `Lucky::LogFormatters::Base` and defines the `format(context, time, elapsed) : String` method. Take a look at this example:
+
+```crystal
+class MyCustomFormatter < Lucky::LogFormatters::Base
+  def format(context, time, elapsed)
+    case context.response.status_code
+    when 200..399
+      "😁"
+    when 400..499
+      "😱"
+    when 500..599
+      "😭"
+    else
+      "🧐"
+    end
+  end
+end
+```
+
+This method gives you access to the current `context : HTTP::Server::Context` which contains the `request` and `response` objects, `time : Time` which is the current timestamp, and `elapsed : Time::Span` which is the amount of time the entire request took to complete.
+
+Lucky has 3 helper methods you can use for some helpful formatting as well.
+
+```crystal
+# Returns the status_code colorized with green, yellow, or red text based on the range of the code
+colored_status_code(context.response.status_code)
+
+# Formats the time to ISO_8601_DATE_TIME if the `show_timestamps` option is set to true.
+timestamp(time)
+
+# Does some fancy math to display the elapsed span in a human readable format
+elapsed_text(elapsed)
+```
+
+## Error Handling
+
+When an exception is thrown in your code, you don't want your user left with a blank page, so Lucky has a built in way of handling these errors.
+
+When in development, Lucky uses the [ExceptionPage](https://github.com/crystal-loot/exception_page) shard to display a helpful page with your stack trace, and exception message. The option to display the error page or not is in `config/error_handler.cr`.
+
+## Custom Error Responses
+
+When building your application, you may create your own custom exception classes. In this case, you may want to have a way to handle how your app responds to those specifically.
+
+If you need to return a special http status code based on an error, for example: return 401 after throwing a `NotAuthorizedError`, you can do this.
+
+```crystal
+# define your custom exception
+class NotAuthorizedError < Exception
+  include Lucky::HttpRespondable
+
+  def http_error_code
+    403
+  end
+end
+```
+
+Then in your action where you would throw this error:
+
+```crystal
+class SpecialAction < BrowserAction
+  get "/special" do
+    raise NotAuthorizedError.new
+  end
+end
+```
+
+## Error Reporting
+
+There's many different services out there where you can ship your exceptions off to for better cataloging and searching of the errors.
+
+In your `src/actions/errors/show.cr` file, there are several different `handle_error` methods. When an exception occurs in one of your actions, the appropriate method is called passing in the exception. This gives you a chance to grab that and pass it on. You can also create your own override if you want to report specifically on a custom error.
+
+```crystal
+def handle_error(error : MyCustomError)
+  ErrorReporter.report(context, error)
+  render Errors::ShowPage, status: 500, title: "Oops!"
+end
+```
