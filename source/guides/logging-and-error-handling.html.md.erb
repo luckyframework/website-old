@@ -19,12 +19,15 @@ By default, Lucky formats the log output to look like `GET 200 / TIMESTAMP (27.0
 ## Logger Options
 
 ### show_timestamps : Bool
+
 Show/Hide the current timestamp of the request. By default this is shown only in production
 
 ### log_formatter : Lucky::LogFormatters::Base
+
 Customize how your log is formatted, and what information it shows. By default this is the `DefaultLogFormatter`
 
 ### enabled : Bool
+
 An option to turn on/off logging. By default this is set to true.
 
 ## Log Formatters
@@ -114,6 +117,24 @@ There's many different services out there where you can ship your exceptions off
 In your `src/actions/errors/show.cr` file, there are several different `handle_error` methods. When an exception occurs in one of your actions, the appropriate method is called passing in the exception. This gives you a chance to grab that and pass it on. You can also create your own override if you want to report specifically on a custom error.
 
 ```crystal
+class MyCustomError < Exception
+end
+
+# src/actions/pages/index.cr
+class Pages::Index < BrowserAction
+  get "/pages" do
+    failure = true
+    if failure
+      raise MyCustomError.new
+    end
+
+    #...
+  end
+end
+```
+
+```crystal
+# src/actions/errors/show.cr
 def handle_error(error : MyCustomError)
   ErrorReporter.report(context, error)
   render Errors::ShowPage, status: 500, title: "Oops!"
