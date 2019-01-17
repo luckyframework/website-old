@@ -88,9 +88,9 @@ Let's say you have an error class `MyCustomError` in your app. When this error i
 ```crystal
 def handle_error(e : MyCustomError)
   if html?
-    render my_custom_error_page
+    render_error_page title: "Custom error message.", status: 418
   else
-    render json_or_whatever
+    json({error: "Oh no!"})
   end
 end
 ```
