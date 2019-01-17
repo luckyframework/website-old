@@ -81,11 +81,21 @@ elapsed_text(elapsed)
 
 When an exception is thrown in your code, you don't want your user left with a blank page, so Lucky has a built in way of handling these errors.
 
-When in development, Lucky uses the [ExceptionPage](https://github.com/crystal-loot/exception_page) shard to display a helpful page with your stack trace, and exception message. The option to display the error page or not is in `config/error_handler.cr`.
+When in development, Lucky uses the [ExceptionPage](https://github.com/crystal-loot/exception_page) shard to display a helpful page with your stack trace, and exception message. The option to display the error page or not is in `config/error_handler.cr`. Set the `settings.show_debug_output` option to `false` if you need to see how the errors are handled in production (i.e. json response for an api).
+
+Let's say you have an error class `MyCustomError` in your app. When this error is raised, you want to show a custom error to your users. Open up the `Errors::Show` in `src/actions/errors/show.cr`, and add your `handle_error` method like this.
+
+```crystal
+def handle_error(e : MyCustomError)
+  if html?
+    render my_custom_error_page
+  else
+    render json_or_whatever
+  end
+end
+```
 
 ## Custom Error Responses
-
-When building your application, you may create your own custom exception classes. In this case, you may want to have a way to handle how your app responds to those specifically.
 
 If you need to return a special http status code based on an error, for example: return 401 after throwing a `NotAuthorizedError`, you can do this.
 
