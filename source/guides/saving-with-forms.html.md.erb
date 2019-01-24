@@ -94,7 +94,8 @@ or for creating sample data in your the seed tasks in the `/tasks` folder.
 
 ```
 user = UserQuery.new.first
-updated_user = UserForm.update!(user, params) # Returns the updated user or raises
+# Returns the updated user or raises
+updated_user = UserForm.update!(user, params) 
 ```
 
 ## Using with JSON endpoints
