@@ -561,8 +561,15 @@ class SearchFilterForm < LuckyRecord::VirtualForm
   virtual query : String = ""
   virtual active : Bool = true
   virtual begin_date : Time = Time.now
+
+  def submit
+    validate_required query
+
+    yield self, UserQuery.new.name.ilike(query.value).beginned_at.gt(begin_date.value).active(active.value)
+  end
 end
 ```
+> Note: The convention is to define a `submit` method that yields the form, and your result; however, you can name this method whatever you want with any signature.
 
 Using virtual forms in HTML works exactly the same as the rest:
 
@@ -587,6 +594,20 @@ class Search::IndexPage < MainLayout
   end
 end
 ```
+
+Finally, using the virtual form in your action:
+
+```crystal
+class Search::Update < BrowserAction
+  route do
+    form = SearchFilterForm.new(params)
+    form.submit do |f, results|
+      render SearchResults::Index, users: results
+    end
+  end
+end
+```
+
 
 ## Saving forms without a params object
 
