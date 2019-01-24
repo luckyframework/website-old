@@ -550,6 +550,66 @@ class SignUps::NewPage < MainLayout
 end
 ```
 
+## Virtual Forms
+
+Just like `virtual` fields, there may also be a time where you have a form **not** tied to the database. Maybe a search form, or a contact form that just sends an email.
+
+For these, you can use `LuckyRecord::VirtualForm`:
+
+```crystal
+# src/forms/search_filter_form.cr
+class SearchFilterForm < LuckyRecord::VirtualForm
+  virtual query : String = ""
+  virtual active : Bool = true
+  virtual begin_date : Time = Time.now
+
+  def submit
+    validate_required query
+
+    yield self, UserQuery.new.name.ilike(query.value).beginned_at.gt(begin_date.value).active(active.value)
+  end
+end
+```
+> Note: The convention is to define a `submit` method that yields the form, and your result; however, you can name this method whatever you want with any signature.
+
+Using virtual forms in HTML works exactly the same as the rest:
+
+```crystal
+# src/pages/search/index.cr
+class Search::IndexPage < MainLayout
+  needs search_form : SearchFilterForm
+
+  def content
+    render_form(@search_form)
+  end
+
+  private def render_form(f)
+    form_for Search::Update do
+      label_for f.query
+      text_input f.query
+
+      label_for f.active
+      checkbox f.active
+      submit "Filter Results"
+    end
+  end
+end
+```
+
+Finally, using the virtual form in your action:
+
+```crystal
+class Search::Update < BrowserAction
+  route do
+    form = SearchFilterForm.new(params)
+    form.submit do |f, results|
+      render SearchResults::Index, users: results
+    end
+  end
+end
+```
+
+
 ## Saving forms without a params object
 
 This can be helpful if you’re saving something that doesn’t need an HTML form,
