@@ -26,9 +26,6 @@ issue trackers, chatrooms, and mailing lists.
     bundle exec middleman build --verbose
     ```
 
-1. Make your change, making sure the site builds successfully. Follow the
-   [style guide][style].
-
 1. Mention how your changes affect the project to other developers and users in
    the `CHANGELOG.md` file.
 
@@ -40,5 +37,4 @@ This is a time for discussion and improvements,
 and making the necessary changes will be required before we can
 merge the contribution.
 
-  [style]: https://github.com/thoughtbot/guides/tree/master/style
   [commit]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
