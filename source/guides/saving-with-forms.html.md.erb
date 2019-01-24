@@ -603,9 +603,9 @@ class Searches::Create < BrowserAction
   route do
     SearchForm.new(params).submit do |form, results|
       if form.valid?
-        render SearchResults::Index, users: results
+        render SearchResults::IndexPage, users: results
       else
-        render NewPage, search_form: form
+        render Searches::NewPage, search_form: form
       end
     end
   end
