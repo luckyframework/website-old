@@ -557,16 +557,15 @@ Just like `virtual` fields, there may also be a time where you have a form **not
 For these, you can use `LuckyRecord::VirtualForm`:
 
 ```crystal
-# src/forms/search_filter_form.cr
-class SearchFilterForm < LuckyRecord::VirtualForm
+# src/forms/search_form.cr
+class SearchForm < LuckyRecord::VirtualForm
   virtual query : String = ""
   virtual active : Bool = true
-  virtual begin_date : Time = Time.now
 
   def submit
     validate_required query
 
-    yield self, UserQuery.new.name.ilike(query.value).beginned_at.gt(begin_date.value).active(active.value)
+    yield self, UserQuery.new.name.ilike(query.value).active(active.value)
   end
 end
 ```
@@ -575,21 +574,22 @@ end
 Using virtual forms in HTML works exactly the same as the rest:
 
 ```crystal
-# src/pages/search/index.cr
-class Search::IndexPage < MainLayout
-  needs search_form : SearchFilterForm
+# src/pages/searches/new_page.cr
+class Searches::NewPage < MainLayout
+  needs search_form : SearchForm
 
   def content
     render_form(@search_form)
   end
 
   private def render_form(f)
-    form_for Search::Update do
+    form_for Searches::Create do
       label_for f.query
       text_input f.query
 
       label_for f.active
       checkbox f.active
+                                    
       submit "Filter Results"
     end
   end
@@ -599,11 +599,14 @@ end
 Finally, using the virtual form in your action:
 
 ```crystal
-class Search::Update < BrowserAction
+class Searches::Create < BrowserAction
   route do
-    form = SearchFilterForm.new(params)
-    form.submit do |f, results|
-      render SearchResults::Index, users: results
+    SearchForm.new(params).submit do |form, results|
+      if form.valid?
+        render SearchResults::Index, users: results
+      else
+        render NewPage, search_form: form
+      end
     end
   end
 end
