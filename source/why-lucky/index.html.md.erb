@@ -145,7 +145,7 @@ and redirects.
 
 ```
 # Lucky will set the path and the DELETE HTTP method
-link "Delete", to: Tasks::Delete.with(id: task.id)
+link "Delete", to: Tasks::Delete.with(task_id: task.id)
 ```
 
 ## Built in live reloading with Browsersync

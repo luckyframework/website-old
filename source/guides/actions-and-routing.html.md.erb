@@ -97,8 +97,8 @@ an id of 123`.
 Every named parameter will have a method generated for it that so that you can
 access the value. You can have as many as you want.
 
-For example, `delete "/projects/:project_id/tasks/:id"` would have a
-`project_id` and `id` method generated on the class for accessing the named
+For example, `delete "/projects/:project_id/tasks/:task_id"` would have a
+`project_id` and `task_id` method generated on the class for accessing the named
 parameters.
 
 ## Query parameters
@@ -157,9 +157,9 @@ and the second part as one of the resourceful actions listed above.
 # Show is the RESTful action
 class Users::Show < BrowserAction
   # Same as:
-  #   get "/users/:id"
+  #   get "/users/:user_id"
   route do
-    text "The user with id of #{id}"
+    text "The user with id of #{user_id}"
   end
 end
 ```
@@ -201,26 +201,26 @@ end
 For the `route` macro:
 
 *  `Users::Index`  -> `get "/users"`
-*  `Users::Show`  -> `get "/users/:id"`
+*  `Users::Show`  -> `get "/users/:user_id"`
 *  `Users::New`  -> `get "/users/new"`
 *  `Users::Create`  -> `post "/users"`
-*  `Users::Edit`  -> `get "/users/:id/edit"`
-*  `Users::Update`  -> `put "/users/:id"`
-*  `Users::Delete`  -> `delete "/users/:id"`
-* Multiple namespaces: `Api::V1::Users::Show`  -> `get "/api/v1/users/:id"`
-* Multi-word namespace: `MyAdminSection::Users::Show`  -> `get "/my_admin_section/users/:id"`
+*  `Users::Edit`  -> `get "/users/:user_id/edit"`
+*  `Users::Update`  -> `put "/users/:user_id"`
+*  `Users::Delete`  -> `delete "/users/:user_id"`
+* Multiple namespaces: `Api::V1::Users::Show`  -> `get "/api/v1/users/:user_id"`
+* Multi-word namespace: `MyAdminSection::Users::Show`  -> `get "/my_admin_section/users/:user_id"`
 
 For the `nested_route` macro:
 
 *  `Projects::Users::Index`  -> `get "/projects/:project_id/users"`
-*  `Projects::Users::Show`  -> `get "/projects/:project_id/users/:id"`
+*  `Projects::Users::Show`  -> `get "/projects/:project_id/users/:user_id"`
 *  `Projects::Users::New`  -> `get "/projects/:project_id/users/new"`
 *  `Projects::Users::Create`  -> `post "/projects/:project_id/users"`
-*  `Projects::Users::Edit`  -> `get "/projects/:project_id/users/:id/edit"`
-*  `Projects::Users::Update`  -> `put "/projects/:project_id/users/:id"`
-*  `Projects::Users::Delete`  -> `delete "/projects/:project_id/users/:id"`
-* Multiple namespaces: `Api::V1::Projects::Users::Show`  -> `get "/api/v1/projects/:project_id/users/:id"`
-* Multi-word namespace: `MyAdminSection::Projects::Users::Show`  -> `get "/my_admin_section/projects/:project_id/users/:id"`
+*  `Projects::Users::Edit`  -> `get "/projects/:project_id/users/:user_id/edit"`
+*  `Projects::Users::Update`  -> `put "/projects/:project_id/users/:user_id"`
+*  `Projects::Users::Delete`  -> `delete "/projects/:project_id/users/:user_id"`
+* Multiple namespaces: `Api::V1::Projects::Users::Show`  -> `get "/api/v1/projects/:project_id/users/:user_id"`
+* Multi-word namespace: `MyAdminSection::Projects::Users::Show`  -> `get "/my_admin_section/projects/:project_id/users/:user_id"`
 
 ## Path and route helpers
 
@@ -267,7 +267,7 @@ need any params. You can see this in the first `redirect` example below.
 class Users::Create < BrowserAction
   route do
     redirect to: Users::Index # Default status is 302
-    redirect to: Users::Show.with(id: "user_id") # If the action needs params
+    redirect to: Users::Show.with(user_id: "user_id") # If the action needs params
     redirect to: "/somewhere_else" # Redirect using a string path
     redirect to: Users::Index, status: 301 # Override status
   end
