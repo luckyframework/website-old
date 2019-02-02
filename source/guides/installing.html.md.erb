@@ -43,13 +43,16 @@ Crystal knows where OpenSSL is located.
 
 ### On Linux
 
+~~~bash
+$ \curl https://luckyframework.org/install.sh | \bash
+~~~
+
+This will:
+
 * `git clone` the CLI repo at https://github.com/luckyframework/lucky_cli
-* cd into the newly cloned directory
-* Check out latest [released version](https://github.com/luckyframework/lucky_cli/releases) `git checkout v0.12.0`
-* Run `shards install`
-* Run `crystal build src/lucky.cr --release --no-debug`
-* Move the generated `lucky` binary to your path. Most of the time you can move
-  it to `/usr/local/bin` and it should work.
+* Check out latest [released version](https://github.com/luckyframework/lucky_cli/releases)
+* Compile `lucky_cli`
+* Move the generated `lucky` binary to your path.
 
 If you needed different steps, please help contribute to this section by
 [editing this page on GitHub](https://github.com/luckyframework/website/blob/master/source/guides/installing.html.md.erb).
@@ -58,7 +61,7 @@ If you needed different steps, please help contribute to this section by
 
 To start a new project, run `lucky init`.
 
-This will start the new project wizard. You can set up the project name, choose API only, 
+This will start the new project wizard. You can set up the project name, choose API only,
 and whether you want Lucky to generate authentication for you.
 
 ## Running a Lucky Project
