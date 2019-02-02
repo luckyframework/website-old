@@ -22,4 +22,4 @@ echo 'export PATH="$PATH:$HOME/.local/bin"' >> ~/.bashrc
 
 echo ''
 echo ''
-echo "Instalation success. Run 'source ~/.bashrc' to use lucky in this session"
+echo "Installation success. Run 'source ~/.bashrc' to use Lucky in this session"
