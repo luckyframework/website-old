@@ -39,7 +39,7 @@ end
 shown in a browser. You can also use `lucky gen.action.api` for actions meant
 to be used for a JSON API.
 
-## Root page
+### Root page
 
 By default Lucky generates a `Home::Index` action that handles the root path `"/"`.
 This is the action that shows you the Lucky welcome page when you first run `lucky dev`.
@@ -71,7 +71,7 @@ who the user is. For example, if a user is an admin you may want to redirect
 them to the `Admin::Dashboard::Show` action, and if they're a regular user you
 may want to take them to the regular dashboard at `Dashboard::Show`.
 
-## Path parameters
+### Path parameters
 
 Sometimes you want to name certain parts of the path and access them as parameters.
 
@@ -100,37 +100,6 @@ access the value. You can have as many as you want.
 For example, `delete "/projects/:project_id/tasks/:id"` would have a
 `project_id` and `id` method generated on the class for accessing the named
 parameters.
-
-## Query parameters
-
-Other times you may want to accept parameters in the query string, e.g. `https://example.com?page=2`.
-
-```crystal
-# src/actions/users/index.cr
-class Users::Index < BrowserAction
-  param page : Int32 = 1
-
-  route do
-    text "All users starting on page #{page}"
-  end
-end
-```
-
-When you add a query parameter with the `param` macro, it will generate a method for you to access the value.
-The parameter definition will inspect the given type declaration, so you can easily define
-required or optional parameters by using non- or nilable types (`Int32` vs. `Int32?`).
-Parameter defaults are set by assigning a value in the parameter definition. Query parameters
-are type-safe as well, so when `https://example.com?page=unlucky` is accessed with the above definition, an exception
-is raised.
-
-Just like path parameters, you can define as many query parameters as you want. Every
-query parameter will have a method generated for it to access the value.
-
-## Where to put actions
-
-Actions go in `src/actions` and follow the structure of the class.
-
-For example `Users::Show` would go in `src/actions/users/show.cr` and `Api::V1::Users::Delete` would go in `src/actions/api/v1/users/delete.cr`
 
 ## Automatically generate RESTful routes
 
@@ -221,6 +190,37 @@ For the `nested_route` macro:
 *  `Projects::Users::Delete`  -> `delete "/projects/:project_id/users/:id"`
 * Multiple namespaces: `Api::V1::Projects::Users::Show`  -> `get "/api/v1/projects/:project_id/users/:id"`
 * Multi-word namespace: `MyAdminSection::Projects::Users::Show`  -> `get "/my_admin_section/projects/:project_id/users/:id"`
+
+## Query parameters
+
+Other times you may want to accept parameters in the query string, e.g. `https://example.com?page=2`.
+
+```crystal
+# src/actions/users/index.cr
+class Users::Index < BrowserAction
+  param page : Int32 = 1
+
+  route do
+    text "All users starting on page #{page}"
+  end
+end
+```
+
+When you add a query parameter with the `param` macro, it will generate a method for you to access the value.
+The parameter definition will inspect the given type declaration, so you can easily define
+required or optional parameters by using non- or nilable types (`Int32` vs. `Int32?`).
+Parameter defaults are set by assigning a value in the parameter definition. Query parameters
+are type-safe as well, so when `https://example.com?page=unlucky` is accessed with the above definition, an exception
+is raised.
+
+Just like path parameters, you can define as many query parameters as you want. Every
+query parameter will have a method generated for it to access the value.
+
+## Where to put actions
+
+Actions go in `src/actions` and follow the structure of the class.
+
+For example `Users::Show` would go in `src/actions/users/show.cr` and `Api::V1::Users::Delete` would go in `src/actions/api/v1/users/delete.cr`
 
 ## Path and route helpers
 
@@ -465,4 +465,3 @@ you'd like:
 flash.set("something_special", "Super spesh")
 flash.get("something_special") # => "Super spesh"
 ```
-
