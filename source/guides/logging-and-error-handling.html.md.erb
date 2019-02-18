@@ -16,19 +16,23 @@ By default, Lucky formats the log output to look like `GET 200 / TIMESTAMP (27.0
 * The current timestamp of the request (by default only in production)
 * and the elapsed time
 
-## Logger Options
+### Logger Options
 
-### show_timestamps : Bool
+You can change the logger configuration in `config/log_handler.cr`
 
-Show/Hide the current timestamp of the request. By default this is shown only in production
+```crystal
+# Show/Hide the current timestamp of the request. By default this is shown only
+# in production
+show_timestamps : Bool
 
-### log_formatter : Lucky::LogFormatters::Base
+# Customize how your log is formatted, and what information it shows. By
+# default this is the `DefaultLogFormatter`
+log_formatter : Lucky::LogFormatters::Base
 
-Customize how your log is formatted, and what information it shows. By default this is the `DefaultLogFormatter`
-
-### enabled : Bool
-
-An option to turn on/off logging. By default this is set to true.
+# An option to turn on/off logging. By default logging is enabled except for
+# when running tests.
+enabled : Bool
+```
 
 ## Log Formatters
 
@@ -41,9 +45,12 @@ Lucky::LogHandler.configure do |settings|
 end
 ```
 
-> Note: Be sure to require this new formatter in your stack. I suggest in `src/dependencies.cr`
+> Note: Be sure to require this new formatter in your stack. Typically this
+is done `src/app.cr`.
 
-The structure for the formatters is a class that inherits from `Lucky::LogFormatters::Base` and defines the `format(context, time, elapsed) : String` method. Take a look at this example:
+The structure for the formatters is a class that inherits from
+`Lucky::LogFormatters::Base` and defines the `format(context, time, elapsed)
+: String` method. Take a look at this example:
 
 ```crystal
 class MyCustomFormatter < Lucky::LogFormatters::Base
@@ -62,7 +69,10 @@ class MyCustomFormatter < Lucky::LogFormatters::Base
 end
 ```
 
-This method gives you access to the current `context : HTTP::Server::Context` which contains the `request` and `response` objects, `time : Time` which is the current timestamp, and `elapsed : Time::Span` which is the amount of time the entire request took to complete.
+This method gives you access to the current `context : HTTP::Server::Context`
+which contains the `request` and `response` objects, `time : Time` which is
+the current timestamp, and `elapsed : Time::Span` which is the amount of time
+the entire request took to complete.
 
 Lucky has 3 helper methods you can use for some helpful formatting as well.
 
@@ -79,11 +89,17 @@ elapsed_text(elapsed)
 
 ## Error Handling
 
-When an exception is thrown in your code, you don't want your user left with a blank page, so Lucky has a built in way of handling these errors.
+When an exception is thrown in your code, you don't want your user left with
+a blank page, so Lucky has a built in way of handling these errors.
 
-When in development, Lucky uses the [ExceptionPage](https://github.com/crystal-loot/exception_page) shard to display a helpful page with your stack trace, and exception message. The option to display the error page or not is in `config/error_handler.cr`. Set the `settings.show_debug_output` option to `false` if you need to see how the errors are handled in production (i.e. json response for an api).
+By default Lucky returns a 500 HTML page or JSON response.
 
-Let's say you have an error class `MyCustomError` in your app. When this error is raised, you want to show a custom error to your users. Open up the `Errors::Show` in `src/actions/errors/show.cr`, and add your `handle_error` method like this.
+### Customizing Error Handling
+
+Let's say you have an error class `MyCustomError` in your app. When this
+error is raised, you want to show a custom error to your users. Open up the
+`Errors::Show` in `src/actions/errors/show.cr`, and add your `handle_error`
+method like this.
 
 ```crystal
 def handle_error(e : MyCustomError)
@@ -95,12 +111,31 @@ def handle_error(e : MyCustomError)
 end
 ```
 
-## Custom Error Responses
+If there is no `handle_error` for the exception, it will fallback to the default
+one that is generated with every Lucky project: `handle_error(e : Exception)`.
+You can customize that method however you like!
 
-If you need to return a special http status code based on an error, for example: return 401 after throwing a `NotAuthorizedError`, you can do this.
+### Error handling in development
+
+When in development, Lucky uses the
+[ExceptionPage](https://github.com/crystal-loot/exception_page) shard to
+display a helpful page with your stack trace, and exception message. The
+option to display the error page or not is in `config/error_handler.cr`.
+
+If you need to see how the errors are handled in production (i.e. json
+response for an api). Set the `settings.show_debug_output` option to `false`
+in `config/log_handler.cr`.
+
+### Default response codes for Exception classes
+
+> In general this should be a last resort or for libraries that want to
+provide default behavior. Usually you should use `handle_error` methods in
+`Errors::Show` because it is far more customizable and much simpler to work with.
+
+If you want to return a special http status code for an Exception class you can do this:
 
 ```crystal
-# define your custom exception
+# Define your custom exception
 class NotAuthorizedError < Exception
   include Lucky::HttpRespondable
 
@@ -110,38 +145,18 @@ class NotAuthorizedError < Exception
 end
 ```
 
-Then in your action where you would throw this error:
-
-```crystal
-class SpecialAction < BrowserAction
-  get "/special" do
-    raise NotAuthorizedError.new
-  end
-end
-```
+When `NotAuthorizedError` is raised, Lucky will use the defined status code, *unless*
+you have a `handle_error` method that changes it.
 
 ## Error Reporting
 
-There's many different services out there where you can ship your exceptions off to for better cataloging and searching of the errors.
+There's many different services out there where you can ship your exceptions
+off to for better cataloging and searching of the errors.
 
-In your `src/actions/errors/show.cr` file, there are several different `handle_error` methods. When an exception occurs in one of your actions, the appropriate method is called passing in the exception. This gives you a chance to grab that and pass it on. You can also create your own override if you want to report specifically on a custom error.
-
-```crystal
-class MyCustomError < Exception
-end
-
-# src/actions/pages/index.cr
-class Pages::Index < BrowserAction
-  get "/pages" do
-    failure = true
-    if failure
-      raise MyCustomError.new
-    end
-
-    #...
-  end
-end
-```
+In your `src/actions/errors/show.cr` file, there are several different
+`handle_error` methods. When an exception occurs in one of your actions, the
+appropriate method is called passing in the exception. This gives you a
+chance to report on the error however you like.
 
 ```crystal
 # src/actions/errors/show.cr
