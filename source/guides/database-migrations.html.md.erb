@@ -66,7 +66,7 @@ to your database, while the `rollback` method reverses the operations performed 
 the end of the type to make the column optional (allow NULL)
 
 ```crystal
- class CreateUsers::V20180305232601 < LuckyRecord::Migrator::Migration::V1
+ class CreateUsers::V20180305232601 < Avram::Migrator::Migration::V1
   def migrate
     create :users do
       # This column will allow NULL because it is marked with ?
@@ -169,7 +169,7 @@ alter :users do
   add phone : String
   remove :age
 
-  # Sometimes you need things that LuckyRecord doesn't support
+  # Sometimes you need things that Avram doesn't support
   execute "custom SQL"
 end
 ```
