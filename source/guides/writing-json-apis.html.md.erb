@@ -92,7 +92,7 @@ end
 ## Saving to the database
 
 Forms automatically know how to handle JSON params. They just need to be
-formatted in a way LuckyRecord knows how to handle.
+formatted in a way Avram knows how to handle.
 
 Let’s say you have a form called `ArticleForm`. Lucky will look for the data
 nested under an `article` key:
@@ -140,7 +140,7 @@ an error fails to save.
 ```crystal
 # in src/actions/errors/show.cr
 class Errors::Show < Lucky::ErrorAction
-  def handle_error(error : LuckyRecord::InvalidFormError)
+  def handle_error(error : Avram::InvalidFormError)
     if json?
       json Errors::ShowSerializer.new(
         message: "Failed to save",
