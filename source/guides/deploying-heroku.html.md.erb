@@ -23,10 +23,8 @@ order:
   * `heroku buildpacks:add https://github.com/luckyframework/heroku-buildpack-crystal`
 * Set `LUCKY_ENV` to `production`:
 `heroku config:set LUCKY_ENV=production`
-* Generate a secret key:
-`lucky gen.secret_key`
 * Set `SECRET_KEY_BASE`:
-`heroku config:set SECRET_KEY_BASE=<GENERATED_SECRET_KEY>`
+`heroku config:set SECRET_KEY_BASE=$(lucky gen.secret)`
 * Set `APP_DOMAIN`:
 `heroku config:set APP_DOMAIN=https://your-domain.com`
 * If you are sending emails, set `SEND_GRID_KEY`:
