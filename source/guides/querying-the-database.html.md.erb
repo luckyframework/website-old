@@ -333,18 +333,19 @@ PostQuery.new.preload_comments
 
 ### Customizing how associations are preloaded
 
-Sometimes you want to order preloads, or add where clauses. To do this, use the
-`preload` method on the query and pass a query object for the association.
+Sometimes you want to order preloads, or add where clauses. To do this, use
+the `preload_{{ association_name }}` method on the query and pass a query
+object for the association.
 
 ```crystal
-PostQuery.new.preload(CommentQuery.new.published(true))
+PostQuery.new.preload_comments(CommentQuery.new.published(true))
 ```
 
 This is also how you would do nested preloads:
 
 ```crystal
 # Preload the post's comments, and the comment's author
-PostQuery.new.preload(CommentQuery.new.preload_author)
+PostQuery.new.preload_comments(CommentQuery.new.preload_author)
 ```
 
 > Note that you can only pass query objects to `preload` if the association
