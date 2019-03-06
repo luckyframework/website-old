@@ -15,7 +15,9 @@ here are the
 steps you need to get up
 and running:
 
-* Add a git remote that points to your Heroku app:
+* If not already created, create an app: `heroku create <APP_NAME>`
+* Optional: if you created the app through the dashboard instead of the CLI,
+add a git remote that points to your Heroku app:
 `heroku git:remote -a <APP-NAME>`
 * Add the following buildpacks in
 order:
@@ -26,11 +28,11 @@ order:
 * Set `SECRET_KEY_BASE`:
 `heroku config:set SECRET_KEY_BASE=$(lucky gen.secret)`
 * Set `APP_DOMAIN`:
-`heroku config:set APP_DOMAIN=https://your-domain.com`
-* If you are sending emails, set `SEND_GRID_KEY`:
-`heroku config:set SEND_GRID_KEY=<key from sendgrid.com>`. If you're not
-sending emails, go to `config/email.cr` and change the adapter to
-`Carbon::DevAdapter`.
+`heroku config:set APP_DOMAIN=https://your-domain.com`. **If you don't have a
+custom domain** set this to `https://<APP_NAME>.herokuapp.com`.
+* Set `SEND_GRID_KEY`: `heroku config:set SEND_GRID_KEY=<key from sendgrid.com>`.
+**If you're not sending emails**, set the key to `unused` or go to `config/email.cr`
+and change the adapter to `Carbon::DevAdapter`.
 * Add a
 [postgresql database](https://elements.heroku.com/addons/heroku-postgresql)
 add-on:
