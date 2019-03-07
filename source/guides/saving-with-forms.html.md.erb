@@ -16,7 +16,7 @@ We’ll be using the migration and model from the [Querying
 guide](/guides/querying-the-database/). Once you have that set up, let’s set
 up a form:
 
-```
+```crystal
 # src/forms/user_form.cr
 class UserForm < User::BaseForm
 end
@@ -35,7 +35,7 @@ set an admin status through the `UserForm`.
 
 To allow a field to be saved to the database, use the `fillable` macro:
 
-```
+```crystal
 # src/forms/user_form.cr
 class UserForm < User::BaseForm
   fillable name
@@ -57,7 +57,7 @@ You will *always* receive the form object, but you will only get the saved
 user if there are no errors while saving. If there are errors, the user will
 be `nil`.
 
-```
+```crystal
 # inside of an action with some form params
 UserForm.create(params) do |form, user|
   if user # the user was saved
@@ -74,7 +74,7 @@ In contrast to `create`, `update` will always pass the record to the block. To c
 if any changes were persisted, you can call `form.saved?`, or `form.valid?`
 to check if the submitted data was saved.
 
-```
+```crystal
 # inside of an action with some form params
 user = UserQuery.new.first
 UserForm.update(user, params) do |form, updated_user|
@@ -92,7 +92,7 @@ end
 This version is often used when [writing JSON APIs](/guides/writing-json-apis)
 or for creating sample data in your the seed tasks in the `/tasks` folder.
 
-```
+```crystal
 user = UserQuery.new.first
 # Returns the updated user or raises
 updated_user = UserForm.update!(user, params)
@@ -109,7 +109,7 @@ You can use forms in HTML like this:
 > Remember: you *must* mark a field as `fillable` in order to use it in a
 > form. If it isn’t fillable the program will not compile.
 
-```
+```crystal
 # src/pages/users/new_page.cr
 class Users::NewPage < MainLayout
   needs user_form : UserForm
@@ -134,7 +134,7 @@ end
 reference the form as `f`. It also makes it easier to see what a page looks like
 with a quick glance at the `render` method.
 
-```
+```crystal
 class Users::Create < BrowserAction
   route do
     # params will have the form params sent from the HTML form
@@ -157,7 +157,7 @@ and errors tag. Lucky generates a `Shared::Field` component that you can use
 and customize to make this simpler. It is found in `src/components/shared/field.cr`
 and is used in pages like this:
 
-```
+```crystal
 # in a page
 field(f.name) { |i| text_input(i) }
 
@@ -169,13 +169,13 @@ errors_for f.name
 
 You can pass the same options to `text_input` as you normally would:
 
-```
+```crystal
 field(f.name) { |i| text_input(i, autofocus: "true", class: "input") }
 ```
 
 Or use a different kind of input
 
-```
+```crystal
 field(f.email) { |i| email_input(i) }
 ```
 
@@ -198,7 +198,7 @@ The main inputs that you can use with Lucky:
 * `range_input`
 * `textarea`
 
-```
+```crystal
 # Example using an email input
 email_input f.email, optional_html_attributes: "anything"
 ```
@@ -207,21 +207,21 @@ email_input f.email, optional_html_attributes: "anything"
 
 Call `submit` with the text to display
 
-```
+```crystal
 # In a page
 submit "Text", optional_html_attributes: "anything you want"
 ```
 
 ### Checkboxes
 
-```
+```crystal
 # If checked, will set the `admin` column to true
 checkbox f.admin, value: "true"
 ```
 
 ### Select with options
 
-```
+```crystal
 # Assuming you have a form with a fillable category_id
 select_input f.category_id do
   options_for_select(f.category_id, categories_for_select)
@@ -238,7 +238,7 @@ end
 
 ### Labels
 
-```
+```crystal
 label_for f.title # Will display "Title"
 label_for f.title, "Custom Title" # Will display "Custom Title"
 label_for f.title do
@@ -266,7 +266,7 @@ with missing fields will never be sent to the database.
 
 You can use validations inside of the `prepare` callback:
 
-```
+```crystal
 class UserForm < User::BaseForm
   fillable name, password, password_confirmation, terms_of_service, age
 
@@ -299,7 +299,7 @@ has.
 
 This means that to access their value you must call `value` on the field.
 
-```
+```crystal
 class UserForm < User::BaseForm
   def prepare
     pp name.value
@@ -312,7 +312,7 @@ end
 You can easily create your own validations. For example, let’s say we want to
 make sure the user is old enough to use the site.
 
-```
+```crystal
 def prepare
   validate_is_old_enough
 end
@@ -343,7 +343,7 @@ The `prepare` callback is run whenever a form is validated or saved. It is
 customized by defining a `prepare` method. Validations and custom parsing
 that is required for validation generally go in this callback.
 
-```
+```crystal
 class PostForm < Post::BaseForm
   def prepare
     validate_size_of title, min: 3
@@ -364,7 +364,7 @@ Create a method you'd like to run and then pass the method name to the
 callback macro. Note that the methods used by the `after_*` callbacks needs
 to accept the newly created record. In this example, a `Post`.
 
-```
+```crystal
 class PostForm < Post::BaseForm
   before_save run_this_before_save
   after_create run_this_after_create
@@ -385,7 +385,7 @@ Often times you want to add extra data to a form that the user does not fill out
 
 In this example, we'll associate a comment with a post:
 
-```
+```crystal
 class Posts::Comments::Create < BrowserAction
   route do
     post = PostQuery.find(id)
@@ -409,7 +409,7 @@ Sometimes you need to pass extra data to forms that aren't in the form params.
 For example you might want to pass the currently signed in user so that you know
 who created a record. Here's how you do this:
 
-```
+```crystal
 # This is a great way to pass in an associated record
 class UserForm < User::BaseForm
   needs current_user : User
@@ -437,7 +437,7 @@ You can use the `on` option to do that:
 * `:create` if only required for create
 * `:save` if required for update and create, but not when calling `new`
 
-```
+```crystal
 class CommentForm < Comment::BaseForm
   needs author : User, on: :create # can also be `:update`, `:save`
 
@@ -453,7 +453,7 @@ end
 the `on` option. This means `author` can be `nil` in the form. That's why we
 needed to use `try` in the `prepare` method.
 
-```
+```crystal
 # You must pass an author when creating
 CommentForm.create(params, author: a_user) do |form, user|
   # do something
@@ -482,7 +482,7 @@ we use `virtual`.
 
 Here's an example of using `virtual` to create a sign up form:
 
-```
+```crystal
 # First we create a model
 # src/models/user.cr
 class User < BaseModel
@@ -494,7 +494,7 @@ class User < BaseModel
 end
 ```
 
-```
+```crystal
 # src/forms/sign_up_form.cr
 require "crypto/bcrypt/password"
 
@@ -526,7 +526,7 @@ end
 
 Using virtual fields in HTML works exactly the same as with database fields:
 
-```
+```crystal
 # src/pages/sign_ups/new_page.cr
 class SignUps::NewPage < MainLayout
   needs sign_up_form : SignUpForm
@@ -618,7 +618,7 @@ end
 This can be helpful if you’re saving something that doesn’t need an HTML form,
 like if you only need the params passed in the path.
 
-```
+```crystal
 UserForm.create!(name: "Paul")
 
 # for updates
@@ -632,7 +632,7 @@ validations, allowances, etc.
 
 You can do this with a module:
 
-```
+```crystal
 # src/forms/mixins/age_validation.cr
 module AgeValidation
   private def validate_old_enough_to_use_website
@@ -648,7 +648,7 @@ end
 
 Then in your form:
 
-```
+```crystal
 # src/forms/admin_user_form.cr
 class AdminUserForm < User::BaseForm
   include AgeValidation

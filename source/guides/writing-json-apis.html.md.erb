@@ -14,7 +14,7 @@ questions about how to use Lucky in more complex ways, hop on our
 
 To respond with JSON we use the `json` method in an action:
 
-```
+```crystal
 # in src/actions/api/articles/show.cr
 class Api::Articles::Show < ApiAction
   route do
@@ -39,7 +39,7 @@ JSON.
 
 Let’s create one for rendering the JSON for a single article.
 
-```
+```crystal
 # in src/serializers/articles/show_serializer.cr
 class Articles::ShowSerializer < Lucky::Serializer
   def initialize(@article : Article)
@@ -64,7 +64,7 @@ end
 Here’s how you can combine JSON for more complex responses. In this example
 we’ll render a list of articles and the total number of articles:
 
-```
+```crystal
 # in src/serializers/articles/index_serializer.cr
 class Articles::IndexSerializer < Lucky::Serializer
   def initialize(@articles : ArticleQuery, @total : Int64)
