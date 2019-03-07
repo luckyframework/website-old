@@ -198,7 +198,7 @@ is found in `src/actions/errors/show.cr`.
 
 You'll see a method like this that handles when a route is not found:
 
-```
+```crystal
 # in src/actions/errors/show.cr
 #
 # Customize this however you want!
@@ -216,7 +216,7 @@ some HTML when Lucky can't find a route. For example, this type of behavior
 can be useful for Single Page Applications (SPAs) so that you can handle
 routing client-side.
 
-```
+```crystal
 # in src/actions/errors/show.cr
 def handle_error(error : Lucky::RouteNotFoundError)
   if json?

@@ -104,7 +104,7 @@ end
 There are a few specials helpers that make it easier. For creating links with an
 anchor tag, we have the `link` helper.
 
-```
+```crystal
 link "Link Text", to: "/somewhere", class: "some-html-class"
 
 # The real power comes when used with route helers from actions
@@ -120,7 +120,7 @@ link helper automatically sets the path *and* the correct HTTP verb.
 Since the HTTP verb (`GET`, `POST`, `PUT`, etc.) is automatically used by `link`
 we can do delete links like this:
 
-```
+```crystal
 # data-method="delete" will automatically be set.
 # This means the link submits with the right HTTP verb automatically.
 link "Delete", to: Users::Delete.with("user_id")
@@ -144,7 +144,7 @@ with an example.
 
 Let's say we have a nested action and a non-nested action like this:
 
-```
+```crystal
 # Tasks nested in Projects namespace
 class Projects::Tasks::Index < BrowserAction
   # call the action
@@ -158,7 +158,7 @@ end
 
 Crystal will incorrectly look for `Tasks::Show` in `Projects::Tasks`:
 
-```
+```crystal
 class Projects::Tasks::IndexPage < MainLayout
   def content
     # Crystal will look for Projects::Tasks::Show since it is called within
@@ -171,7 +171,7 @@ end
 
 To fix this, prefix the call constant with `::`
 
-```
+```crystal
 # This tells Crystal to look for the top-level Tasks constant
 link "View task", ::Tasks::Show.with(123)
 ```
@@ -188,7 +188,7 @@ Sometimes you want to render plain text. To do that use the `text` method.
 > Strings rendered with `text` are automatically HTML escaped for security. Text
 passed to tags is also escaped.
 
-```
+```crystal
 div "email" do
   text "This is the email text"
   br
@@ -198,7 +198,7 @@ end
 
 ### Render unescaped text
 
-```
+```crystal
 div "email" do
   # Use the `raw` method to render unescaped text
   raw "&middot;" # Render a middot HTML entity
@@ -233,7 +233,7 @@ This means that you can customize the page title in your page by writing a
 
 So to set a page specific title, do this:
 
-```
+```crystal
 # src/pages/users/index_page.cr
 class Users::IndexPage < MainLayout
   # Override the page_title method that was originally
@@ -247,7 +247,7 @@ end
 This technique can be used to render other types of content, like a sidebar
 (similar to `content_for` in Rails):
 
-```
+```crystal
 # src/pages/main_layout.cr in the `render` method
 def render
   # Other layout code left out for brevity
@@ -287,7 +287,7 @@ and `render_if_defined`.
 minor changes to the layout that happen on some pages. If pages look
 significantly different, consider extracting a new layout class instead.
 
-```
+```crystal
 # Put this in a layout's `render` method
 # This makes it so that pages can have an optional `help_message`.
 if responds_to?(:help_section)
@@ -369,7 +369,7 @@ data to rendered pages.
 The `expose` macro sends the results of a method to the page, as if you had passed
 it manually:
 
-```
+```crystal
 # Without `expose`
 class Users::Index < BrowserAction
   route do
