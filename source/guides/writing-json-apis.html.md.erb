@@ -199,6 +199,9 @@ abstract class ApiAction < Lucky::Action
   def set_cors_headers
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Headers"] = "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
+    continue
   end
 end
 ```
+
+> Note: the before action method must return `continue`, or a `LuckyWeb::Response`. See Actions and Routing for more info.
