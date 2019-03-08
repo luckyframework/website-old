@@ -457,12 +457,14 @@ If you need to remove a session
 ```crystal
 # Delete a specific session key
 session.delete(:name)
+session.deleted?(:name) #=> true
 
 # Clear the current session
 session.clear
 
 # Delete a specific cookie
 cookies.delete("name")
+cookies.deleted?("person") #=> false
 
 # Delete all cookies
 cookies.clear
