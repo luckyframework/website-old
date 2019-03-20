@@ -6,7 +6,10 @@ $intro-card-padding: 38px;
   border-radius: 8px;
   padding: 20px 0;
   box-sizing: border-box;
-  width: $intro-card-width;
+
+  @include large-up {
+    width: $intro-card-width;
+  }
 
   &__heading {
     text-transform: uppercase;

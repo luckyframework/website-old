@@ -1,9 +1,13 @@
 .header-nav {
-  display: flex;
-  flex-direction: row;
+  @include medium-up {
+    display: flex;
+    align-items: center;
+  }
 
-  li {
-    margin-left: 35px;
+  @include medium-up {
+    li {
+      margin-left: 35px;
+    }
   }
 
   a {
@@ -14,9 +18,20 @@
     letter-spacing: 1.5px;
     text-decoration: none;
     text-transform: uppercase;
+    padding-top: 10px;
+    padding-bottom: 8px;
+
+    @include medium-up {
+      padding-top: 26px;
+      padding-bottom: 24px;
+    }
 
     &:hover {
       text-decoration: underline;
     }
+  }
+
+  .github-button-item {
+    padding: 10px 0;
   }
 }
