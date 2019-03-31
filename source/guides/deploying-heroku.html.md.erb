@@ -26,7 +26,7 @@ order:
 * Set `LUCKY_ENV` to `production`:
 `heroku config:set LUCKY_ENV=production`
 * Set `SECRET_KEY_BASE`:
-`heroku config:set SECRET_KEY_BASE=$(lucky gen.secret)`
+`heroku config:set SECRET_KEY_BASE=$(lucky gen.secret_key)`
 * Set `APP_DOMAIN`:
 `heroku config:set APP_DOMAIN=https://your-domain.com`. **If you don't have a
 custom domain** set this to `https://<APP_NAME>.herokuapp.com`.
