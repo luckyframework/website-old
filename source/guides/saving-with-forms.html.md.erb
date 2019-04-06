@@ -314,10 +314,10 @@ make sure the user is old enough to use the site.
 
 ```crystal
 def prepare
-  validate_is_old_enough
+  validate_user_is_old_enough
 end
 
-private def user_is_old_enough
+private def validate_user_is_old_enough
   # The value might be `nil` so we need to use `try`.
   age.value.try do |value|
     if value < 13
