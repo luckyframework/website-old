@@ -55,11 +55,10 @@ class Api::Articles::Show < ApiAction
 end
 ```
 
-> In the example you could have left off `Api::Articles::` from
-> `Api::Articles::ShowSerializer` (so just `ShowSerializer.new`).
-> If you do that Crystal will look for a `ShowSerializer` class in the
-> namespace of the action (which is `Api::Articles` in this case).
-> In the example, you could also use `ShowSerializer.new(article)` because these two classes are in the same namespace. For more information, read up on how Crystal handles namespaces.
+> In the example, you could also use `ShowSerializer.new(article)` 
+> because these action and the serializer classes are in the same 
+> namespace (`Api::Articles`). 
+  
 ### Handling nested JSON and extra options
 
 Here’s how you can combine JSON for more complex responses. In this example
