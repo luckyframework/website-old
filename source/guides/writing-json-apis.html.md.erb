@@ -36,8 +36,8 @@ JSON.
 Let’s create one for rendering the JSON for a single article.
 
 ```crystal
-# in src/serializers/articles/show_serializer.cr
-class Articles::ShowSerializer < Lucky::Serializer
+# in src/serializers/api/articles/show_serializer.cr
+class Api::Articles::ShowSerializer < Lucky::Serializer
   def initialize(@article : Article)
   end
 
@@ -50,10 +50,15 @@ end
 class Api::Articles::Show < ApiAction
   route do
     article = ArticleQuery.new.find(id)
-    json Articles::ShowSerializer.new(article)
+    json Api::Articles::ShowSerializer.new(article)
   end
 end
 ```
+
+> In the example you could have left off `Api::Articles::` from
+> `Api::Articles::ShowSerializer` (so just `ShowSerializer.new`).
+> If you do that Crystal will look for a `ShowSerializer` class in the
+> namespace of the action (which is `Api::Articles` in this case).
 
 ### Handling nested JSON and extra options
 
