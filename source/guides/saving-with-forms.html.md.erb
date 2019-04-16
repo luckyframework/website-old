@@ -321,7 +321,7 @@ private def validate_user_is_old_enough
   # The value might be `nil` so we need to use `try`.
   age.value.try do |value|
     if value < 13
-      field.add_error "must be at least 13 to use this site"
+      age.add_error "must be at least 13 to use this site"
     end
   end
 end
