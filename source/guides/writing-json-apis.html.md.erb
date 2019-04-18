@@ -140,7 +140,7 @@ an error fails to save.
 ```crystal
 # in src/actions/errors/show.cr
 class Errors::Show < Lucky::ErrorAction
-  def handle_error(error : Avram::InvalidFormError)
+  def handle_error(error : Avram::InvalidFormError(T))
     if json?
       json Errors::ShowSerializer.new(
         message: "Failed to save",
