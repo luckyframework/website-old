@@ -8,6 +8,17 @@ intro: >
 
 ## Logging
 
+You can log messages by calling `debug`, `info`, `warn`, or `error` on
+`Lucky.logger`. You can pass in a string or a
+<code>[NamedTuple](https://crystal-lang.org/api/latest/NamedTuple.html)</code>:
+
+```crystal
+# Log formatter will receive { message: "My message" }
+Lucky.logger.info("My message")
+# Log formatter will receive { foo: "bar" }
+Lucky.logger.info(foo: "bar")
+```
+
 By default, Lucky formats the log output to look like `GET 200 / TIMESTAMP (27.0µs)`. This is broken down in to several parts:
 
 * The HTTP request method
